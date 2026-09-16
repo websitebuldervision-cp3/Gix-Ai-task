@@ -26,6 +26,7 @@ import {
 import { useApp } from '../context/AppContext';
 import { TASK_CATEGORIES } from '../data/taskCategories';
 import { formatUSD, formatTZS, ACTIVATION_URL } from '../data/translations';
+import { getDailyTasks, getDailyDateFormatted } from '../data/dailyTasks';
 import { CommentsSection } from '../components/CommentsSection';
 
 export const HomeView: React.FC = () => {
@@ -42,26 +43,11 @@ export const HomeView: React.FC = () => {
   const isSw = language === 'sw';
   const featuredCategories = TASK_CATEGORIES.slice(0, 12);
 
-  // Generate today's formatted dynamic date string in Swahili & English
-  const todayFormatted = useMemo(() => {
-    const d = new Date();
-    const dayNamesSw = ['Jumapili', 'Jumatatu', 'Jumanne', 'Jumatano', 'Alhamisi', 'Ijumaa', 'Jumamosi'];
-    const monthNamesSw = ['Januari', 'Februari', 'Machi', 'Aprili', 'Mei', 'Juni', 'Julai', 'Agosti', 'Septemba', 'Oktoba', 'Novemba', 'Desemba'];
-    const monthNamesEn = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  // Dynamic date formatted in Swahili & English
+  const todayFormatted = useMemo(() => getDailyDateFormatted(), []);
 
-    const dayNameSw = dayNamesSw[d.getDay()];
-    const dayNum = d.getDate();
-    const monthSw = monthNamesSw[d.getMonth()];
-    const monthEn = monthNamesEn[d.getMonth()];
-    const year = d.getFullYear();
-
-    return {
-      sw: `${dayNameSw}, ${dayNum} ${monthSw} ${year}`,
-      en: `${d.toLocaleDateString('en-US', { weekday: 'long' })}, ${monthEn} ${dayNum}, ${year}`,
-      shortSw: `Leo, ${dayNum} ${monthSw.slice(0, 3)}`,
-      shortEn: `Today, ${monthEn.slice(0, 3)} ${dayNum}`,
-    };
-  }, []);
+  // Daily rotating tasks - refreshed automatically each calendar day!
+  const dailyTasks = useMemo(() => getDailyTasks(), []);
 
   const handleStartCategory = (catId: string) => {
     startTask(catId);
@@ -71,169 +57,59 @@ export const HomeView: React.FC = () => {
     setActiveTab('tasks');
   };
 
-  // Top visual microtasks with direct "START TASK" buttons (Updated daily - 14 featured tasks)
-  const visualHeroTasks = [
-    {
-      id: 'cat_img_comp',
-      title: isSw ? 'AI Image Evaluation' : 'AI Image Evaluation',
-      domain: 'Computer Vision',
-      rewardUSD: 2.50,
-      rewardTZS: 'TSh 6,500',
-      time: '2 min',
-      image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&auto=format&fit=crop&q=80',
-    },
-    {
-      id: 'cat_audio_eval',
-      title: isSw ? 'Audio & Speech AI' : 'Audio & Speech AI',
-      domain: 'Voice Synthesis',
-      rewardUSD: 3.00,
-      rewardTZS: 'TSh 7,800',
-      time: '3 min',
-      image: 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=400&auto=format&fit=crop&q=80',
-    },
-    {
-      id: 'cat_video_tag',
-      title: isSw ? 'Autonomous AI Drive' : 'Autonomous AI Drive',
-      domain: 'Object Bounding',
-      rewardUSD: 3.50,
-      rewardTZS: 'TSh 9,100',
-      time: '3 min',
-      image: 'https://images.unsplash.com/photo-1617791160505-6f00504e3519?w=400&auto=format&fit=crop&q=80',
-    },
-    {
-      id: 'cat_text_audit',
-      title: isSw ? 'LLM Output Quality' : 'LLM Output Quality',
-      domain: 'Text & Reasoning',
-      rewardUSD: 2.80,
-      rewardTZS: 'TSh 7,280',
-      time: '2 min',
-      image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&auto=format&fit=crop&q=80',
-    },
-    {
-      id: 'cat_medical_ai',
-      title: isSw ? 'Medical AI Scan Triage' : 'Medical AI Scan Triage',
-      domain: 'Biomedical AI',
-      rewardUSD: 3.20,
-      rewardTZS: 'TSh 8,320',
-      time: '3 min',
-      image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&auto=format&fit=crop&q=80',
-    },
-    {
-      id: 'cat_face_align',
-      title: isSw ? 'Facial Emotion AI' : 'Facial Emotion AI',
-      domain: 'Biometric AI',
-      rewardUSD: 2.60,
-      rewardTZS: 'TSh 6,760',
-      time: '2 min',
-      image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80',
-    },
-    {
-      id: 'cat_satellite_gis',
-      title: isSw ? 'Satellite GIS Mapping' : 'Satellite GIS Mapping',
-      domain: 'Geospatial AI',
-      rewardUSD: 3.80,
-      rewardTZS: 'TSh 9,880',
-      time: '4 min',
-      image: 'https://images.unsplash.com/photo-1524661135-423995f22d0b?w=400&auto=format&fit=crop&q=80',
-    },
-    {
-      id: 'cat_swahili_dialect',
-      title: isSw ? 'Swahili Dialect AI' : 'Swahili Dialect AI',
-      domain: 'African NLP',
-      rewardUSD: 3.40,
-      rewardTZS: 'TSh 8,840',
-      time: '3 min',
-      image: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&auto=format&fit=crop&q=80',
-    },
-    {
-      id: 'cat_ocr_transcribe',
-      title: isSw ? 'Document OCR AI' : 'Document OCR AI',
-      domain: 'Text Extraction',
-      rewardUSD: 2.40,
-      rewardTZS: 'TSh 6,240',
-      time: '2 min',
-      image: 'https://images.unsplash.com/photo-1568667256549-094345857637?w=400&auto=format&fit=crop&q=80',
-    },
-    {
-      id: 'cat_ecommerce_tag',
-      title: isSw ? 'Product Moderation' : 'Product Moderation',
-      domain: 'E-Commerce AI',
-      rewardUSD: 2.20,
-      rewardTZS: 'TSh 5,720',
-      time: '2 min',
-      image: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=400&auto=format&fit=crop&q=80',
-    },
-    {
-      id: 'cat_sound_classify',
-      title: isSw ? 'Environmental Audio' : 'Environmental Audio',
-      domain: 'Acoustic AI',
-      rewardUSD: 2.90,
-      rewardTZS: 'TSh 7,540',
-      time: '3 min',
-      image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&auto=format&fit=crop&q=80',
-    },
-    {
-      id: 'cat_content_safety',
-      title: isSw ? 'Safety & Content Guard' : 'Safety & Content Guard',
-      domain: 'AI Safety',
-      rewardUSD: 3.10,
-      rewardTZS: 'TSh 8,060',
-      time: '2 min',
-      image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400&auto=format&fit=crop&q=80',
-    },
-    {
-      id: 'cat_code_benchmark',
-      title: isSw ? 'Code Logic Syntax AI' : 'Code Logic Syntax AI',
-      domain: 'Code Synthesis',
-      rewardUSD: 4.20,
-      rewardTZS: 'TSh 10,920',
-      time: '4 min',
-      image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&auto=format&fit=crop&q=80',
-    },
-    {
-      id: 'cat_audio_denoise',
-      title: isSw ? 'Voice Noise Cleaner' : 'Voice Noise Cleaner',
-      domain: 'Signal Processing',
-      rewardUSD: 2.70,
-      rewardTZS: 'TSh 7,020',
-      time: '2 min',
-      image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&auto=format&fit=crop&q=80',
-    },
-  ];
-
   return (
-    <div className="space-y-8 pb-12">
-      {/* 1. HERO SECTION WITH SURROUNDED GLOW & TWO TOP BUTTONS */}
-      <section className="relative overflow-hidden rounded-3xl border border-emerald-500/30 bg-gradient-to-b from-slate-900 via-[#0B0F19] to-[#080B11] p-5 sm:p-9 shadow-[0_0_50px_-10px_rgba(16,185,129,0.2)] ring-1 ring-emerald-500/20">
-        {/* Radiant Ambient Glows */}
-        <div className="absolute -top-24 -left-24 h-80 w-80 rounded-full bg-emerald-600/15 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-pink-500/20 blur-3xl pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-96 w-96 rounded-full bg-teal-500/10 blur-3xl pointer-events-none" />
+    <div className="space-y-4 sm:space-y-5 pb-10">
+      {/* 1. COMPACT HERO SECTION (STREAMLINED SIZE, SMALL INSTALL BUTTON, GLOWING PINK ACTIVATION) */}
+      <section className="relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-gradient-to-b from-slate-900 via-[#0B0F19] to-[#080B11] p-3.5 sm:p-5 shadow-[0_0_30px_-10px_rgba(16,185,129,0.2)] ring-1 ring-emerald-500/20">
+        {/* Subtle Ambient Glows */}
+        <div className="absolute -top-20 -left-20 h-56 w-56 rounded-full bg-emerald-600/10 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-20 -right-20 h-56 w-56 rounded-full bg-pink-500/15 blur-3xl pointer-events-none" />
 
-        <div className="relative mx-auto max-w-4xl text-center z-10">
-          {/* Top Live Date Badge */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-4 py-1.5 text-xs font-bold text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
-            <Calendar className="h-3.5 w-3.5 text-emerald-400 animate-pulse" />
-            <span>
-              {isSw
-                ? `Kazi za Leo • ${todayFormatted.sw}`
-                : `Today's Active Pipeline • ${todayFormatted.en}`}
-            </span>
+        <div className="relative mx-auto max-w-3xl text-center z-10">
+          {/* Top Live Date Badge & App Version */}
+          <div className="flex items-center justify-center gap-2">
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-0.5 text-[11px] font-bold text-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.2)]">
+              <Calendar className="h-3 w-3 text-emerald-400 animate-pulse" />
+              <span>
+                {isSw
+                  ? `Kazi za Leo • ${todayFormatted.sw}`
+                  : `Today's Pipeline • ${todayFormatted.en}`}
+              </span>
+            </div>
+            {/* Small Install App Button (ndogo kabisa) */}
+            <button
+              id="btn-hero-install-app"
+              onClick={openPwaModal}
+              className="inline-flex items-center gap-1 rounded-full border border-slate-700 bg-slate-900/90 px-2.5 py-0.5 text-[10px] font-bold text-slate-300 hover:text-white hover:border-emerald-500/50 shadow-sm active:scale-95 transition"
+              title="Install App"
+            >
+              {isPwaInstalled ? (
+                <>
+                  <Check className="h-3 w-3 text-emerald-400 shrink-0" />
+                  <span>INSTALLED</span>
+                </>
+              ) : (
+                <>
+                  <Download className="h-3 w-3 text-emerald-400 shrink-0" />
+                  <span>{isSw ? 'Pakua App' : 'Install App'}</span>
+                </>
+              )}
+            </button>
           </div>
 
-          {/* Main Title */}
-          <h1 className="font-display mt-4 text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
+          {/* Main Title - Clean & Punchy */}
+          <h1 className="font-display mt-2 text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-white leading-tight">
             {isSw ? (
               <>
                 Anza Kufanya Task Mbalimbali za AI na{' '}
-                <span className="bg-gradient-to-r from-pink-400 via-fuchsia-300 to-emerald-400 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(236,72,153,0.3)]">
+                <span className="bg-gradient-to-r from-pink-400 via-fuchsia-300 to-emerald-400 bg-clip-text text-transparent drop-shadow-[0_0_12px_rgba(236,72,153,0.3)]">
                   Kulipwa Hapo Hapo
                 </span>
               </>
             ) : (
               <>
                 Complete Verified AI Tasks &{' '}
-                <span className="bg-gradient-to-r from-pink-400 via-fuchsia-300 to-emerald-400 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(236,72,153,0.3)]">
+                <span className="bg-gradient-to-r from-pink-400 via-fuchsia-300 to-emerald-400 bg-clip-text text-transparent drop-shadow-[0_0_12px_rgba(236,72,153,0.3)]">
                   Get Paid Instantly
                 </span>
               </>
@@ -241,327 +117,124 @@ export const HomeView: React.FC = () => {
           </h1>
 
           {/* Subtitle / Earnings Highlight */}
-          <div className="mt-3 inline-block rounded-xl border border-emerald-500/40 bg-emerald-500/15 px-5 py-2.5 text-xs sm:text-sm font-extrabold text-emerald-300 shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+          <div className="mt-2 inline-block rounded-lg border border-emerald-500/40 bg-emerald-500/15 px-3 py-1 text-xs font-extrabold text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.15)]">
             {isSw
               ? '💰 Tengeneza kuanzia TSh 50,000/= kwa siku na kuendelea kupitia simu yako'
               : '💰 Earn from TSh 50,000+ ($20 - $50+) daily completing simple tasks on your phone'}
           </div>
 
-          <p className="mt-3 text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl mx-auto">
-            {t.hero.subtitle}
-          </p>
-
-          {/* 2 HERO ACTION BUTTONS (INSTALL APP & PINK GUSA HAPA FUNGUA ACCOUNT) */}
-          <div className="mt-7 grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
-            {/* 1. INSTALL APP BUTTON */}
-            <div className="relative group">
-              <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-emerald-500/50 to-teal-500/50 blur-md opacity-60 group-hover:opacity-100 transition duration-300 pointer-events-none" />
-              <button
-                id="btn-hero-install-app"
-                onClick={openPwaModal}
-                className={`relative w-full flex items-center justify-center gap-2.5 rounded-xl px-5 py-3.5 text-xs sm:text-sm font-black transition-all active:scale-95 text-center shadow-lg ${
-                  isPwaInstalled
-                    ? 'border-2 border-emerald-400 bg-emerald-950/90 text-emerald-300 shadow-[0_0_25px_rgba(16,185,129,0.35)]'
-                    : 'border-2 border-emerald-500/60 bg-slate-900/90 text-emerald-300 hover:bg-emerald-950 hover:border-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.3)]'
-                }`}
-              >
-                {isPwaInstalled ? (
-                  <>
-                    <Check className="h-5 w-5 text-emerald-400 shrink-0" />
-                    <span>APP INSTALLED ✓</span>
-                  </>
-                ) : (
-                  <>
-                    <Download className="h-5 w-5 text-emerald-400 shrink-0" />
-                    <span>{t.hero.installApp}</span>
-                  </>
-                )}
-              </button>
-            </div>
-
-            {/* 2. GUSA HAPA FUNGUA ACCOUNT (VIBRANT PINK WITH SURROUNDED PINK GLOW) */}
-            <div className="relative group">
-              <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-pink-500 via-rose-500 to-fuchsia-600 blur-lg opacity-80 group-hover:opacity-100 animate-pulse transition duration-300 pointer-events-none" />
-              <a
-                id="btn-hero-activate-account"
-                href={ACTIVATION_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="relative w-full flex items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-pink-500 via-rose-500 to-fuchsia-600 px-5 py-3.5 text-xs sm:text-sm font-black text-white border-2 border-pink-300/80 shadow-[0_0_30px_rgba(244,63,94,0.6)] transition-all hover:scale-[1.02] active:scale-95 text-center uppercase tracking-wide"
-              >
-                <ExternalLink className="h-5 w-5 text-white shrink-0 drop-shadow" />
-                <span>{t.hero.activateAccount}</span>
-              </a>
-            </div>
+          {/* Glowing Pink GUSA HAPA FUNGUA ACCOUNT Button */}
+          <div className="mt-3 relative group max-w-md mx-auto">
+            <div className="absolute -inset-0.5 rounded-xl bg-gradient-to-r from-pink-500 via-rose-500 to-fuchsia-600 blur opacity-80 group-hover:opacity-100 animate-pulse transition duration-300 pointer-events-none" />
+            <a
+              id="btn-hero-activate-account"
+              href={ACTIVATION_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-pink-500 via-rose-500 to-fuchsia-600 px-4 py-2.5 text-xs sm:text-sm font-black text-white border border-pink-300/80 shadow-[0_0_20px_rgba(244,63,94,0.4)] transition-all hover:scale-[1.02] active:scale-95 text-center uppercase tracking-wide"
+            >
+              <ExternalLink className="h-4 w-4 text-white shrink-0 drop-shadow" />
+              <span>{t.hero.activateAccount}</span>
+            </a>
           </div>
         </div>
       </section>
 
-      {/* 2. KAZI 2 ZA MWANZO ZA LEO (CLEAR & PROMINENT TOP 2 INSTANT TASKS) */}
-      <section className="space-y-4 pt-2">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+      {/* 2. ALL TASKS IN 2-COLUMN GRID (FIRST 4 TASKS PROMINENT UPFRONT, ROTATING DAILY) */}
+      <section className="space-y-3">
+        <div className="flex items-center justify-between px-1">
           <div>
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/50 px-3 py-1 text-xs font-black text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.3)]">
-              <Sparkles className="h-3.5 w-3.5 text-emerald-300" />
-              <span>{isSw ? 'KAZI ZA LEO (TODAY’S INSTANT TASKS)' : 'TODAY’S INSTANT TASKS'}</span>
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/50 px-2.5 py-0.5 text-[11px] font-black text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.25)]">
+              <Sparkles className="h-3 w-3 text-emerald-300" />
+              <span>{isSw ? 'KAZI ZA LEO ZINAZOSASISHWA' : 'DAILY ROTATING AI TASKS'}</span>
             </div>
-            <h2 className="font-display mt-2 text-xl sm:text-2xl font-extrabold text-white">
-              {isSw ? 'Tasks 2 za Mwanzo Zinazoanza Hapo Hapo' : 'Top 2 Instant Tasks — Start Directly'}
+            <h2 className="font-display mt-1 text-base sm:text-lg font-extrabold text-white">
+              {isSw ? 'Tasks za AI Zilizo Tayari Kufanyika Sasa' : 'Active AI Tasks Ready To Start'}
             </h2>
-            <p className="text-xs text-slate-300 mt-0.5">
+            <p className="text-[11px] text-slate-400">
               {isSw
-                ? `Kazi hizi mbili zimehakikiwa kwa tarehe ya ${todayFormatted.shortSw} na zinalipa moja kwa moja.`
-                : `These two tasks are active today (${todayFormatted.shortEn}) with verified instant rewards.`}
+                ? `Kazi 4 za mwanzo na zingine ${dailyTasks.length - 4}+ zimesasishwa leo (${todayFormatted.shortSw}) • Bonyeza START TASK`
+                : `Top 4 spotlight tasks and ${dailyTasks.length - 4}+ additional tasks updated today (${todayFormatted.shortEn}) • Tap START TASK`}
             </p>
           </div>
 
           <button
             onClick={() => setActiveTab('tasks')}
-            className="inline-flex items-center gap-1 text-xs font-bold text-emerald-400 hover:text-emerald-300 self-start sm:self-auto bg-slate-900 border border-slate-800 px-3.5 py-1.5 rounded-xl shadow-sm"
+            className="hidden sm:inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 hover:text-emerald-300 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl shadow-sm"
           >
-            <span>{isSw ? 'Tazama Kazi Zote 55+' : 'View All 55+ Tasks'}</span>
-            <ChevronRight className="h-4 w-4" />
+            <span>{isSw ? 'Kazi Zote 55+' : 'All 55+ Tasks'}</span>
+            <ChevronRight className="h-3.5 w-3.5" />
           </button>
         </div>
 
-        {/* 2 Interactive High-Visibility Instant Task Cards (Clean & Clear, No Stars) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Instant Task 1: Image Clarity Evaluation */}
-          <div className="relative overflow-hidden rounded-2xl border-2 border-teal-500/60 bg-slate-900/95 p-5 shadow-[0_0_35px_rgba(20,184,166,0.2)] hover:border-teal-400 hover:shadow-[0_0_40px_rgba(20,184,166,0.35)] transition group flex flex-col justify-between">
-            <div className="absolute top-0 right-0 bg-teal-600 text-white font-black text-[10px] uppercase px-3 py-1 rounded-bl-xl tracking-wider shadow">
-              {isSw ? 'KAZI YA 1 YA LEO' : 'TODAY TASK #1'}
-            </div>
+        {/* Crisp Two-Column Grid for ALL tasks (High density, minimal whitespace) */}
+        <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5">
+          {dailyTasks.map((task, idx) => {
+            const isTopFour = idx < 4;
+            const taskTitle = isSw ? task.title.sw : task.title.en;
+            const taskDomain = isSw ? task.domain.sw : task.domain.en;
+            const taskTag = isSw ? task.tag.sw : task.tag.en;
 
-            <div>
-              <div className="flex items-start gap-3.5 pr-20 sm:pr-0">
-                <div className="relative h-16 w-16 rounded-xl overflow-hidden bg-slate-800 shrink-0 border-2 border-teal-500/40 shadow-md">
-                  <img
-                    src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=200&auto=format&fit=crop&q=80"
-                    alt="Task 1"
-                    referrerPolicy="no-referrer"
-                    className="h-full w-full object-cover group-hover:scale-110 transition duration-300"
-                  />
-                  <span className="absolute bottom-0 inset-x-0 bg-slate-950/90 text-[9px] font-bold text-center text-teal-300">
-                    Picha AI
-                  </span>
-                </div>
-
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="rounded-md bg-teal-500/20 px-2 py-0.5 text-[10px] font-extrabold text-teal-300 border border-teal-500/30">
-                      Vision Bench
-                    </span>
-                    <span className="rounded-md bg-emerald-500/15 px-2 py-0.5 text-[10px] font-bold text-emerald-400">
-                      ● {isSw ? 'Imesasishwa Leo' : 'Active Today'}
-                    </span>
-                  </div>
-
-                  <h3 className="font-display mt-1.5 text-base sm:text-lg font-extrabold text-white group-hover:text-teal-300 leading-snug">
-                    {isSw
-                      ? 'AI Image Quality & Visual Alignment'
-                      : 'AI Image Quality & Visual Alignment'}
-                  </h3>
-
-                  <div className="mt-1 flex items-center gap-3 text-xs text-slate-300">
-                    <span className="flex items-center gap-1 font-medium">
-                      <Clock className="h-3.5 w-3.5 text-slate-400" />
-                      <span>2 min</span>
-                    </span>
-                    <span>•</span>
-                    <span className="text-emerald-400 font-semibold flex items-center gap-1">
-                      <CheckCircle2 className="h-3.5 w-3.5" />
-                      <span>{isSw ? 'Hakiki Picha 2' : '2 Image Compare'}</span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Reward Display Bar */}
-              <div className="mt-4 rounded-xl bg-slate-950/80 border border-slate-800 p-3 flex items-center justify-between">
-                <div>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                    {isSw ? 'Malipo ya Kazi Hii:' : 'Task Reward:'}
-                  </span>
-                  <div className="flex items-baseline gap-2">
-                    <span className="font-display text-xl sm:text-2xl font-black text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.5)]">
-                      +$2.50
-                    </span>
-                    <span className="text-xs sm:text-sm font-bold text-slate-200">
-                      ≈ TSh 6,500
-                    </span>
-                  </div>
-                </div>
-
-                {/* PROMINENT START BUTTON */}
-                <button
-                  id="btn-spotlight-task-1"
-                  onClick={() => startTask('cat_img_comp')}
-                  className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 px-5 py-3 text-xs sm:text-sm font-black text-white shadow-lg shadow-emerald-500/30 hover:scale-105 hover:shadow-[0_0_25px_rgba(16,185,129,0.6)] active:scale-95 uppercase tracking-wide"
-                >
-                  <Play className="h-4 w-4 text-white fill-white" />
-                  <span>START TASK</span>
-                </button>
-              </div>
-            </div>
-
-            <p className="mt-3 text-[11px] text-slate-400 italic">
-              {isSw
-                ? 'Maelekezo: Linganisha picha 2 za AI na uchague yenye uwazi na usahihi zaidi.'
-                : 'Instructions: Compare 2 AI generated images and pick the sharper sample.'}
-            </p>
-          </div>
-
-          {/* Instant Task 2: Speech Synthesis Benchmark */}
-          <div className="relative overflow-hidden rounded-2xl border-2 border-emerald-500/60 bg-slate-900/95 p-5 shadow-[0_0_35px_rgba(16,185,129,0.25)] hover:border-emerald-400 hover:shadow-[0_0_40px_rgba(16,185,129,0.4)] transition group flex flex-col justify-between">
-            <div className="absolute top-0 right-0 bg-emerald-600 text-white font-black text-[10px] uppercase px-3 py-1 rounded-bl-xl tracking-wider shadow">
-              {isSw ? 'KAZI YA 2 YA LEO' : 'TODAY TASK #2'}
-            </div>
-
-            <div>
-              <div className="flex items-start gap-3.5 pr-20 sm:pr-0">
-                <div className="relative h-16 w-16 rounded-xl overflow-hidden bg-slate-800 shrink-0 border-2 border-emerald-500/40 shadow-md">
-                  <img
-                    src="https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=200&auto=format&fit=crop&q=80"
-                    alt="Task 2"
-                    referrerPolicy="no-referrer"
-                    className="h-full w-full object-cover group-hover:scale-110 transition duration-300"
-                  />
-                  <span className="absolute bottom-0 inset-x-0 bg-slate-950/90 text-[9px] font-bold text-center text-emerald-300">
-                    Sauti AI
-                  </span>
-                </div>
-
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="rounded-md bg-emerald-500/20 px-2 py-0.5 text-[10px] font-extrabold text-emerald-300 border border-emerald-500/30">
-                      Voice & Audio
-                    </span>
-                    <span className="rounded-md bg-emerald-500/15 px-2 py-0.5 text-[10px] font-bold text-emerald-400">
-                      ● {isSw ? 'Imesasishwa Leo' : 'Active Today'}
-                    </span>
-                  </div>
-
-                  <h3 className="font-display mt-1.5 text-base sm:text-lg font-extrabold text-white group-hover:text-emerald-300 leading-snug">
-                    {isSw
-                      ? 'Swahili & English Voice Synthesis AI'
-                      : 'Swahili & English Voice Synthesis AI'}
-                  </h3>
-
-                  <div className="mt-1 flex items-center gap-3 text-xs text-slate-300">
-                    <span className="flex items-center gap-1 font-medium">
-                      <Clock className="h-3.5 w-3.5 text-slate-400" />
-                      <span>3 min</span>
-                    </span>
-                    <span>•</span>
-                    <span className="text-emerald-400 font-semibold flex items-center gap-1">
-                      <Volume2 className="h-3.5 w-3.5" />
-                      <span>{isSw ? 'Sauti Halisi ya AI' : 'Real Audio Speech'}</span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Reward Display Bar */}
-              <div className="mt-4 rounded-xl bg-slate-950/80 border border-slate-800 p-3 flex items-center justify-between">
-                <div>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                    {isSw ? 'Malipo ya Kazi Hii:' : 'Task Reward:'}
-                  </span>
-                  <div className="flex items-baseline gap-2">
-                    <span className="font-display text-xl sm:text-2xl font-black text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.5)]">
-                      +$3.00
-                    </span>
-                    <span className="text-xs sm:text-sm font-bold text-slate-200">
-                      ≈ TSh 7,800
-                    </span>
-                  </div>
-                </div>
-
-                {/* PROMINENT START BUTTON */}
-                <button
-                  id="btn-spotlight-task-2"
-                  onClick={() => startTask('cat_audio_eval')}
-                  className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 px-5 py-3 text-xs sm:text-sm font-black text-white shadow-lg shadow-emerald-500/30 hover:scale-105 hover:shadow-[0_0_25px_rgba(16,185,129,0.6)] active:scale-95 uppercase tracking-wide"
-                >
-                  <Play className="h-4 w-4 text-white fill-white" />
-                  <span>START TASK</span>
-                </button>
-              </div>
-            </div>
-
-            <p className="mt-3 text-[11px] text-slate-400 italic">
-              {isSw
-                ? 'Maelekezo: Sikiliza sauti 2 za Kiswahili/Kiingereza na uchague yenye mtiririko fasaha zaidi.'
-                : 'Instructions: Listen to 2 synthetic audio speech tracks and verify pronunciation clarity.'}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. VISUAL SHOWCASE GALLERY: 14+ AI TASKS (TWO-COLUMN GRID WITH DIRECT 'START TASK' BUTTONS) */}
-      <section className="space-y-3.5">
-        <div className="flex items-center justify-between px-1">
-          <div>
-            <span className="text-xs sm:text-sm font-black text-emerald-400 uppercase tracking-wider flex items-center gap-2 drop-shadow-[0_0_8px_rgba(52,211,153,0.4)]">
-              <Sparkles className="h-4 w-4 text-emerald-400" />
-              {isSw ? 'Kazi Nyingine 14+ za AI Zilizo Tayari Kufanyika Sasa' : '14+ Additional AI Microtasks Ready Now'}
-            </span>
-            <p className="text-[11px] text-slate-400 mt-0.5">
-              {isSw ? 'Kazi zote ziko tayari • Bonyeza START TASK kuanza moja kwa moja' : 'All tasks ready • Tap START TASK to begin instantly'}
-            </p>
-          </div>
-          <span className="text-[11px] text-slate-400 font-medium hidden sm:inline-block">
-            {todayFormatted.shortSw}
-          </span>
-        </div>
-
-        {/* Crisp Two-Column Grid for All Screen Sizes */}
-        <div className="grid grid-cols-2 gap-3 sm:gap-4">
-          {visualHeroTasks.map((task) => (
-            <div
-              key={task.id}
-              className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/90 p-2.5 sm:p-3 text-left transition duration-300 hover:border-emerald-400/60 hover:shadow-[0_0_25px_rgba(16,185,129,0.25)] hover:bg-slate-850 shadow-md"
-            >
-              {/* Hover ambient glow */}
-              <div className="absolute -inset-px rounded-2xl bg-gradient-to-t from-emerald-500/20 to-transparent opacity-0 group-hover:opacity-100 transition pointer-events-none" />
-
-              <div>
-                <div className="relative h-24 sm:h-32 w-full overflow-hidden rounded-xl bg-slate-800">
-                  <img
-                    src={task.image}
-                    alt={task.title}
-                    referrerPolicy="no-referrer"
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute top-1.5 left-1.5 flex flex-col gap-0.5">
-                    <span className="rounded-md bg-slate-950/90 px-2 py-0.5 text-[9px] font-extrabold text-emerald-400 border border-emerald-500/40 shadow-sm">
-                      +${task.rewardUSD.toFixed(2)} ({task.rewardTZS})
-                    </span>
-                  </div>
-                  <span className="absolute bottom-1.5 right-1.5 rounded-md bg-slate-950/80 px-1.5 py-0.5 text-[8px] font-bold text-slate-300">
-                    ⏱ {task.time}
-                  </span>
-                </div>
-
-                <div className="mt-2.5 relative z-10">
-                  <p className="text-[11px] sm:text-xs font-bold text-white truncate group-hover:text-emerald-300">
-                    {task.title}
-                  </p>
-                  <p className="text-[9px] sm:text-[10px] text-slate-400 font-medium">{task.domain}</p>
-                </div>
-              </div>
-
-              {/* CLEAR & PROMINENT 'START TASK' BUTTON */}
-              <button
-                id={`btn-visual-hero-start-${task.id}`}
-                onClick={() => startTask(task.id)}
-                className="relative z-10 mt-3 flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 py-2 sm:py-2.5 text-[11px] font-extrabold text-white shadow-md shadow-emerald-500/25 transition duration-300 hover:brightness-110 active:scale-95 uppercase tracking-wide hover:shadow-[0_0_15px_rgba(16,185,129,0.5)]"
+            return (
+              <div
+                key={task.id}
+                className={`group relative flex flex-col justify-between overflow-hidden rounded-xl sm:rounded-2xl border p-2 sm:p-3 text-left transition duration-300 hover:shadow-lg ${
+                  isTopFour
+                    ? 'border-emerald-500/60 bg-slate-900/95 shadow-[0_0_20px_rgba(16,185,129,0.18)] hover:border-emerald-400'
+                    : 'border-slate-800 bg-slate-900/90 hover:border-emerald-500/40 hover:bg-slate-850'
+                }`}
               >
-                <Play className="h-3 w-3 text-white fill-white" />
-                <span>START TASK</span>
-              </button>
-            </div>
-          ))}
+                {/* Top Badge for Top 4 Tasks */}
+                {isTopFour && (
+                  <div className="absolute top-0 right-0 z-20 bg-gradient-to-l from-emerald-600 to-teal-600 text-white font-black text-[9px] uppercase px-2 py-0.5 rounded-bl-lg tracking-wider shadow">
+                    {taskTag}
+                  </div>
+                )}
+
+                <div>
+                  {/* Task Image Banner */}
+                  <div className="relative h-24 sm:h-32 w-full overflow-hidden rounded-lg sm:rounded-xl bg-slate-800">
+                    <img
+                      src={task.image}
+                      alt={taskTitle}
+                      referrerPolicy="no-referrer"
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    {/* Reward Tag Overlay */}
+                    <div className="absolute top-1.5 left-1.5 flex flex-col gap-0.5">
+                      <span className="rounded-md bg-slate-950/90 px-1.5 py-0.5 text-[9px] sm:text-[10px] font-extrabold text-emerald-400 border border-emerald-500/40 shadow-sm">
+                        +${task.rewardUSD.toFixed(2)} ({task.rewardTZS})
+                      </span>
+                    </div>
+                    {/* Time estimate */}
+                    <span className="absolute bottom-1.5 right-1.5 rounded-md bg-slate-950/80 px-1.5 py-0.5 text-[8px] font-bold text-slate-300">
+                      ⏱ {task.time}
+                    </span>
+                  </div>
+
+                  {/* Title & Domain */}
+                  <div className="mt-2 relative z-10">
+                    <p className="text-[11px] sm:text-xs font-bold text-white line-clamp-1 group-hover:text-emerald-300 leading-tight">
+                      {taskTitle}
+                    </p>
+                    <p className="text-[9px] sm:text-[10px] text-slate-400 font-medium truncate mt-0.5">
+                      {taskDomain}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Direct 'START TASK' Button */}
+                <button
+                  id={`btn-daily-task-start-${task.id}`}
+                  onClick={() => startTask(task.id)}
+                  className="relative z-10 mt-2.5 flex w-full items-center justify-center gap-1.5 rounded-lg sm:rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 py-1.5 sm:py-2 text-[10px] sm:text-[11px] font-black text-white shadow-md shadow-emerald-500/20 transition duration-200 hover:brightness-110 active:scale-95 uppercase tracking-wide hover:shadow-[0_0_15px_rgba(16,185,129,0.4)]"
+                >
+                  <Play className="h-3 w-3 text-white fill-white shrink-0" />
+                  <span>START TASK</span>
+                </button>
+              </div>
+            );
+          })}
         </div>
       </section>
 

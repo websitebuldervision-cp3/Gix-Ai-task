@@ -74,6 +74,8 @@ export interface TaskItem {
   rewardUSD: number;
   difficulty: 'easy' | 'medium' | 'hard';
   estimatedSeconds: number;
+  correctOptionId?: string;
+  wrongAnswerFeedback?: LocalizedText;
 }
 
 export interface TaskSubmission {
@@ -86,6 +88,8 @@ export interface TaskSubmission {
   rewardTZS: number;
   status: 'pending' | 'under_review' | 'accepted';
   selectedOptionLabel: LocalizedText;
+  isIncorrect?: boolean;
+  rewardPercentage?: number;
 }
 
 export interface LeaderboardUser {

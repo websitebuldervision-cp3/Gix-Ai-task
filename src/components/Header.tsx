@@ -164,13 +164,13 @@ export const Header: React.FC = () => {
             </a>
           )}
 
-          {/* Download App Button */}
+          {/* Download App Button (Compact size) */}
           <button
             id="btn-download-app-header"
             onClick={openPwaModal}
-            className="hidden items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-slate-200 transition-colors hover:border-emerald-500/50 hover:bg-slate-800 hover:text-white md:flex"
+            className="hidden items-center gap-1 rounded-md border border-slate-700 bg-slate-900/90 px-2 py-1 text-[11px] font-medium text-slate-300 transition-colors hover:border-emerald-500/50 hover:bg-slate-800 hover:text-white md:flex"
           >
-            <Download className="h-3.5 w-3.5 text-emerald-400" />
+            <Download className="h-3 w-3 text-emerald-400" />
             <span>{t.nav.downloadApp}</span>
           </button>
 

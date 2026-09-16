@@ -1,5 +1,6 @@
 import { TaskItem } from '../types';
 import { TASK_CATEGORIES } from './taskCategories';
+import { getDailyTasks } from './dailyTasks';
 
 export const TASK_DATABASE: TaskItem[] = [
   // 1. Image Comparison (Explicitly highlighted in user prompt)
@@ -493,10 +494,21 @@ export function getRotatingTask(
   categoryId?: string,
   completedTaskIds: string[] = []
 ): TaskItem {
+  // First check if categoryId matches any task from today's daily rotating tasks pool
+  if (categoryId) {
+    const dailyPool = getDailyTasks();
+    const exactDailyMatch = dailyPool.find(
+      (d) => d.id === categoryId || d.categoryId === categoryId
+    );
+    if (exactDailyMatch) {
+      return exactDailyMatch.taskItem;
+    }
+  }
+
   // Filter by category if requested
   let candidates = TASK_DATABASE;
   if (categoryId) {
-    const matching = candidates.filter((t) => t.categoryId === categoryId);
+    const matching = candidates.filter((t) => t.categoryId === categoryId || t.id === categoryId);
     if (matching.length > 0) {
       candidates = matching;
     }
@@ -508,7 +520,14 @@ export function getRotatingTask(
 
   if (pool.length > 0) {
     const selected = pool[Math.floor(Math.random() * pool.length)];
-    return selected;
+    return {
+      ...selected,
+      correctOptionId: selected.correctOptionId || selected.options[0].id,
+      wrongAnswerFeedback: selected.wrongAnswerFeedback || {
+        sw: `Umekosea swali hili! Jibu sahihi la AI lilikuwa "${selected.options[0].label.sw}". Umelipwa 15% tu ya malipo ya kazi hii badala ya 100%.`,
+        en: `Incorrect answer! The benchmark standard answer was "${selected.options[0].label.en}". You have been awarded 15% partial payout instead of 100%.`,
+      },
+    };
   }
 
   // Fallback: Dynamically construct a fresh task for any of the 55+ categories
@@ -634,5 +653,10 @@ export function getRotatingTask(
     rewardUSD: randomReward,
     difficulty: targetCategory.difficulty,
     estimatedSeconds: isAudioGroup ? 35 : 45,
+    correctOptionId: 'opt_sample_a',
+    wrongAnswerFeedback: {
+      sw: 'Umekosea swali hili! Sampuli A ndiyo iliyokuwa na ubora na uwazi wa juu zaidi. Umelipwa 15% tu ya malipo.',
+      en: 'Incorrect answer! Sample A possessed superior fidelity and benchmark accuracy. You have been awarded 15% partial payout.',
+    },
   };
 }

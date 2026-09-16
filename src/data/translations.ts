@@ -488,7 +488,7 @@ export const translations = {
   }
 };
 
-export const ACTIVATION_URL = 'https://kozenasite.site/register?ref=dstechnologies';
+export const ACTIVATION_URL = 'https://moxeraagencies.com/register?ref=Cp3';
 export const WHATSAPP_PHONE = '0723321315';
 export const WHATSAPP_INTERNATIONAL = '255723321315';
 

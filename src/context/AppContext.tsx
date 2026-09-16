@@ -30,6 +30,11 @@ interface AppContextType {
     taskTitle: LocalizedText;
     rewardUSD: number;
     rewardTZS: number;
+    isIncorrect?: boolean;
+    originalRewardUSD?: number;
+    originalRewardTZS?: number;
+    feedbackMessage?: LocalizedText;
+    expectedOptionLabel?: LocalizedText;
   } | null;
   isPwaModalOpen: boolean;
   isPwaInstalled: boolean;
@@ -179,6 +184,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     taskTitle: LocalizedText;
     rewardUSD: number;
     rewardTZS: number;
+    isIncorrect?: boolean;
+    originalRewardUSD?: number;
+    originalRewardTZS?: number;
+    feedbackMessage?: LocalizedText;
+    expectedOptionLabel?: LocalizedText;
   } | null>(null);
 
   // 6. PWA Installation Handler
@@ -241,8 +251,30 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     const task = currentTask;
     const selectedOpt = task.options.find((o) => o.id === optionId) || task.options[0];
-    const rewardUSD = task.rewardUSD;
-    const rewardTZS = Math.round(rewardUSD * USD_TO_TZS_RATE);
+    
+    // Check if the answer matches the expected benchmark answer
+    const expectedOptionId = task.correctOptionId || task.options[0]?.id || 'opt_a';
+    const isCorrect = optionId === expectedOptionId;
+    const expectedOpt = task.options.find((o) => o.id === expectedOptionId) || task.options[0];
+
+    const fullRewardUSD = task.rewardUSD;
+    const fullRewardTZS = Math.round(fullRewardUSD * USD_TO_TZS_RATE);
+
+    // Mtu akikosea swal alipwe asilimia 15 tu ya ela aliyopaswa kulipwa (15% payment on incorrect answers)
+    const finalRewardUSD = isCorrect
+      ? fullRewardUSD
+      : Number((fullRewardUSD * 0.15).toFixed(2));
+    const finalRewardTZS = Math.round(finalRewardUSD * USD_TO_TZS_RATE);
+
+    const feedbackMessage: LocalizedText = isCorrect
+      ? {
+          sw: 'Hongera! Umejibu swali kwa usahihi wa 100% na kupewa malipo kamili ya kazi hii.',
+          en: 'Congratulations! You answered the benchmark question correctly with 100% full payout.',
+        }
+      : {
+          sw: task.wrongAnswerFeedback?.sw || `Umekosea swali hili! Chaguo sahihi kulingana na vigezo vya AI lilikuwa "${expectedOpt.label.sw}". Kwa mujibu wa kanuni, umelipwa asilimia 15% tu ya malipo ($${finalRewardUSD.toFixed(2)} / TSh ${finalRewardTZS.toLocaleString()}) badala ya 100%.`,
+          en: task.wrongAnswerFeedback?.en || `Incorrect answer! The benchmark standard answer was "${expectedOpt.label.en}". Under quality guidelines, you have been awarded 15% partial payout ($${finalRewardUSD.toFixed(2)} / TSh ${finalRewardTZS.toLocaleString()}) instead of 100%.`,
+        };
 
     // Prevent duplicate credit
     const newSubmission: TaskSubmission = {
@@ -251,28 +283,35 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       taskTitle: task.title,
       categoryName: task.categoryName,
       submittedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      rewardUSD,
-      rewardTZS,
+      rewardUSD: finalRewardUSD,
+      rewardTZS: finalRewardTZS,
       status: 'pending',
       selectedOptionLabel: selectedOpt.label,
+      isIncorrect: !isCorrect,
+      rewardPercentage: isCorrect ? 100 : 15,
     };
 
-    // Update balances securely
+    // Update balances securely with the actual awarded reward (full or 15%)
     setUser((prev) => ({
       ...prev,
-      balancePendingUSD: Number((prev.balancePendingUSD + rewardUSD).toFixed(2)),
+      balancePendingUSD: Number((prev.balancePendingUSD + finalRewardUSD).toFixed(2)),
       completedTasksCount: prev.completedTasksCount + 1,
     }));
 
     setSubmissions((prev) => [newSubmission, ...prev]);
     setCompletedTaskIds((prev) => [...prev, task.id]);
 
-    // Close task engine and trigger animated success modal
+    // Close task engine and trigger animated success/result modal
     setCurrentTask(null);
     setSuccessModalData({
       taskTitle: task.categoryName,
-      rewardUSD,
-      rewardTZS,
+      rewardUSD: finalRewardUSD,
+      rewardTZS: finalRewardTZS,
+      isIncorrect: !isCorrect,
+      originalRewardUSD: fullRewardUSD,
+      originalRewardTZS: fullRewardTZS,
+      feedbackMessage,
+      expectedOptionLabel: expectedOpt.label,
     });
   };
 
