@@ -1,0 +1,7 @@
+{
+  "name": "GIX AI TASKS",
+  "description": "Professional mobile-first AI microtask platform. Complete AI tasks, earn rewards, and build digital opportunities with dual Kiswahili and English support.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
