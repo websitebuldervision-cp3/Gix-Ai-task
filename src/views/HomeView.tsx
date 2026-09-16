@@ -59,46 +59,37 @@ export const HomeView: React.FC = () => {
 
   return (
     <div className="space-y-4 sm:space-y-5 pb-10">
-      {/* 1. COMPACT HERO SECTION (STREAMLINED SIZE, SMALL INSTALL BUTTON, GLOWING PINK ACTIVATION) */}
+      {/* TOP PROMINENT INSTALL APP BUTTON (OUTSIDE HERO BOX, CENTERED, PURPLE THEME, HIGH VISIBILITY & COMPACT) */}
+      <div className="flex justify-center items-center pt-1">
+        <button
+          id="btn-top-install-app"
+          onClick={openPwaModal}
+          className="group relative inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 px-5 py-2 text-xs sm:text-sm font-extrabold text-white shadow-lg shadow-purple-600/30 ring-2 ring-purple-400/60 hover:ring-purple-300 hover:from-purple-500 hover:to-indigo-500 active:scale-95 transition-all duration-200 tracking-wider uppercase cursor-pointer"
+          title="Install App"
+        >
+          {isPwaInstalled ? (
+            <>
+              <Check className="h-4 w-4 text-purple-200 shrink-0 stroke-[2.5]" />
+              <span className="drop-shadow-sm font-black">APP IMEWEKWA (INSTALLED)</span>
+            </>
+          ) : (
+            <>
+              <Download className="h-4 w-4 text-purple-200 shrink-0 stroke-[2.5] animate-bounce" />
+              <span className="drop-shadow-sm font-black">{isSw ? 'INSTALL APP' : 'INSTALL APP'}</span>
+            </>
+          )}
+        </button>
+      </div>
+
+      {/* 1. COMPACT HERO SECTION (STREAMLINED SIZE, GLOWING PINK ACTIVATION) */}
       <section className="relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-gradient-to-b from-slate-900 via-[#0B0F19] to-[#080B11] p-3.5 sm:p-5 shadow-[0_0_30px_-10px_rgba(16,185,129,0.2)] ring-1 ring-emerald-500/20">
         {/* Subtle Ambient Glows */}
         <div className="absolute -top-20 -left-20 h-56 w-56 rounded-full bg-emerald-600/10 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-20 -right-20 h-56 w-56 rounded-full bg-pink-500/15 blur-3xl pointer-events-none" />
 
         <div className="relative mx-auto max-w-3xl text-center z-10">
-          {/* Top Live Date Badge & App Version */}
-          <div className="flex items-center justify-center gap-2">
-            <div className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-0.5 text-[11px] font-bold text-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.2)]">
-              <Calendar className="h-3 w-3 text-emerald-400 animate-pulse" />
-              <span>
-                {isSw
-                  ? `Kazi za Leo • ${todayFormatted.sw}`
-                  : `Today's Pipeline • ${todayFormatted.en}`}
-              </span>
-            </div>
-            {/* Small Install App Button (ndogo kabisa) */}
-            <button
-              id="btn-hero-install-app"
-              onClick={openPwaModal}
-              className="inline-flex items-center gap-1 rounded-full border border-slate-700 bg-slate-900/90 px-2.5 py-0.5 text-[10px] font-bold text-slate-300 hover:text-white hover:border-emerald-500/50 shadow-sm active:scale-95 transition"
-              title="Install App"
-            >
-              {isPwaInstalled ? (
-                <>
-                  <Check className="h-3 w-3 text-emerald-400 shrink-0" />
-                  <span>INSTALLED</span>
-                </>
-              ) : (
-                <>
-                  <Download className="h-3 w-3 text-emerald-400 shrink-0" />
-                  <span>{isSw ? 'Pakua App' : 'Install App'}</span>
-                </>
-              )}
-            </button>
-          </div>
-
           {/* Main Title - Clean & Punchy */}
-          <h1 className="font-display mt-2 text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-white leading-tight">
+          <h1 className="font-display text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-white leading-tight">
             {isSw ? (
               <>
                 Anza Kufanya Task Mbalimbali za AI na{' '}
@@ -144,17 +135,17 @@ export const HomeView: React.FC = () => {
       <section className="space-y-3">
         <div className="flex items-center justify-between px-1">
           <div>
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/50 px-2.5 py-0.5 text-[11px] font-black text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.25)]">
-              <Sparkles className="h-3 w-3 text-emerald-300" />
-              <span>{isSw ? 'KAZI ZA LEO ZINAZOSASISHWA' : 'DAILY ROTATING AI TASKS'}</span>
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/50 px-3 py-1 text-xs font-black text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+              <Sparkles className="h-3.5 w-3.5 text-emerald-300 animate-pulse" />
+              <span>{isSw ? `Kaz za Ai leo • ${todayFormatted.sw}` : `Today's AI Tasks • ${todayFormatted.en}`}</span>
             </div>
-            <h2 className="font-display mt-1 text-base sm:text-lg font-extrabold text-white">
-              {isSw ? 'Tasks za AI Zilizo Tayari Kufanyika Sasa' : 'Active AI Tasks Ready To Start'}
+            <h2 className="font-display mt-1.5 text-base sm:text-lg font-extrabold text-white">
+              {isSw ? `Kaz za Ai leo (${todayFormatted.shortSw})` : `Today's AI Tasks (${todayFormatted.shortEn})`}
             </h2>
             <p className="text-[11px] text-slate-400">
               {isSw
-                ? `Kazi 4 za mwanzo na zingine ${dailyTasks.length - 4}+ zimesasishwa leo (${todayFormatted.shortSw}) • Bonyeza START TASK`
-                : `Top 4 spotlight tasks and ${dailyTasks.length - 4}+ additional tasks updated today (${todayFormatted.shortEn}) • Tap START TASK`}
+                ? `Kazi zote zimepangwa kwa safu 2 (two horizontal columns) • Kazi 4 za mwanzo na zingine ${dailyTasks.length - 4}+ zikifuatia`
+                : `All tasks arranged in 2 columns • Top 4 spotlight tasks followed by ${dailyTasks.length - 4}+ more tasks`}
             </p>
           </div>
 

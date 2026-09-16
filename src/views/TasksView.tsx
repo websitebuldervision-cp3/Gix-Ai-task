@@ -164,31 +164,92 @@ export const TasksView: React.FC = () => {
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:gap-4">
-            {filteredCategories.map((cat) => {
+            {filteredCategories.map((cat, idx) => {
               const catName = isSw ? cat.name.sw : cat.name.en;
               const catDesc = isSw ? cat.description.sw : cat.description.en;
+              
+              // Curated high-res category preview image so every category has an image
+              const fallbackImages: Record<string, string[]> = {
+                image: [
+                  'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500&auto=format&fit=crop&q=80',
+                  'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=500&auto=format&fit=crop&q=80',
+                  'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=500&auto=format&fit=crop&q=80',
+                  'https://images.unsplash.com/photo-1541888946425-d0fbb186f5f8?w=500&auto=format&fit=crop&q=80',
+                ],
+                audio: [
+                  'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=500&auto=format&fit=crop&q=80',
+                  'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=500&auto=format&fit=crop&q=80',
+                  'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=500&auto=format&fit=crop&q=80',
+                ],
+                video: [
+                  'https://images.unsplash.com/photo-1536240478700-b869070f9279?w=500&auto=format&fit=crop&q=80',
+                  'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=500&auto=format&fit=crop&q=80',
+                ],
+                text: [
+                  'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&auto=format&fit=crop&q=80',
+                  'https://images.unsplash.com/photo-1456324504439-367cee3b3c32?w=500&auto=format&fit=crop&q=80',
+                ],
+                ai: [
+                  'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=80',
+                  'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=500&auto=format&fit=crop&q=80',
+                ],
+                product: [
+                  'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=500&auto=format&fit=crop&q=80',
+                  'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500&auto=format&fit=crop&q=80',
+                ],
+                data: [
+                  'https://images.unsplash.com/photo-1568667256549-094345857637?w=500&auto=format&fit=crop&q=80',
+                  'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500&auto=format&fit=crop&q=80',
+                ],
+                ui: [
+                  'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=500&auto=format&fit=crop&q=80',
+                  'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=500&auto=format&fit=crop&q=80',
+                ],
+                survey: [
+                  'https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=500&auto=format&fit=crop&q=80',
+                  'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=500&auto=format&fit=crop&q=80',
+                ],
+                location: [
+                  'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=500&auto=format&fit=crop&q=80',
+                  'https://images.unsplash.com/photo-1508974239320-0a029497e820?w=500&auto=format&fit=crop&q=80',
+                ],
+              };
+
+              const groupImgs = fallbackImages[cat.group] || fallbackImages.image;
+              const catImg = cat.image || groupImgs[idx % groupImgs.length];
 
               return (
                 <div
                   key={cat.id}
-                  className="group relative flex flex-col justify-between rounded-2xl border border-slate-800 bg-slate-900/90 p-4 transition-all hover:border-emerald-500/50 hover:bg-slate-850 shadow-sm"
+                  className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/90 p-3 sm:p-4 transition-all hover:border-emerald-500/50 hover:bg-slate-850 shadow-sm"
                 >
                   <div>
-                    <div className="flex items-center justify-between">
-                      <span className="rounded-lg bg-slate-800 px-2.5 py-1 text-[10px] font-bold text-emerald-300 uppercase tracking-wider">
+                    {/* Task Category Image Banner */}
+                    <div className="relative h-24 sm:h-32 w-full overflow-hidden rounded-xl bg-slate-800 mb-3">
+                      <img
+                        src={catImg}
+                        alt={catName}
+                        referrerPolicy="no-referrer"
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      <span className="absolute top-2 left-2 rounded-lg bg-slate-950/80 px-2 py-0.5 text-[9px] font-bold text-emerald-300 uppercase tracking-wider border border-emerald-500/30">
                         {cat.group}
                       </span>
-                      <div className="text-right">
-                        <span className="font-display text-xs font-bold text-emerald-400 block">
-                          ${cat.rewardMin.toFixed(1)} – ${cat.rewardMax.toFixed(1)}
-                        </span>
-                        <span className="text-[10px] text-slate-400 font-medium">
-                          ≈ {formatTZS(cat.rewardMax)}
-                        </span>
+                      <div className="absolute bottom-2 right-2 rounded-lg bg-slate-950/90 px-2 py-0.5 text-[10px] font-extrabold text-emerald-400 border border-emerald-500/40">
+                        ${cat.rewardMin.toFixed(1)} – ${cat.rewardMax.toFixed(1)}
                       </div>
                     </div>
 
-                    <h3 className="font-display mt-3 text-sm font-bold text-white group-hover:text-emerald-300">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] text-slate-400 font-medium">
+                        ≈ {formatTZS(cat.rewardMax)}
+                      </span>
+                      <span className="text-[10px] text-slate-400 font-semibold">
+                        ⏱ {cat.timeEst}
+                      </span>
+                    </div>
+
+                    <h3 className="font-display mt-2 text-sm font-bold text-white group-hover:text-emerald-300 line-clamp-1">
                       {catName}
                     </h3>
 
@@ -197,20 +258,15 @@ export const TasksView: React.FC = () => {
                     </p>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-[11px] text-slate-400">
-                      <span className="flex items-center gap-1">
-                        <Clock className="h-3 w-3 text-slate-400" />
-                        {cat.timeEst}
-                      </span>
-                      <span>•</span>
-                      <span>{cat.availableCount} {isSw ? 'kazi' : 'tasks'}</span>
-                    </div>
+                  <div className="mt-3 pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2">
+                    <span className="text-[11px] text-slate-400 font-medium">
+                      {cat.availableCount} {isSw ? 'kazi' : 'tasks'}
+                    </span>
 
                     <button
                       id={`btn-tasks-page-start-${cat.id}`}
                       onClick={() => startTask(cat.id)}
-                      className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-3.5 py-1.5 text-xs font-extrabold text-white shadow-md shadow-emerald-500/20 hover:scale-105 active:scale-95 uppercase tracking-wide"
+                      className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-3 py-1.5 text-xs font-extrabold text-white shadow-md shadow-emerald-500/20 hover:scale-105 active:scale-95 uppercase tracking-wide"
                     >
                       <Play className="h-3 w-3 text-white fill-white" />
                       <span>START TASK</span>

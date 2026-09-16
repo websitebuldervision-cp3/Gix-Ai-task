@@ -9,7 +9,7 @@ import {
   Calendar,
   Check,
 } from 'lucide-react';
-import { getDailyDynamicComments, UserComment } from '../data/commentsData';
+import { getDailyDynamicComments, UserComment, TANZANIAN_AVATARS } from '../data/commentsData';
 import { useApp } from '../context/AppContext';
 
 const STORAGE_COMMENTS_KEY = 'gix_user_comments_v2';
@@ -62,12 +62,13 @@ export const CommentsSection: React.FC = () => {
 
     setTimeout(() => {
       const today = new Date();
+      const randomTzAvatar = TANZANIAN_AVATARS[Math.floor(Math.random() * TANZANIAN_AVATARS.length)];
       const newComment: UserComment = {
         id: `user_comm_${Date.now()}`,
         name: userName.trim(),
         country: userCountry,
-        flag: countryFlags[userCountry] || '🌍',
-        avatar: `https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80`,
+        flag: countryFlags[userCountry] || '🇹🇿',
+        avatar: randomTzAvatar,
         dateEn: `Today • Just now`,
         dateSw: `Leo • Hivi punde`,
         comment: userCommentText.trim(),

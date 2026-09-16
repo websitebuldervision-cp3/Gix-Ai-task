@@ -25,6 +25,7 @@ export interface TaskCategory {
   name: LocalizedText;
   description: LocalizedText;
   icon: string;
+  image?: string;
   availableCount: number;
   rewardMin: number;
   rewardMax: number;
