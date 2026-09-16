@@ -50,28 +50,33 @@ export const Header: React.FC = () => {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-[#080B11]/90 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-3 py-2.5 sm:px-6 sm:py-3">
-        {/* Brand Logo */}
+        {/* Brand Logo & Profile Avatar (Juu Kabisa Kushoto - Duara na Rotate 360) */}
         <button
           id="btn-brand-logo"
           onClick={() => setActiveTab('home')}
           className="group flex items-center gap-2.5 text-left focus:outline-none"
         >
-          <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-emerald-400 p-0.5 shadow-lg shadow-emerald-500/20">
-            <div className="flex h-full w-full items-center justify-center rounded-[10px] bg-slate-950">
-              <Bot className="h-5 w-5 text-emerald-400 transition-transform group-hover:scale-110" />
-            </div>
-            <span className="absolute -bottom-0.5 -right-0.5 flex h-3 w-3">
+          {/* Circular 360-Rotating Profile Image Badge */}
+          <div className="relative flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-cyan-500 via-blue-500 to-indigo-500 p-[2px] shadow-lg shadow-cyan-500/30 ring-1.5 ring-cyan-400/50">
+            <img
+              src="/gix_chats_profile.jpg"
+              alt="GIX Profile Badge"
+              referrerPolicy="no-referrer"
+              className="h-full w-full rounded-full object-cover animate-rotate-360"
+            />
+            {/* Live Active Status Ring Ping */}
+            <span className="absolute -bottom-0.5 -right-0.5 flex h-3 w-3 pointer-events-none">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-500"></span>
+              <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-500 ring-1 ring-slate-950"></span>
             </span>
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-display text-lg font-bold tracking-tight text-white sm:text-xl">
-                GIX <span className="text-emerald-400">AI</span> TASKS
+              <span className="font-display text-base font-bold tracking-tight text-white sm:text-lg">
+                GIX <span className="text-cyan-400">AI</span> TASKS
               </span>
-              <span className="hidden rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-400 border border-emerald-500/20 sm:inline-block">
-                v2.4
+              <span className="hidden rounded-full bg-cyan-500/10 px-1.5 py-0.5 text-[9px] font-semibold text-cyan-300 border border-cyan-500/20 sm:inline-block">
+                360°
               </span>
             </div>
             <p className="hidden text-[11px] font-medium text-slate-400 md:block">
@@ -189,10 +194,15 @@ export const Header: React.FC = () => {
           <button
             id="btn-account-header-pill"
             onClick={() => setActiveTab('account')}
-            className="hidden items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-900 px-2.5 py-1.5 text-xs font-medium text-slate-300 hover:border-slate-600 hover:bg-slate-800 sm:flex"
+            className="hidden items-center gap-2 rounded-lg border border-slate-700 bg-slate-900 px-2.5 py-1.5 text-xs font-medium text-slate-300 hover:border-slate-600 hover:bg-slate-800 sm:flex"
           >
-            <div className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-800 text-slate-300">
-              <User className="h-3 w-3" />
+            <div className="relative flex h-5 w-5 shrink-0 items-center justify-center rounded-full overflow-hidden ring-1 ring-cyan-400/60 shadow-sm">
+              <img
+                src="/gix_chats_profile.jpg"
+                alt={user.username}
+                referrerPolicy="no-referrer"
+                className="h-full w-full rounded-full object-cover animate-rotate-360"
+              />
             </div>
             <span className="max-w-[80px] truncate text-slate-200 font-semibold">{user.username}</span>
             <span
@@ -221,8 +231,13 @@ export const Header: React.FC = () => {
         <div className="border-t border-slate-800 bg-[#080B11] px-4 py-4 lg:hidden animate-in slide-in-from-top-4">
           <div className="mb-3 flex items-center justify-between rounded-xl bg-slate-900 p-3 border border-slate-800">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 font-bold">
-                {user.username.slice(0, 2).toUpperCase()}
+              <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-cyan-500 via-blue-500 to-indigo-500 p-[1.5px] shadow-sm">
+                <img
+                  src="/gix_chats_profile.jpg"
+                  alt={user.username}
+                  referrerPolicy="no-referrer"
+                  className="h-full w-full rounded-full object-cover animate-rotate-360"
+                />
               </div>
               <div>
                 <p className="text-xs font-bold text-white">{user.username}</p>

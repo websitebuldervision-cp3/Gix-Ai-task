@@ -50,14 +50,27 @@ export const AccountView: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* User Card */}
         <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-5 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-base font-extrabold text-white shadow-md">
-              {user.username.slice(0, 2).toUpperCase()}
+          <div className="flex items-center gap-3.5">
+            <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-cyan-500 via-blue-500 to-indigo-500 p-[2px] shadow-lg shadow-cyan-500/25 ring-2 ring-cyan-400/40">
+              <img
+                src="/gix_chats_profile.jpg"
+                alt={user.username}
+                referrerPolicy="no-referrer"
+                className="h-full w-full rounded-full object-cover animate-rotate-360"
+              />
+              <span className="absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[9px] text-slate-950 font-black ring-2 ring-slate-900">
+                ✓
+              </span>
             </div>
             <div>
-              <h3 className="font-display text-base font-bold text-white">
-                {user.username}
-              </h3>
+              <div className="flex items-center gap-2">
+                <h3 className="font-display text-base sm:text-lg font-bold text-white">
+                  {user.username}
+                </h3>
+                <span className="rounded-full bg-cyan-500/10 px-2 py-0.5 text-[9px] font-bold text-cyan-300 border border-cyan-500/25 uppercase">
+                  Active
+                </span>
+              </div>
               <p className="text-xs text-slate-400">{user.email}</p>
             </div>
           </div>

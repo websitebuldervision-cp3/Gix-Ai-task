@@ -41,3 +41,18 @@
   animation: subtle-pulse 3s infinite ease-in-out;
 }
 
+/* 360 Degree Continuous Smooth Profile Rotation */
+@keyframes rotate360 {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-rotate-360 {
+  animation: rotate360 8s linear infinite;
+}
+
+
