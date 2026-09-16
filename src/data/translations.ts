@@ -237,7 +237,7 @@ export const translations = {
       title: 'Customer Care Support',
       desc: 'Our dedicated support agents are available 24/7 on WhatsApp to assist you with tasks, activations, and rewards.',
       whatsappBtn: 'Open WhatsApp Chat',
-      phone: '0723321315',
+      phone: '0624542565',
       prefillMsg: 'Hello Customer Care, please guide me about GIX AI TASKS.',
     },
     general: {
@@ -472,7 +472,7 @@ export const translations = {
       title: 'Customer Care Support',
       desc: 'Customer support team yetu ipo available 24/7 kupitia WhatsApp kukusaidia kuhusu tasks, account activation, na rewards.',
       whatsappBtn: 'Open WhatsApp Chat',
-      phone: '0723321315',
+      phone: '0624542565',
       prefillMsg: 'Hello Customer Care, naomba msaada kuhusu GIX AI TASKS.',
     },
     general: {
@@ -489,8 +489,8 @@ export const translations = {
 };
 
 export const ACTIVATION_URL = 'https://moxeraagencies.com/register?ref=Cp3';
-export const WHATSAPP_PHONE = '0723321315';
-export const WHATSAPP_INTERNATIONAL = '255723321315';
+export const WHATSAPP_PHONE = '0624542565';
+export const WHATSAPP_INTERNATIONAL = '255624542565';
 
 export function getWhatsAppLink(lang: Language): string {
   const msg = translations[lang].support.prefillMsg;

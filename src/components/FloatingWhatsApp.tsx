@@ -17,7 +17,7 @@ export const FloatingWhatsApp: React.FC = () => {
           CUSTOMER CARE
         </span>
         <span className="text-[9px] text-slate-400 font-normal hidden sm:inline">
-          (0723321315)
+          (0624542565)
         </span>
       </div>
 

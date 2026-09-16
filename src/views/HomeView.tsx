@@ -142,11 +142,6 @@ export const HomeView: React.FC = () => {
             <h2 className="font-display mt-1.5 text-base sm:text-lg font-extrabold text-white">
               {isSw ? `Kaz za Ai leo (${todayFormatted.shortSw})` : `Today's AI Tasks (${todayFormatted.shortEn})`}
             </h2>
-            <p className="text-[11px] text-slate-400">
-              {isSw
-                ? `Kazi zote zimepangwa kwa safu 2 (two horizontal columns) • Kazi 4 za mwanzo na zingine ${dailyTasks.length - 4}+ zikifuatia`
-                : `All tasks arranged in 2 columns • Top 4 spotlight tasks followed by ${dailyTasks.length - 4}+ more tasks`}
-            </p>
           </div>
 
           <button

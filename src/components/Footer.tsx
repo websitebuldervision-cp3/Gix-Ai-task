@@ -94,7 +94,7 @@ export const Footer: React.FC = () => {
                   className="flex items-center gap-1.5 text-emerald-400 hover:text-emerald-300"
                 >
                   <MessageCircle className="h-3.5 w-3.5" />
-                  <span>WhatsApp: 0723321315</span>
+                  <span>WhatsApp: +255624542565</span>
                 </button>
               </li>
               <li>
@@ -122,6 +122,17 @@ export const Footer: React.FC = () => {
           <div className="flex items-center gap-2">
             <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
             <span>{isSw ? 'Jukwaa Salama la Kazi za AI' : 'Certified AI Evaluation Architecture'}</span>
+          </div>
+        </div>
+
+        {/* Powered By Cp3 salela FX 👑 */}
+        <div className="mt-4 pt-3 border-t border-slate-900 flex justify-center items-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-gradient-to-r from-amber-500/10 via-yellow-500/10 to-amber-500/10 px-4 py-1.5 shadow-sm">
+            <span className="text-xs font-semibold text-slate-300">Powered by</span>
+            <span className="font-display text-xs sm:text-sm font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400 drop-shadow">
+              Cp3 salela FX
+            </span>
+            <span className="text-sm">👑</span>
           </div>
         </div>
       </div>
