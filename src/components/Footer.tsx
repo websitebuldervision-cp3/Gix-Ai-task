@@ -4,7 +4,16 @@ import { useApp } from '../context/AppContext';
 import { ACTIVATION_URL } from '../data/translations';
 
 export const Footer: React.FC = () => {
-  const { language, t, setActiveTab, openWhatsAppSupport, openPwaModal } = useApp();
+  const {
+    language,
+    setLanguage,
+    detectedCountry,
+    detectedCountryMeta,
+    t,
+    setActiveTab,
+    openWhatsAppSupport,
+    openPwaModal,
+  } = useApp();
   const isSw = language === 'sw';
 
   return (
@@ -31,6 +40,46 @@ export const Footer: React.FC = () => {
                 ? 'Jukwaa la kimataifa la microtasks za akili mnemba (AI). Fanya tathmini za picha, sauti, video, maandishi na modeli za AI ujipatie ujira papo hapo.'
                 : 'A next-generation AI microtask platform enabling distributed human feedback for computer vision, natural language processing, and multimodal intelligence.'}
             </p>
+
+            {/* Quick Language Switcher & Geolocation Status */}
+            <div className="pt-2 flex flex-wrap items-center gap-2">
+              <span className="text-[11px] text-slate-400 flex items-center gap-1 font-medium">
+                <Globe className="h-3.5 w-3.5 text-emerald-400" />
+                <span>{isSw ? 'Lugha:' : 'Language:'}</span>
+              </span>
+              <div className="inline-flex rounded-lg border border-slate-800 bg-slate-900/90 p-0.5">
+                <button
+                  id="btn-footer-lang-sw"
+                  onClick={() => setLanguage('sw', true)}
+                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
+                    language === 'sw'
+                      ? 'bg-emerald-600 text-white shadow-xs'
+                      : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  <span>🇹🇿</span>
+                  <span>Kiswahili</span>
+                </button>
+                <button
+                  id="btn-footer-lang-en"
+                  onClick={() => setLanguage('en', true)}
+                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
+                    language === 'en'
+                      ? 'bg-emerald-600 text-white shadow-xs'
+                      : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  <span>🇬🇧</span>
+                  <span>English</span>
+                </button>
+              </div>
+              {detectedCountry && (
+                <span className="text-[10px] text-slate-400 bg-slate-900/80 px-2 py-0.5 rounded-md border border-slate-800 flex items-center gap-1">
+                  <span>{detectedCountryMeta.flag}</span>
+                  <span>{detectedCountryMeta.nameEn} ({detectedCountryMeta.code})</span>
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Quick Links */}

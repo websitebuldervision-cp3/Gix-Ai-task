@@ -22,6 +22,9 @@ export const AccountView: React.FC = () => {
   const {
     language,
     setLanguage,
+    detectedCountry,
+    detectedCountryMeta,
+    isManualLanguage,
     t,
     user,
     openPwaModal,
@@ -147,17 +150,25 @@ export const AccountView: React.FC = () => {
 
       {/* Language Preference Section */}
       <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-5 shadow-sm">
-        <div className="flex items-center gap-2 mb-3">
-          <Globe className="h-4 w-4 text-emerald-400" />
-          <h3 className="font-display text-sm font-bold text-white">
-            {t.accountPage.languagePref}
-          </h3>
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <Globe className="h-4 w-4 text-emerald-400" />
+            <h3 className="font-display text-sm font-bold text-white">
+              {t.accountPage.languagePref}
+            </h3>
+          </div>
+          {detectedCountry && (
+            <span className="text-[11px] text-slate-400 bg-slate-950 px-2.5 py-1 rounded-full border border-slate-800 flex items-center gap-1.5 font-medium">
+              <span>{detectedCountryMeta.flag}</span>
+              <span>{isSw ? detectedCountryMeta.nameSw : detectedCountryMeta.nameEn} ({detectedCountryMeta.code})</span>
+            </span>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-3 max-w-md">
           <button
             id="btn-account-lang-sw"
-            onClick={() => setLanguage('sw')}
+            onClick={() => setLanguage('sw', true)}
             className={`flex items-center justify-center gap-2 rounded-xl border p-3 text-xs font-bold transition-all ${
               language === 'sw'
                 ? 'border-emerald-500 bg-emerald-600 text-white shadow-md'
@@ -170,7 +181,7 @@ export const AccountView: React.FC = () => {
 
           <button
             id="btn-account-lang-en"
-            onClick={() => setLanguage('en')}
+            onClick={() => setLanguage('en', true)}
             className={`flex items-center justify-center gap-2 rounded-xl border p-3 text-xs font-bold transition-all ${
               language === 'en'
                 ? 'border-emerald-500 bg-emerald-600 text-white shadow-md'
@@ -181,6 +192,12 @@ export const AccountView: React.FC = () => {
             <span>English</span>
           </button>
         </div>
+
+        <p className="mt-3 text-[11px] text-slate-400">
+          {isManualLanguage
+            ? (isSw ? 'Umechagua lugha hii wewe mwenyewe (Manual Selection). Chaguo hili litabaki hata ukiingia tena.' : 'Manual preference saved. Your choice takes priority over automatic country detection.')
+            : (isSw ? `Lugha imetambuliwa kiotomatiki kutokana na nchi ya anwani yako ya IP (${detectedCountry || 'IP Geolocation'}).` : `Automatically detected based on your visitor IP country (${detectedCountry || 'IP Geolocation'}).`)}
+        </p>
       </div>
 
       {/* Customer Care & PWA Shortcuts */}

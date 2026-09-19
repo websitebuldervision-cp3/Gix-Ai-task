@@ -14,10 +14,20 @@ import {
   USD_TO_TZS_RATE,
 } from '../data/translations';
 import { getRotatingTask, TASK_DATABASE } from '../data/taskDatabase';
+import {
+  detectVisitorCountry,
+  getCountryMeta,
+  GEO_STORAGE_KEYS,
+  resolveLanguageFromCountry,
+} from '../services/geoService';
 
 interface AppContextType {
   language: Language;
-  setLanguage: (lang: Language) => void;
+  setLanguage: (lang: Language, isManual?: boolean) => void;
+  detectedCountry: string | null;
+  detectedCountryMeta: ReturnType<typeof getCountryMeta>;
+  isGeoDetecting: boolean;
+  isManualLanguage: boolean;
   t: typeof translations.en;
   activeTab: string;
   setActiveTab: (tab: string) => void;
@@ -54,24 +64,117 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 const STORAGE_KEYS = {
-  LANG: 'gix_ai_tasks_lang',
+  LANG_PREF: GEO_STORAGE_KEYS.LANG_PREF,
+  IS_MANUAL: GEO_STORAGE_KEYS.IS_MANUAL_SELECTION,
+  DETECTED_COUNTRY: GEO_STORAGE_KEYS.DETECTED_COUNTRY,
+  LEGACY_LANG: GEO_STORAGE_KEYS.LEGACY_LANG,
   USER: 'gix_ai_tasks_user',
   SUBMISSIONS: 'gix_ai_tasks_submissions',
   COMPLETED_IDS: 'gix_ai_tasks_completed_ids',
 };
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // 1. Language state
-  const [language, setLanguageState] = useState<Language>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.LANG);
-    return saved === 'sw' || saved === 'en' ? saved : 'sw'; // Default to Kiswahili / Tanzanian context
+  // 1. Language state: Check for existing saved preference first
+  const [isManualLanguage, setIsManualLanguage] = useState<boolean>(() => {
+    return localStorage.getItem(STORAGE_KEYS.IS_MANUAL) === 'true';
   });
 
-  const setLanguage = (lang: Language) => {
+  const [detectedCountry, setDetectedCountry] = useState<string | null>(() => {
+    return localStorage.getItem(STORAGE_KEYS.DETECTED_COUNTRY) || null;
+  });
+
+  const [isGeoDetecting, setIsGeoDetecting] = useState<boolean>(false);
+
+  const [language, setLanguageState] = useState<Language>(() => {
+    // 1. Check saved manual preference
+    const savedPref = localStorage.getItem(STORAGE_KEYS.LANG_PREF);
+    if (savedPref === 'sw' || savedPref === 'en') {
+      return savedPref;
+    }
+    // 2. Check legacy key if present
+    const legacy = localStorage.getItem(STORAGE_KEYS.LEGACY_LANG);
+    if (legacy === 'sw' || legacy === 'en') {
+      return legacy;
+    }
+    // 3. Check previously detected country code if cached
+    const cachedCountry = localStorage.getItem(STORAGE_KEYS.DETECTED_COUNTRY);
+    if (cachedCountry) {
+      return resolveLanguageFromCountry(cachedCountry);
+    }
+    // 4. Default for initial render: English fallback while IP detection runs in background
+    // (Ensures instant loading without waiting or UI blocking)
+    return 'en';
+  });
+
+  // Background Automatic Country & Language Detection
+  useEffect(() => {
+    const isManual = localStorage.getItem(STORAGE_KEYS.IS_MANUAL) === 'true';
+    const savedPref = localStorage.getItem(STORAGE_KEYS.LANG_PREF);
+
+    // If user has already made an explicit manual choice, do not override it
+    if (isManual && savedPref) {
+      return;
+    }
+
+    let isMounted = true;
+    setIsGeoDetecting(true);
+
+    detectVisitorCountry(3500)
+      .then((result) => {
+        if (!isMounted) return;
+        setIsGeoDetecting(false);
+
+        // Re-check if user manually clicked a language button while async detection was in flight
+        const hasManualSelection = localStorage.getItem(STORAGE_KEYS.IS_MANUAL) === 'true';
+        if (hasManualSelection) {
+          return;
+        }
+
+        if (result.countryCode) {
+          setDetectedCountry(result.countryCode);
+          localStorage.setItem(STORAGE_KEYS.DETECTED_COUNTRY, result.countryCode);
+          if (result.countryName) {
+            localStorage.setItem(GEO_STORAGE_KEYS.DETECTED_COUNTRY_NAME, result.countryName);
+          }
+          localStorage.setItem(GEO_STORAGE_KEYS.DETECTED_AT, new Date().toISOString());
+        }
+
+        // Apply Country -> Language logic:
+        // "TZ" -> 'sw' (Swahili)
+        // "KE" and all others -> 'en' (English)
+        // Fallback / error -> 'en' (English)
+        const targetLanguage = result.resolvedLanguage;
+        setLanguageState(targetLanguage);
+        localStorage.setItem(STORAGE_KEYS.LANG_PREF, targetLanguage);
+        localStorage.setItem(STORAGE_KEYS.LEGACY_LANG, targetLanguage);
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setIsGeoDetecting(false);
+        // On any unexpected failure, gracefully ensure English fallback without errors
+        const currentSaved = localStorage.getItem(STORAGE_KEYS.LANG_PREF);
+        if (!currentSaved) {
+          setLanguageState('en');
+          localStorage.setItem(STORAGE_KEYS.LANG_PREF, 'en');
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const setLanguage = (lang: Language, isManual: boolean = true) => {
     setLanguageState(lang);
-    localStorage.setItem(STORAGE_KEYS.LANG, lang);
+    localStorage.setItem(STORAGE_KEYS.LANG_PREF, lang);
+    localStorage.setItem(STORAGE_KEYS.LEGACY_LANG, lang);
+    if (isManual) {
+      setIsManualLanguage(true);
+      localStorage.setItem(STORAGE_KEYS.IS_MANUAL, 'true');
+    }
   };
 
+  const detectedCountryMeta = getCountryMeta(detectedCountry);
   const t = translations[language];
 
   // 2. Active Tab
@@ -341,6 +444,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       value={{
         language,
         setLanguage,
+        detectedCountry,
+        detectedCountryMeta,
+        isGeoDetecting,
+        isManualLanguage,
         t,
         activeTab,
         setActiveTab,

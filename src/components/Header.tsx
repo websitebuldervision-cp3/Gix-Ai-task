@@ -21,6 +21,9 @@ export const Header: React.FC = () => {
   const {
     language,
     setLanguage,
+    detectedCountry,
+    detectedCountryMeta,
+    isManualLanguage,
     t,
     activeTab,
     setActiveTab,
@@ -34,7 +37,7 @@ export const Header: React.FC = () => {
   const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
 
   const handleLanguageChange = (lang: Language) => {
-    setLanguage(lang);
+    setLanguage(lang, true);
     setIsLangDropdownOpen(false);
   };
 
@@ -122,7 +125,18 @@ export const Header: React.FC = () => {
             </button>
 
             {isLangDropdownOpen && (
-              <div className="absolute right-0 mt-1.5 w-44 rounded-xl border border-slate-700 bg-slate-900 p-1.5 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2">
+              <div className="absolute right-0 mt-1.5 w-52 rounded-xl border border-slate-700 bg-slate-900 p-1.5 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2">
+                {detectedCountry && (
+                  <div className="mb-1.5 px-2 py-1 text-[10px] text-slate-400 border-b border-slate-800 flex items-center justify-between">
+                    <span className="flex items-center gap-1 font-medium text-slate-300">
+                      <span>{detectedCountryMeta.flag}</span>
+                      <span>{detectedCountryMeta.nameEn} ({detectedCountryMeta.code})</span>
+                    </span>
+                    <span className="text-[9px] text-emerald-400 font-semibold uppercase tracking-wider">
+                      {isManualLanguage ? (language === 'sw' ? 'Manual' : 'Manual') : (language === 'sw' ? 'Auto' : 'Auto')}
+                    </span>
+                  </div>
+                )}
                 <button
                   id="btn-select-lang-sw"
                   onClick={() => handleLanguageChange('sw')}
@@ -261,6 +275,57 @@ export const Header: React.FC = () => {
                 {t.activation.activateBtn}
               </button>
             )}
+          </div>
+
+          {/* Mobile Quick Language Switcher */}
+          <div className="mb-3 rounded-xl bg-slate-900/90 p-2.5 border border-slate-800">
+            <div className="flex items-center justify-between mb-2 px-1 text-[11px] font-semibold text-slate-300">
+              <span className="flex items-center gap-1.5">
+                <Globe className="h-3.5 w-3.5 text-emerald-400" />
+                {language === 'sw' ? 'Lugha ya Mfumo' : 'Platform Language'}
+              </span>
+              {detectedCountry && (
+                <span className="text-[10px] text-slate-400 flex items-center gap-1">
+                  <span>{detectedCountryMeta.flag}</span>
+                  <span>{detectedCountryMeta.code}</span>
+                  <span className="text-[9px] text-emerald-400 font-semibold">
+                    ({isManualLanguage ? 'Manual' : 'Auto'})
+                  </span>
+                </span>
+              )}
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                id="btn-mobile-drawer-lang-sw"
+                onClick={() => {
+                  handleLanguageChange('sw');
+                }}
+                className={`flex items-center justify-center gap-1.5 rounded-lg py-2 text-xs font-bold transition-all ${
+                  language === 'sw'
+                    ? 'bg-emerald-600 text-white shadow-sm'
+                    : 'bg-slate-800 text-slate-300 hover:bg-slate-750'
+                }`}
+              >
+                <span>🇹🇿</span>
+                <span>Kiswahili</span>
+                {language === 'sw' && <Check className="h-3.5 w-3.5 ml-1" />}
+              </button>
+              <button
+                id="btn-mobile-drawer-lang-en"
+                onClick={() => {
+                  handleLanguageChange('en');
+                }}
+                className={`flex items-center justify-center gap-1.5 rounded-lg py-2 text-xs font-bold transition-all ${
+                  language === 'en'
+                    ? 'bg-emerald-600 text-white shadow-sm'
+                    : 'bg-slate-800 text-slate-300 hover:bg-slate-750'
+                }`}
+              >
+                <span>🇬🇧</span>
+                <span>English</span>
+                {language === 'en' && <Check className="h-3.5 w-3.5 ml-1" />}
+              </button>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-2">
