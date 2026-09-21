@@ -30,6 +30,7 @@ export const TasksView: React.FC = () => {
     startTask,
     selectedCategoryId,
     setSelectedCategoryId,
+    isTaskPaidToday,
   } = useApp();
 
   const isSw = language === 'sw';
@@ -217,18 +218,34 @@ export const TasksView: React.FC = () => {
 
               const groupImgs = fallbackImages[cat.group] || fallbackImages.image;
               const catImg = cat.image || groupImgs[idx % groupImgs.length];
+              const isPaid = isTaskPaidToday(cat.id);
 
               return (
                 <div
                   key={cat.id}
-                  className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/90 p-3 sm:p-4 transition-all hover:border-emerald-500/50 hover:bg-slate-850 shadow-sm"
+                  className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border p-3 sm:p-4 transition-all shadow-sm ${
+                    isPaid
+                      ? 'border-emerald-500/40 bg-slate-900/75 opacity-90'
+                      : 'border-slate-800 bg-slate-900/90 hover:border-emerald-500/50 hover:bg-slate-850'
+                  }`}
                 >
+                  {isPaid && (
+                    <div className="absolute top-0 right-0 z-20 bg-emerald-600 text-white font-black text-[9px] uppercase px-2.5 py-0.5 rounded-bl-lg tracking-wider shadow flex items-center gap-1">
+                      <CheckCircle2 className="h-2.5 w-2.5" />
+                      <span>PAID</span>
+                    </div>
+                  )}
+
                   <div>
                     {/* Task Category Image Banner */}
                     <div className="relative h-24 sm:h-32 w-full overflow-hidden rounded-xl bg-slate-800 mb-3">
                       <img
                         src={catImg}
                         alt={catName}
+                        onError={(e) => {
+                          const fallback = 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80';
+                          if (e.currentTarget.src !== fallback) e.currentTarget.src = fallback;
+                        }}
                         referrerPolicy="no-referrer"
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
@@ -263,14 +280,25 @@ export const TasksView: React.FC = () => {
                       {cat.availableCount} {isSw ? 'kazi' : 'tasks'}
                     </span>
 
-                    <button
-                      id={`btn-tasks-page-start-${cat.id}`}
-                      onClick={() => startTask(cat.id)}
-                      className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-3 py-1.5 text-xs font-extrabold text-white shadow-md shadow-emerald-500/20 hover:scale-105 active:scale-95 uppercase tracking-wide"
-                    >
-                      <Play className="h-3 w-3 text-white fill-white" />
-                      <span>START TASK</span>
-                    </button>
+                    {isPaid ? (
+                      <button
+                        id={`btn-tasks-page-paid-${cat.id}`}
+                        disabled
+                        className="flex items-center gap-1 rounded-xl bg-slate-800 border border-emerald-500/40 px-3 py-1.5 text-xs font-bold text-emerald-400 cursor-not-allowed uppercase tracking-wide shadow-sm"
+                      >
+                        <CheckCircle2 className="h-3 w-3" />
+                        <span>PAID</span>
+                      </button>
+                    ) : (
+                      <button
+                        id={`btn-tasks-page-start-${cat.id}`}
+                        onClick={() => startTask(cat.id)}
+                        className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-3 py-1.5 text-xs font-extrabold text-white shadow-md shadow-emerald-500/20 hover:scale-105 active:scale-95 uppercase tracking-wide"
+                      >
+                        <Play className="h-3 w-3 text-white fill-white" />
+                        <span>START TASK</span>
+                      </button>
+                    )}
                   </div>
                 </div>
               );

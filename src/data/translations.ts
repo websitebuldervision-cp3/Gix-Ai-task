@@ -18,7 +18,7 @@ export function formatDualCurrency(usd: number): string {
 export const translations = {
   en: {
     brand: {
-      name: 'GIX AI TASKS',
+      name: 'GIX CHAT',
       tagline: 'Complete AI Tasks. Earn Rewards. Build Digital Opportunities.',
       taglineShort: 'Complete AI Tasks. Earn Rewards.',
     },
@@ -40,12 +40,12 @@ export const translations = {
     hero: {
       badge: 'Verified AI Microtask Network',
       title: 'Complete Verified AI Tasks & Get Paid Instantly',
-      subtitle: 'Earn from TSh 50,000+ ($20 - $50+) daily completing fast AI evaluations on your mobile phone. Instant payout processing to mobile money and bank.',
+      subtitle: 'Earn from TSh 50,000+ ($20 - $50+) daily completing fast AI evaluations on your mobile phone. Open your account and start today for instant mobile money payouts!',
       startTasks: 'START NOW',
       exploreTasks: 'EXPLORE AI TASKS',
       installApp: 'INSTALL APP',
       customerCare: 'CUSTOMER CARE',
-      activateAccount: 'TAP HERE TO ACTIVATE ACCOUNT',
+      activateAccount: 'OPEN YOUR ACCOUNT & START TODAY',
       statCategories: '55+ AI Task Categories',
       statContributors: '42,800+ Contributors',
       statPaidOut: '$380,000+ Total Distributed',
@@ -72,6 +72,7 @@ export const translations = {
       underReview: 'Under Review',
       accepted: 'Accepted',
       completed: 'Completed',
+      paid: 'Paid',
     },
     activation: {
       feeLabel: 'Account Activation Fee:',
@@ -208,7 +209,7 @@ export const translations = {
       securityNotice: 'Protected by AI Evaluation Integrity Standards.',
     },
     howItWorks: {
-      title: 'HOW GIX AI TASKS WORKS',
+      title: 'HOW GIX CHAT WORKS',
       subtitle: 'Earn digital rewards in six simple, transparent steps.',
       step1Title: 'Step 1',
       step1Desc: 'Choose a task from 55+ diverse categories.',
@@ -224,8 +225,8 @@ export const translations = {
       step6Desc: 'Manage your account and access eligible platform features.',
     },
     pwa: {
-      title: 'Install GIX AI TASKS App',
-      installedMsg: 'GIX AI TASKS is already installed on your device.',
+      title: 'Install GIX CHAT App',
+      installedMsg: 'GIX CHAT is already installed on your device.',
       installBtn: 'Install App Now',
       openApp: 'Open App',
       iosInstructions: 'On iPhone/iPad: Tap the Share button at the bottom of Safari, then select "Add to Home Screen".',
@@ -238,7 +239,7 @@ export const translations = {
       desc: 'Our dedicated support agents are available 24/7 on WhatsApp to assist you with tasks, activations, and rewards.',
       whatsappBtn: 'Open WhatsApp Chat',
       phone: '0624542565',
-      prefillMsg: 'Hello Customer Care, please guide me about GIX AI TASKS.',
+      prefillMsg: 'Hello Customer Care, please guide me about GIX CHAT.',
     },
     general: {
       loading: 'Loading...',
@@ -253,7 +254,7 @@ export const translations = {
   },
   sw: {
     brand: {
-      name: 'GIX AI TASKS',
+      name: 'GIX CHAT',
       tagline: 'Kamilisha AI Tasks. Pata Rewards. Jenga Fursa za Kidijitali.',
       taglineShort: 'Kamilisha AI Tasks. Pata Rewards.',
     },
@@ -275,12 +276,12 @@ export const translations = {
     hero: {
       badge: 'Mtandao Rasmi wa Kazi za AI',
       title: 'Anza Kufanya Task Mbalimbali za AI na Kulipwa Hapo Hapo',
-      subtitle: 'Tengeneza kuanzia TSh 50,000/= kwa siku na kuendelea kupitia simu yako. Payouts za moja kwa moja kupitia M-Pesa, Tigo Pesa, Airtel Money, na HaloPesa.',
+      subtitle: 'Tengeneza kuanzia TSh 50,000/= na kuendelea kwa siku kupitia simu yako. Fungua account yako uanze leo kupokea malipo ya moja kwa moja kupitia M-Pesa, Tigo Pesa, Airtel Money, na HaloPesa!',
       startTasks: 'START NOW',
       exploreTasks: 'EXPLORE TASKS',
       installApp: 'INSTALL APP',
       customerCare: 'CUSTOMER CARE',
-      activateAccount: 'GUSA HAPA FUNGUA ACCOUNT',
+      activateAccount: 'FUNGUA ACCOUNT YAKO UANZE LEO',
       statCategories: 'Categories 55+ za AI Tasks',
       statContributors: '42,800+ Contributors Wanaoendelea',
       statPaidOut: '$380,000+ Total Distributed',
@@ -307,6 +308,7 @@ export const translations = {
       underReview: 'Under Review',
       accepted: 'Accepted',
       completed: 'Completed',
+      paid: 'Imelipwa (Paid)',
     },
     activation: {
       feeLabel: 'Account Activation Fee:',
@@ -443,7 +445,7 @@ export const translations = {
       securityNotice: 'Protected by AI Evaluation Integrity Standards.',
     },
     howItWorks: {
-      title: 'JINSI GIX AI TASKS INAVYOFANYA KAZI',
+      title: 'JINSI GIX CHAT INAVYOFANYA KAZI',
       subtitle: 'Pata digital rewards kupitia hatua 6 rahisi na zilizo wazi.',
       step1Title: 'Step 1',
       step1Desc: 'Chagua task kutoka categories 55+ tofauti.',
@@ -459,8 +461,8 @@ export const translations = {
       step6Desc: 'Manage account yako na ufikie withdrawal channels na features zote.',
     },
     pwa: {
-      title: 'Install GIX AI TASKS App',
-      installedMsg: 'GIX AI TASKS tayari ipo installed kwenye kifaa chako.',
+      title: 'Install GIX CHAT App',
+      installedMsg: 'GIX CHAT tayari ipo installed kwenye kifaa chako.',
       installBtn: 'Install App Sasa',
       openApp: 'Open App',
       iosInstructions: 'Kwenye iPhone/iPad: Tap kitufe cha Share chini ya Safari, kisha chagua "Add to Home Screen".',
@@ -473,7 +475,7 @@ export const translations = {
       desc: 'Customer support team yetu ipo available 24/7 kupitia WhatsApp kukusaidia kuhusu tasks, account activation, na rewards.',
       whatsappBtn: 'Open WhatsApp Chat',
       phone: '0624542565',
-      prefillMsg: 'Hello Customer Care, naomba msaada kuhusu GIX AI TASKS.',
+      prefillMsg: 'Hello Customer Care, naomba msaada kuhusu GIX CHAT.',
     },
     general: {
       loading: 'Inapakia...',

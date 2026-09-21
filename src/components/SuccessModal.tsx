@@ -68,6 +68,17 @@ export const SuccessModal: React.FC = () => {
               : '🎉 Well Done! Correct Answer!'}
           </h2>
 
+          <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 px-3 py-1 text-xs font-black text-emerald-300">
+            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
+            <span>{isSw ? 'HALI: PAID (IMELIPWA)' : 'STATUS: PAID'}</span>
+          </div>
+
+          <p className="mt-1 text-[11px] text-slate-300">
+            {isSw
+              ? 'Kazi hii tayari imelipwa na imefungwa kwa siku ya leo. Haitarudiwa tena leo.'
+              : 'This task has been paid and locked for today. It cannot be repeated today.'}
+          </p>
+
           <p className="mt-1 text-xs text-slate-400">
             {isSw ? 'Kazi ya AI:' : 'AI Task:'}
           </p>

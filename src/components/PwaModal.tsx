@@ -60,8 +60,8 @@ export const PwaModal: React.FC = () => {
             <CheckCircle2 className="mx-auto mb-2 h-8 w-8 text-emerald-400" />
             <p className="text-sm font-bold text-emerald-300">
               {isSw
-                ? 'GIX AI TASKS tayari imewekwa kwenye kifaa chako.'
-                : 'GIX AI TASKS is already installed on your device.'}
+                ? 'GIX CHAT tayari imewekwa kwenye kifaa chako.'
+                : 'GIX CHAT is already installed on your device.'}
             </p>
             <p className="mt-1 text-xs text-slate-400">
               {isSw

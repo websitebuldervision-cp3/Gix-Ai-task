@@ -38,6 +38,7 @@ export const HomeView: React.FC = () => {
     startTask,
     openPwaModal,
     isPwaInstalled,
+    isTaskPaidToday,
   } = useApp();
 
   const isSw = language === 'sw';
@@ -160,22 +161,30 @@ export const HomeView: React.FC = () => {
             const taskTitle = isSw ? task.title.sw : task.title.en;
             const taskDomain = isSw ? task.domain.sw : task.domain.en;
             const taskTag = isSw ? task.tag.sw : task.tag.en;
+            const isPaid = isTaskPaidToday(task.id);
 
             return (
               <div
                 key={task.id}
                 className={`group relative flex flex-col justify-between overflow-hidden rounded-xl sm:rounded-2xl border p-2 sm:p-3 text-left transition duration-300 hover:shadow-lg ${
-                  isTopFour
+                  isPaid
+                    ? 'border-emerald-500/40 bg-slate-900/75 opacity-90'
+                    : isTopFour
                     ? 'border-emerald-500/60 bg-slate-900/95 shadow-[0_0_20px_rgba(16,185,129,0.18)] hover:border-emerald-400'
                     : 'border-slate-800 bg-slate-900/90 hover:border-emerald-500/40 hover:bg-slate-850'
                 }`}
               >
-                {/* Top Badge for Top 4 Tasks */}
-                {isTopFour && (
+                {/* Paid Badge or Top Badge */}
+                {isPaid ? (
+                  <div className="absolute top-0 right-0 z-20 bg-emerald-600 text-white font-black text-[9px] uppercase px-2.5 py-0.5 rounded-bl-lg tracking-wider shadow flex items-center gap-1">
+                    <CheckCircle2 className="h-3 w-3" />
+                    <span>PAID</span>
+                  </div>
+                ) : isTopFour ? (
                   <div className="absolute top-0 right-0 z-20 bg-gradient-to-l from-emerald-600 to-teal-600 text-white font-black text-[9px] uppercase px-2 py-0.5 rounded-bl-lg tracking-wider shadow">
                     {taskTag}
                   </div>
-                )}
+                ) : null}
 
                 <div>
                   {/* Task Image Banner */}
@@ -183,13 +192,21 @@ export const HomeView: React.FC = () => {
                     <img
                       src={task.image}
                       alt={taskTitle}
+                      onError={(e) => {
+                        const fallback = 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80';
+                        if (e.currentTarget.src !== fallback) e.currentTarget.src = fallback;
+                      }}
                       referrerPolicy="no-referrer"
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     {/* Reward Tag Overlay */}
                     <div className="absolute top-1.5 left-1.5 flex flex-col gap-0.5">
-                      <span className="rounded-md bg-slate-950/90 px-1.5 py-0.5 text-[9px] sm:text-[10px] font-extrabold text-emerald-400 border border-emerald-500/40 shadow-sm">
-                        +${task.rewardUSD.toFixed(2)} ({task.rewardTZS})
+                      <span className={`rounded-md px-1.5 py-0.5 text-[9px] sm:text-[10px] font-extrabold shadow-sm ${
+                        isPaid
+                          ? 'bg-emerald-950/90 text-emerald-300 border border-emerald-500/50'
+                          : 'bg-slate-950/90 text-emerald-400 border border-emerald-500/40'
+                      }`}>
+                        {isPaid ? '✓ PAID' : `+$${task.rewardUSD.toFixed(2)} (${task.rewardTZS})`}
                       </span>
                     </div>
                     {/* Time estimate */}
@@ -209,15 +226,31 @@ export const HomeView: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Direct 'START TASK' Button */}
-                <button
-                  id={`btn-daily-task-start-${task.id}`}
-                  onClick={() => startTask(task.id)}
-                  className="relative z-10 mt-2.5 flex w-full items-center justify-center gap-1.5 rounded-lg sm:rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 py-1.5 sm:py-2 text-[10px] sm:text-[11px] font-black text-white shadow-md shadow-emerald-500/20 transition duration-200 hover:brightness-110 active:scale-95 uppercase tracking-wide hover:shadow-[0_0_15px_rgba(16,185,129,0.4)]"
-                >
-                  <Play className="h-3 w-3 text-white fill-white shrink-0" />
-                  <span>START TASK</span>
-                </button>
+                {/* Direct Button: Disabled with 'PAID' if already completed today */}
+                {isPaid ? (
+                  <div className="mt-2.5 space-y-1">
+                    <button
+                      id={`btn-daily-task-paid-${task.id}`}
+                      disabled
+                      className="relative z-10 flex w-full items-center justify-center gap-1.5 rounded-lg sm:rounded-xl bg-slate-800/90 border border-emerald-500/40 py-1.5 sm:py-2 text-[10px] sm:text-[11px] font-black text-emerald-400 cursor-not-allowed uppercase tracking-wide shadow-sm"
+                    >
+                      <CheckCircle2 className="h-3 w-3 text-emerald-400 shrink-0" />
+                      <span>{isSw ? 'IMELIPWA • PAID' : 'PAID'}</span>
+                    </button>
+                    <p className="text-[9px] text-center text-slate-400">
+                      {isSw ? '🔒 Imefungwa kwa siku ya leo' : '🔒 Completed & locked today'}
+                    </p>
+                  </div>
+                ) : (
+                  <button
+                    id={`btn-daily-task-start-${task.id}`}
+                    onClick={() => startTask(task.id)}
+                    className="relative z-10 mt-2.5 flex w-full items-center justify-center gap-1.5 rounded-lg sm:rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 py-1.5 sm:py-2 text-[10px] sm:text-[11px] font-black text-white shadow-md shadow-emerald-500/20 transition duration-200 hover:brightness-110 active:scale-95 uppercase tracking-wide hover:shadow-[0_0_15px_rgba(16,185,129,0.4)]"
+                  >
+                    <Play className="h-3 w-3 text-white fill-white shrink-0" />
+                    <span>START TASK</span>
+                  </button>
+                )}
               </div>
             );
           })}
@@ -359,20 +392,32 @@ export const HomeView: React.FC = () => {
           {featuredCategories.map((cat) => {
             const catName = isSw ? cat.name.sw : cat.name.en;
             const catDesc = isSw ? cat.description.sw : cat.description.en;
+            const isCatPaid = isTaskPaidToday(cat.id);
 
             return (
               <div
                 key={cat.id}
-                className="group relative flex flex-col justify-between rounded-2xl border border-slate-800 bg-slate-900/80 p-4 transition-all hover:border-emerald-500/50 hover:shadow-[0_0_20px_rgba(16,185,129,0.2)] hover:bg-slate-850"
+                className={`group relative flex flex-col justify-between rounded-2xl border p-4 transition-all ${
+                  isCatPaid
+                    ? 'border-emerald-500/40 bg-slate-900/75 opacity-90'
+                    : 'border-slate-800 bg-slate-900/80 hover:border-emerald-500/50 hover:shadow-[0_0_20px_rgba(16,185,129,0.2)] hover:bg-slate-850'
+                }`}
               >
                 <div>
                   <div className="flex items-center justify-between">
                     <span className="rounded-lg bg-slate-800 px-2.5 py-1 text-[10px] font-semibold text-slate-300 uppercase tracking-wider">
                       {cat.group}
                     </span>
-                    <span className="text-[11px] font-bold text-emerald-400">
-                      ${cat.rewardMin} – ${cat.rewardMax}
-                    </span>
+                    {isCatPaid ? (
+                      <span className="rounded-md bg-emerald-950/90 px-2 py-0.5 text-[10px] font-black text-emerald-400 border border-emerald-500/50 flex items-center gap-1">
+                        <CheckCircle2 className="h-2.5 w-2.5" />
+                        PAID
+                      </span>
+                    ) : (
+                      <span className="text-[11px] font-bold text-emerald-400">
+                        ${cat.rewardMin} – ${cat.rewardMax}
+                      </span>
+                    )}
                   </div>
 
                   <h3 className="font-display mt-3 text-sm font-bold text-white group-hover:text-emerald-300">
@@ -389,14 +434,25 @@ export const HomeView: React.FC = () => {
                     {cat.availableCount} {isSw ? 'kazi' : 'tasks'}
                   </span>
 
-                  <button
-                    id={`btn-home-start-cat-${cat.id}`}
-                    onClick={() => handleStartCategory(cat.id)}
-                    className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-3.5 py-1.5 text-xs font-extrabold text-white shadow-md shadow-emerald-500/20 hover:scale-105 active:scale-95 uppercase tracking-wider hover:shadow-[0_0_15px_rgba(16,185,129,0.4)]"
-                  >
-                    <Play className="h-3 w-3 text-white fill-white" />
-                    <span>START TASK</span>
-                  </button>
+                  {isCatPaid ? (
+                    <button
+                      id={`btn-home-cat-paid-${cat.id}`}
+                      disabled
+                      className="flex items-center gap-1 rounded-xl bg-slate-800 border border-emerald-500/40 px-3 py-1.5 text-xs font-bold text-emerald-400 cursor-not-allowed uppercase tracking-wider shadow-sm"
+                    >
+                      <CheckCircle2 className="h-3 w-3" />
+                      <span>PAID</span>
+                    </button>
+                  ) : (
+                    <button
+                      id={`btn-home-start-cat-${cat.id}`}
+                      onClick={() => handleStartCategory(cat.id)}
+                      className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-3.5 py-1.5 text-xs font-extrabold text-white shadow-md shadow-emerald-500/20 hover:scale-105 active:scale-95 uppercase tracking-wider hover:shadow-[0_0_15px_rgba(16,185,129,0.4)]"
+                    >
+                      <Play className="h-3 w-3 text-white fill-white" />
+                      <span>START TASK</span>
+                    </button>
+                  )}
                 </div>
               </div>
             );

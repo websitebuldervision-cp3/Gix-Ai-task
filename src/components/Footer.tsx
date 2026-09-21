@@ -27,7 +27,7 @@ export const Footer: React.FC = () => {
                 <Bot className="h-4 w-4" />
               </div>
               <span className="font-display text-base font-bold text-white">
-                GIX <span className="text-emerald-400">AI</span> TASKS
+                GIX <span className="text-emerald-400">CHAT</span>
               </span>
             </div>
 
@@ -167,7 +167,7 @@ export const Footer: React.FC = () => {
         </div>
 
         <div className="flex flex-col sm:flex-row items-center justify-between border-t border-slate-800/80 pt-6 text-[11px] text-slate-400 gap-3">
-          <p>© {new Date().getFullYear()} GIX AI TASKS. {isSw ? 'Haki zote zimehifadhiwa.' : 'All rights reserved.'}</p>
+          <p>© {new Date().getFullYear()} GIX CHAT. {isSw ? 'Haki zote zimehifadhiwa.' : 'All rights reserved.'}</p>
           <div className="flex items-center gap-2">
             <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
             <span>{isSw ? 'Jukwaa Salama la Kazi za AI' : 'Certified AI Evaluation Architecture'}</span>

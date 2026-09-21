@@ -114,8 +114,8 @@ export const CommentsSection: React.FC = () => {
           </div>
           <h2 className="font-display mt-3 text-2xl sm:text-3xl font-extrabold text-white">
             {isSw
-              ? 'Watumiaji Wanasemaje Kuhusu GIX AI TASKS'
-              : 'What Global Users Say About GIX AI TASKS'}
+              ? 'Watumiaji Wanasemaje Kuhusu GIX CHAT'
+              : 'What Global Users Say About GIX CHAT'}
           </h2>
           <p className="mt-1 text-xs sm:text-sm text-slate-400 max-w-xl">
             {isSw
@@ -276,7 +276,7 @@ export const CommentsSection: React.FC = () => {
                   onChange={(e) => setUserCommentText(e.target.value)}
                   placeholder={
                     isSw
-                      ? 'Eleza jinsi unavyopata rewards na uzoefu wako kwenye GIX AI TASKS...'
+                      ? 'Eleza jinsi unavyopata rewards na uzoefu wako kwenye GIX CHAT...'
                       : 'Share how easily you complete AI tasks and receive rewards...'
                   }
                   className="w-full rounded-xl border border-slate-700 bg-slate-950/80 px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 resize-none"

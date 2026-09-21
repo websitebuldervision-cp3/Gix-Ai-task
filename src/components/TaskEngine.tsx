@@ -32,7 +32,24 @@ export const TaskEngine: React.FC = () => {
   const [progressB, setProgressB] = useState(0);
   const [timeA, setTimeA] = useState(0);
   const [timeB, setTimeB] = useState(0);
-  const [zoomedImage, setZoomedImage] = useState<string | null>(null);
+  const [zoomModal, setZoomModal] = useState<{
+    isOpen: boolean;
+    activeTab: 'both' | 'a' | 'b';
+    urlA?: string;
+    labelA?: string;
+    metaA?: string;
+    urlB?: string;
+    labelB?: string;
+    metaB?: string;
+    title?: string;
+  } | null>(null);
+
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    const fallback = 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80';
+    if (e.currentTarget.src !== fallback) {
+      e.currentTarget.src = fallback;
+    }
+  };
 
   // Stop voice when task closes or changes
   useEffect(() => {
@@ -47,6 +64,59 @@ export const TaskEngine: React.FC = () => {
   const categoryTitle = isSw ? currentTask.categoryName.sw : currentTask.categoryName.en;
   const taskTitle = isSw ? currentTask.title.sw : currentTask.title.en;
   const taskDesc = isSw ? currentTask.description.sw : currentTask.description.en;
+
+  const openZoomBoth = () => {
+    setZoomModal({
+      isOpen: true,
+      activeTab: 'both',
+      urlA: currentTask.media.itemA?.url,
+      labelA: isSw ? currentTask.media.itemA?.label?.sw || 'Picha A' : currentTask.media.itemA?.label?.en || 'Image A',
+      metaA: currentTask.media.itemA?.meta,
+      urlB: currentTask.media.itemB?.url,
+      labelB: isSw ? currentTask.media.itemB?.label?.sw || 'Picha B' : currentTask.media.itemB?.label?.en || 'Image B',
+      metaB: currentTask.media.itemB?.meta,
+      title: taskTitle,
+    });
+  };
+
+  const openZoomItemA = () => {
+    setZoomModal({
+      isOpen: true,
+      activeTab: 'a',
+      urlA: currentTask.media.itemA?.url,
+      labelA: isSw ? currentTask.media.itemA?.label?.sw || 'Picha A' : currentTask.media.itemA?.label?.en || 'Image A',
+      metaA: currentTask.media.itemA?.meta,
+      urlB: currentTask.media.itemB?.url,
+      labelB: isSw ? currentTask.media.itemB?.label?.sw || 'Picha B' : currentTask.media.itemB?.label?.en || 'Image B',
+      metaB: currentTask.media.itemB?.meta,
+      title: taskTitle,
+    });
+  };
+
+  const openZoomItemB = () => {
+    setZoomModal({
+      isOpen: true,
+      activeTab: 'b',
+      urlA: currentTask.media.itemA?.url,
+      labelA: isSw ? currentTask.media.itemA?.label?.sw || 'Picha A' : currentTask.media.itemA?.label?.en || 'Image A',
+      metaA: currentTask.media.itemA?.meta,
+      urlB: currentTask.media.itemB?.url,
+      labelB: isSw ? currentTask.media.itemB?.label?.sw || 'Picha B' : currentTask.media.itemB?.label?.en || 'Image B',
+      metaB: currentTask.media.itemB?.meta,
+      title: taskTitle,
+    });
+  };
+
+  const openZoomSingle = (url?: string, label?: string, meta?: string) => {
+    setZoomModal({
+      isOpen: true,
+      activeTab: 'a',
+      urlA: url,
+      labelA: label,
+      metaA: meta,
+      title: taskTitle,
+    });
+  };
 
   const handlePlayA = () => {
     if (isPlayingA) {
@@ -201,84 +271,312 @@ export const TaskEngine: React.FC = () => {
 
           {/* Dynamic Media Section */}
           {currentTask.media.type === 'image_duo' && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {/* Image A */}
-              <div className="group relative rounded-xl overflow-hidden border border-slate-800 bg-slate-950 p-2">
-                <div className="flex items-center justify-between pb-1.5 px-1">
-                  <span className="text-xs font-bold text-emerald-400">
-                    {isSw ? currentTask.media.itemA?.label?.sw || 'Picha A' : currentTask.media.itemA?.label?.en || 'Image A'}
-                  </span>
-                  <button
-                    onClick={() => setZoomedImage(currentTask.media.itemA?.url || null)}
-                    className="flex items-center gap-1 text-[10px] text-slate-400 hover:text-white"
-                  >
-                    <ZoomIn className="h-3 w-3" />
-                    <span>{t.taskEngine.zoomImage}</span>
-                  </button>
-                </div>
-                <div className="relative aspect-video rounded-lg overflow-hidden bg-slate-900">
-                  <img
-                    src={currentTask.media.itemA?.url}
-                    alt="Sample A"
-                    className="h-full w-full object-cover transition-transform group-hover:scale-105"
-                    referrerPolicy="no-referrer"
-                  />
-                </div>
-                {currentTask.media.itemA?.meta && (
-                  <p className="mt-1.5 text-[10px] text-slate-400 px-1 font-mono">
-                    {currentTask.media.itemA.meta}
-                  </p>
-                )}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between px-1">
+                <span className="text-[11px] font-semibold text-slate-400">
+                  {isSw ? 'Linganisha Picha Zote Mbili:' : 'Compare Both Visual Samples:'}
+                </span>
+                <button
+                  type="button"
+                  onClick={openZoomBoth}
+                  className="flex items-center gap-1.5 rounded-lg bg-emerald-500/10 px-2.5 py-1 text-xs font-bold text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition"
+                >
+                  <ZoomIn className="h-3.5 w-3.5" />
+                  <span>{isSw ? '🔍 Linganisha Zote Mbili' : '🔍 Compare Both (Full)'}</span>
+                </button>
               </div>
 
-              {/* Image B */}
-              <div className="group relative rounded-xl overflow-hidden border border-slate-800 bg-slate-950 p-2">
-                <div className="flex items-center justify-between pb-1.5 px-1">
-                  <span className="text-xs font-bold text-indigo-400">
-                    {isSw ? currentTask.media.itemB?.label?.sw || 'Picha B' : currentTask.media.itemB?.label?.en || 'Image B'}
-                  </span>
-                  <button
-                    onClick={() => setZoomedImage(currentTask.media.itemB?.url || null)}
-                    className="flex items-center gap-1 text-[10px] text-slate-400 hover:text-white"
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Image A */}
+                <div className="group relative rounded-xl overflow-hidden border border-slate-800 bg-slate-950 p-2.5">
+                  <div className="flex items-center justify-between pb-1.5 px-1">
+                    <span className="text-xs font-bold text-emerald-400">
+                      {isSw ? currentTask.media.itemA?.label?.sw || 'Picha A' : currentTask.media.itemA?.label?.en || 'Image A'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={openZoomItemA}
+                      className="flex items-center gap-1 text-[11px] font-medium text-slate-400 hover:text-emerald-300"
+                    >
+                      <ZoomIn className="h-3 w-3" />
+                      <span>{t.taskEngine.zoomImage}</span>
+                    </button>
+                  </div>
+                  <div
+                    onClick={openZoomItemA}
+                    className="relative aspect-video rounded-lg overflow-hidden bg-slate-900 cursor-pointer"
                   >
-                    <ZoomIn className="h-3 w-3" />
-                    <span>{t.taskEngine.zoomImage}</span>
-                  </button>
+                    <img
+                      src={currentTask.media.itemA?.url}
+                      alt="Sample A"
+                      onError={handleImageError}
+                      className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                      referrerPolicy="no-referrer"
+                    />
+                    <div className="absolute inset-0 bg-black/0 hover:bg-black/20 transition flex items-center justify-center opacity-0 hover:opacity-100">
+                      <span className="bg-black/70 text-white text-[10px] px-2 py-1 rounded font-bold">
+                        {isSw ? 'Bofya Kukuza' : 'Click to Zoom'}
+                      </span>
+                    </div>
+                  </div>
+                  {currentTask.media.itemA?.meta && (
+                    <p className="mt-1.5 text-[10px] text-slate-400 px-1 font-mono">
+                      {currentTask.media.itemA.meta}
+                    </p>
+                  )}
                 </div>
-                <div className="relative aspect-video rounded-lg overflow-hidden bg-slate-900">
-                  <img
-                    src={currentTask.media.itemB?.url}
-                    alt="Sample B"
-                    className="h-full w-full object-cover transition-transform group-hover:scale-105"
-                    referrerPolicy="no-referrer"
-                  />
+
+                {/* Image B */}
+                <div className="group relative rounded-xl overflow-hidden border border-slate-800 bg-slate-950 p-2.5">
+                  <div className="flex items-center justify-between pb-1.5 px-1">
+                    <span className="text-xs font-bold text-indigo-400">
+                      {isSw ? currentTask.media.itemB?.label?.sw || 'Picha B' : currentTask.media.itemB?.label?.en || 'Image B'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={openZoomItemB}
+                      className="flex items-center gap-1 text-[11px] font-medium text-slate-400 hover:text-indigo-300"
+                    >
+                      <ZoomIn className="h-3 w-3" />
+                      <span>{t.taskEngine.zoomImage}</span>
+                    </button>
+                  </div>
+                  <div
+                    onClick={openZoomItemB}
+                    className="relative aspect-video rounded-lg overflow-hidden bg-slate-900 cursor-pointer"
+                  >
+                    <img
+                      src={currentTask.media.itemB?.url}
+                      alt="Sample B"
+                      onError={handleImageError}
+                      className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                      referrerPolicy="no-referrer"
+                    />
+                    <div className="absolute inset-0 bg-black/0 hover:bg-black/20 transition flex items-center justify-center opacity-0 hover:opacity-100">
+                      <span className="bg-black/70 text-white text-[10px] px-2 py-1 rounded font-bold">
+                        {isSw ? 'Bofya Kukuza' : 'Click to Zoom'}
+                      </span>
+                    </div>
+                  </div>
+                  {currentTask.media.itemB?.meta && (
+                    <p className="mt-1.5 text-[10px] text-slate-400 px-1 font-mono">
+                      {currentTask.media.itemB.meta}
+                    </p>
+                  )}
                 </div>
-                {currentTask.media.itemB?.meta && (
-                  <p className="mt-1.5 text-[10px] text-slate-400 px-1 font-mono">
-                    {currentTask.media.itemB.meta}
-                  </p>
-                )}
               </div>
             </div>
           )}
 
           {currentTask.media.type === 'image_single' && (
-            <div className="relative rounded-xl overflow-hidden border border-slate-800 bg-slate-950 p-2">
+            <div className="relative rounded-xl overflow-hidden border border-slate-800 bg-slate-950 p-2.5">
               <div className="flex items-center justify-between pb-1.5 px-1">
                 <span className="text-xs font-bold text-emerald-400">
                   {isSw ? currentTask.media.itemA?.label?.sw : currentTask.media.itemA?.label?.en}
                 </span>
-                <span className="text-[10px] text-slate-400">
-                  {currentTask.media.itemA?.meta}
-                </span>
+                <button
+                  type="button"
+                  onClick={() => openZoomSingle(currentTask.media.itemA?.url, isSw ? currentTask.media.itemA?.label?.sw : currentTask.media.itemA?.label?.en, currentTask.media.itemA?.meta)}
+                  className="flex items-center gap-1 text-[11px] font-medium text-slate-400 hover:text-emerald-300"
+                >
+                  <ZoomIn className="h-3 w-3" />
+                  <span>{t.taskEngine.zoomImage}</span>
+                </button>
               </div>
-              <div className="aspect-video rounded-lg overflow-hidden bg-slate-900">
+              <div
+                onClick={() => openZoomSingle(currentTask.media.itemA?.url, isSw ? currentTask.media.itemA?.label?.sw : currentTask.media.itemA?.label?.en, currentTask.media.itemA?.meta)}
+                className="aspect-video rounded-lg overflow-hidden bg-slate-900 cursor-pointer"
+              >
                 <img
                   src={currentTask.media.itemA?.url}
                   alt="Single inspection"
+                  onError={handleImageError}
                   className="h-full w-full object-cover"
                   referrerPolicy="no-referrer"
                 />
+              </div>
+              {currentTask.media.itemA?.meta && (
+                <p className="mt-1.5 text-[10px] text-slate-400 px-1 font-mono">
+                  {currentTask.media.itemA.meta}
+                </p>
+              )}
+            </div>
+          )}
+
+          {currentTask.media.type === 'map_duo' && (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between px-1">
+                <span className="text-[11px] font-semibold text-slate-400">
+                  {isSw ? 'Hakiki Picha ya Duka na Alama ya Ramani:' : 'Verify Storefront Photo & Map Pin:'}
+                </span>
+                <button
+                  type="button"
+                  onClick={openZoomBoth}
+                  className="flex items-center gap-1.5 rounded-lg bg-emerald-500/10 px-2.5 py-1 text-xs font-bold text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition"
+                >
+                  <ZoomIn className="h-3.5 w-3.5" />
+                  <span>{isSw ? '🔍 Linganisha Zote' : '🔍 Compare Both'}</span>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
+                  <div className="flex items-center justify-between pb-1.5 px-1">
+                    <span className="text-xs font-bold text-emerald-400">
+                      {isSw ? currentTask.media.itemA?.label?.sw || 'Picha ya Duka' : currentTask.media.itemA?.label?.en || 'Storefront Photography'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={openZoomItemA}
+                      className="flex items-center gap-1 text-[11px] font-medium text-slate-400 hover:text-emerald-300"
+                    >
+                      <ZoomIn className="h-3 w-3" />
+                      <span>{t.taskEngine.zoomImage}</span>
+                    </button>
+                  </div>
+                  <div
+                    onClick={openZoomItemA}
+                    className="relative aspect-video rounded-lg overflow-hidden bg-slate-900 cursor-pointer"
+                  >
+                    <img
+                      src={currentTask.media.itemA?.url}
+                      alt="Storefront"
+                      onError={handleImageError}
+                      className="h-full w-full object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
+                  {currentTask.media.itemA?.meta && (
+                    <p className="mt-1.5 text-[10px] text-slate-400 px-1 font-mono">
+                      {currentTask.media.itemA.meta}
+                    </p>
+                  )}
+                </div>
+
+                <div className="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
+                  <div className="flex items-center justify-between pb-1.5 px-1">
+                    <span className="text-xs font-bold text-indigo-400">
+                      {isSw ? currentTask.media.itemB?.label?.sw || 'Ramani ya Satelaiti' : currentTask.media.itemB?.label?.en || 'Satellite Map Pin'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={openZoomItemB}
+                      className="flex items-center gap-1 text-[11px] font-medium text-slate-400 hover:text-indigo-300"
+                    >
+                      <ZoomIn className="h-3 w-3" />
+                      <span>{t.taskEngine.zoomImage}</span>
+                    </button>
+                  </div>
+                  <div
+                    onClick={openZoomItemB}
+                    className="relative aspect-video rounded-lg overflow-hidden bg-slate-900 cursor-pointer"
+                  >
+                    <img
+                      src={currentTask.media.itemB?.url}
+                      alt="Map Pin"
+                      onError={handleImageError}
+                      className="h-full w-full object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
+                  {currentTask.media.itemB?.meta && (
+                    <p className="mt-1.5 text-[10px] text-slate-400 px-1 font-mono">
+                      {currentTask.media.itemB.meta}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {currentTask.media.type === 'video_duo' && (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between px-1">
+                <span className="text-[11px] font-semibold text-slate-400">
+                  {isSw ? 'Linganisha Fremu za Video Mbili:' : 'Compare Both Video Stream Renders:'}
+                </span>
+                <button
+                  type="button"
+                  onClick={openZoomBoth}
+                  className="flex items-center gap-1.5 rounded-lg bg-emerald-500/10 px-2.5 py-1 text-xs font-bold text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition"
+                >
+                  <ZoomIn className="h-3.5 w-3.5" />
+                  <span>{isSw ? '🔍 Linganisha Zote' : '🔍 Compare Both'}</span>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
+                  <div className="flex items-center justify-between pb-1.5 px-1">
+                    <span className="text-xs font-bold text-emerald-400">
+                      {isSw ? currentTask.media.itemA?.label?.sw || 'Video A' : currentTask.media.itemA?.label?.en || 'Video Stream A'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={openZoomItemA}
+                      className="flex items-center gap-1 text-[11px] font-medium text-slate-400 hover:text-emerald-300"
+                    >
+                      <ZoomIn className="h-3 w-3" />
+                      <span>{t.taskEngine.zoomImage}</span>
+                    </button>
+                  </div>
+                  <div
+                    onClick={openZoomItemA}
+                    className="relative aspect-video rounded-lg overflow-hidden bg-slate-900 cursor-pointer"
+                  >
+                    <img
+                      src={currentTask.media.itemA?.url}
+                      alt="Video A Preview"
+                      onError={handleImageError}
+                      className="h-full w-full object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                    <div className="absolute top-2 left-2 rounded bg-black/70 px-2 py-0.5 text-[10px] font-mono text-emerald-400">
+                      60 FPS
+                    </div>
+                  </div>
+                  {currentTask.media.itemA?.meta && (
+                    <p className="mt-1.5 text-[10px] text-slate-400 px-1 font-mono">
+                      {currentTask.media.itemA.meta}
+                    </p>
+                  )}
+                </div>
+
+                <div className="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
+                  <div className="flex items-center justify-between pb-1.5 px-1">
+                    <span className="text-xs font-bold text-indigo-400">
+                      {isSw ? currentTask.media.itemB?.label?.sw || 'Video B' : currentTask.media.itemB?.label?.en || 'Video Stream B'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={openZoomItemB}
+                      className="flex items-center gap-1 text-[11px] font-medium text-slate-400 hover:text-indigo-300"
+                    >
+                      <ZoomIn className="h-3 w-3" />
+                      <span>{t.taskEngine.zoomImage}</span>
+                    </button>
+                  </div>
+                  <div
+                    onClick={openZoomItemB}
+                    className="relative aspect-video rounded-lg overflow-hidden bg-slate-900 cursor-pointer"
+                  >
+                    <img
+                      src={currentTask.media.itemB?.url}
+                      alt="Video B Preview"
+                      onError={handleImageError}
+                      className="h-full w-full object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                    <div className="absolute top-2 left-2 rounded bg-black/70 px-2 py-0.5 text-[10px] font-mono text-indigo-400">
+                      30 FPS
+                    </div>
+                  </div>
+                  {currentTask.media.itemB?.meta && (
+                    <p className="mt-1.5 text-[10px] text-slate-400 px-1 font-mono">
+                      {currentTask.media.itemB.meta}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           )}
@@ -474,19 +772,70 @@ export const TaskEngine: React.FC = () => {
             </div>
           )}
 
+          {currentTask.media.type === 'text_duo' && (
+            <div className="space-y-3">
+              <div className="rounded-xl border border-slate-800 bg-slate-950 p-3.5">
+                <span className="text-xs font-bold text-emerald-400 block mb-1.5">
+                  {isSw ? currentTask.media.itemA?.label?.sw || 'Maelezo A' : currentTask.media.itemA?.label?.en || 'Text Snippet A'}
+                </span>
+                <p className="text-xs text-slate-200 leading-relaxed font-sans bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
+                  {currentTask.media.itemA?.text}
+                </p>
+                {currentTask.media.itemA?.meta && (
+                  <p className="mt-1.5 text-[10px] text-slate-400 font-mono">
+                    {currentTask.media.itemA.meta}
+                  </p>
+                )}
+              </div>
+              {currentTask.media.itemB?.text && (
+                <div className="rounded-xl border border-slate-800 bg-slate-950 p-3.5">
+                  <span className="text-xs font-bold text-indigo-400 block mb-1.5">
+                    {isSw ? currentTask.media.itemB?.label?.sw || 'Maelezo B' : currentTask.media.itemB?.label?.en || 'Text Snippet B'}
+                  </span>
+                  <p className="text-xs text-slate-200 leading-relaxed font-sans bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
+                    {currentTask.media.itemB.text}
+                  </p>
+                  {currentTask.media.itemB.meta && (
+                    <p className="mt-1.5 text-[10px] text-slate-400 font-mono">
+                      {currentTask.media.itemB.meta}
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
           {currentTask.media.type === 'product_duo' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="rounded-xl border border-slate-800 bg-slate-950 p-3">
-                <span className="text-xs font-bold text-emerald-400 block mb-1">
-                  {isSw ? currentTask.media.itemA?.label?.sw : currentTask.media.itemA?.label?.en}
-                </span>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs font-bold text-emerald-400">
+                    {isSw ? currentTask.media.itemA?.label?.sw : currentTask.media.itemA?.label?.en}
+                  </span>
+                  {currentTask.media.itemA?.url && (
+                    <button
+                      type="button"
+                      onClick={() => openZoomSingle(currentTask.media.itemA?.url, isSw ? currentTask.media.itemA?.label?.sw : currentTask.media.itemA?.label?.en)}
+                      className="text-[10px] text-slate-400 hover:text-emerald-300 flex items-center gap-1"
+                    >
+                      <ZoomIn className="h-3 w-3" />
+                      <span>{t.taskEngine.zoomImage}</span>
+                    </button>
+                  )}
+                </div>
                 {currentTask.media.itemA?.url && (
-                  <img
-                    src={currentTask.media.itemA.url}
-                    alt="Product A"
-                    className="h-28 w-full object-cover rounded-lg mb-2"
-                    referrerPolicy="no-referrer"
-                  />
+                  <div
+                    onClick={() => openZoomSingle(currentTask.media.itemA?.url, isSw ? currentTask.media.itemA?.label?.sw : currentTask.media.itemA?.label?.en)}
+                    className="cursor-pointer"
+                  >
+                    <img
+                      src={currentTask.media.itemA.url}
+                      alt="Product A"
+                      onError={handleImageError}
+                      className="h-28 w-full object-cover rounded-lg mb-2"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
                 )}
                 <p className="text-xs font-medium text-slate-200">
                   {currentTask.media.itemA?.text}
@@ -497,16 +846,34 @@ export const TaskEngine: React.FC = () => {
               </div>
 
               <div className="rounded-xl border border-slate-800 bg-slate-950 p-3">
-                <span className="text-xs font-bold text-indigo-400 block mb-1">
-                  {isSw ? currentTask.media.itemB?.label?.sw : currentTask.media.itemB?.label?.en}
-                </span>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs font-bold text-indigo-400">
+                    {isSw ? currentTask.media.itemB?.label?.sw : currentTask.media.itemB?.label?.en}
+                  </span>
+                  {currentTask.media.itemB?.url && (
+                    <button
+                      type="button"
+                      onClick={() => openZoomSingle(currentTask.media.itemB?.url, isSw ? currentTask.media.itemB?.label?.sw : currentTask.media.itemB?.label?.en)}
+                      className="text-[10px] text-slate-400 hover:text-indigo-300 flex items-center gap-1"
+                    >
+                      <ZoomIn className="h-3 w-3" />
+                      <span>{t.taskEngine.zoomImage}</span>
+                    </button>
+                  )}
+                </div>
                 {currentTask.media.itemB?.url && (
-                  <img
-                    src={currentTask.media.itemB.url}
-                    alt="Product B"
-                    className="h-28 w-full object-cover rounded-lg mb-2"
-                    referrerPolicy="no-referrer"
-                  />
+                  <div
+                    onClick={() => openZoomSingle(currentTask.media.itemB?.url, isSw ? currentTask.media.itemB?.label?.sw : currentTask.media.itemB?.label?.en)}
+                    className="cursor-pointer"
+                  >
+                    <img
+                      src={currentTask.media.itemB.url}
+                      alt="Product B"
+                      onError={handleImageError}
+                      className="h-28 w-full object-cover rounded-lg mb-2"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
                 )}
                 <p className="text-xs font-medium text-slate-200">
                   {currentTask.media.itemB?.text}
@@ -627,18 +994,167 @@ export const TaskEngine: React.FC = () => {
           </button>
         </div>
 
-        {/* Zoom Lightbox */}
-        {zoomedImage && (
+        {/* High-Definition Visual Comparison & Zoom Modal */}
+        {zoomModal?.isOpen && (
           <div
-            onClick={() => setZoomedImage(null)}
-            className="fixed inset-0 z-60 flex items-center justify-center bg-black/95 p-4 cursor-pointer"
+            className="fixed inset-0 z-50 flex flex-col bg-slate-950/95 backdrop-blur-md p-3 sm:p-6 overflow-y-auto animate-in fade-in duration-200"
+            role="dialog"
+            aria-modal="true"
           >
-            <img
-              src={zoomedImage}
-              alt="Zoomed Detail"
-              className="max-h-[90vh] max-w-[90vw] object-contain rounded-lg shadow-2xl"
-              referrerPolicy="no-referrer"
-            />
+            {/* Header */}
+            <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-800 shrink-0">
+              <div className="flex items-center gap-2">
+                <span className="flex h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                <h3 className="text-xs sm:text-sm font-bold text-white line-clamp-1">
+                  {zoomModal.title || (isSw ? 'Uhakiki na Ulinganishaji wa Picha' : 'Visual Inspection & Comparison')}
+                </h3>
+              </div>
+
+              {/* Tabs */}
+              <div className="flex items-center gap-1.5 bg-slate-900 p-1 rounded-xl border border-slate-800">
+                {zoomModal.urlB && (
+                  <button
+                    type="button"
+                    onClick={() => setZoomModal({ ...zoomModal, activeTab: 'both' })}
+                    className={`px-3 py-1 text-xs font-bold rounded-lg transition-all ${
+                      zoomModal.activeTab === 'both'
+                        ? 'bg-emerald-500 text-white shadow-sm'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    {isSw ? '🖼️ Zote Mbili' : '🖼️ Both'}
+                  </button>
+                )}
+                {zoomModal.urlA && (
+                  <button
+                    type="button"
+                    onClick={() => setZoomModal({ ...zoomModal, activeTab: 'a' })}
+                    className={`px-3 py-1 text-xs font-bold rounded-lg transition-all ${
+                      zoomModal.activeTab === 'a'
+                        ? 'bg-emerald-500 text-white shadow-sm'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    {isSw ? '🅰️ Picha A' : '🅰️ Sample A'}
+                  </button>
+                )}
+                {zoomModal.urlB && (
+                  <button
+                    type="button"
+                    onClick={() => setZoomModal({ ...zoomModal, activeTab: 'b' })}
+                    className={`px-3 py-1 text-xs font-bold rounded-lg transition-all ${
+                      zoomModal.activeTab === 'b'
+                        ? 'bg-indigo-500 text-white shadow-sm'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    {isSw ? '🅱️ Picha B' : '🅱️ Sample B'}
+                  </button>
+                )}
+              </div>
+
+              {/* Close Button */}
+              <button
+                type="button"
+                onClick={() => setZoomModal(null)}
+                className="flex items-center gap-1 rounded-lg bg-slate-800 px-3 py-1.5 text-xs font-bold text-slate-300 hover:bg-slate-700 hover:text-white transition"
+              >
+                <span>✕</span>
+                <span>{isSw ? 'Funga' : 'Close'}</span>
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="flex-1 flex items-center justify-center py-4">
+              {zoomModal.activeTab === 'both' && zoomModal.urlA && zoomModal.urlB ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-6xl">
+                  {/* Image A */}
+                  <div className="flex flex-col rounded-2xl border border-emerald-500/40 bg-slate-900/90 p-3 overflow-hidden shadow-xl">
+                    <div className="flex items-center justify-between pb-2 text-xs font-bold text-emerald-400">
+                      <span>{zoomModal.labelA || (isSw ? 'Picha A (Sampuli)' : 'Sample A')}</span>
+                      <span className="text-[10px] text-slate-400 font-mono">{zoomModal.metaA}</span>
+                    </div>
+                    <div className="relative rounded-xl overflow-hidden bg-slate-950 flex items-center justify-center min-h-[240px] max-h-[70vh]">
+                      <img
+                        src={zoomModal.urlA}
+                        alt="Sample A Full"
+                        onError={handleImageError}
+                        referrerPolicy="no-referrer"
+                        className="max-h-[65vh] w-full object-contain rounded-lg"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Image B */}
+                  <div className="flex flex-col rounded-2xl border border-indigo-500/40 bg-slate-900/90 p-3 overflow-hidden shadow-xl">
+                    <div className="flex items-center justify-between pb-2 text-xs font-bold text-indigo-400">
+                      <span>{zoomModal.labelB || (isSw ? 'Picha B (Sampuli)' : 'Sample B')}</span>
+                      <span className="text-[10px] text-slate-400 font-mono">{zoomModal.metaB}</span>
+                    </div>
+                    <div className="relative rounded-xl overflow-hidden bg-slate-950 flex items-center justify-center min-h-[240px] max-h-[70vh]">
+                      <img
+                        src={zoomModal.urlB}
+                        alt="Sample B Full"
+                        onError={handleImageError}
+                        referrerPolicy="no-referrer"
+                        className="max-h-[65vh] w-full object-contain rounded-lg"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ) : zoomModal.activeTab === 'a' && zoomModal.urlA ? (
+                <div className="flex flex-col items-center max-w-5xl w-full">
+                  <div className="mb-2 flex items-center gap-3">
+                    <span className="text-xs sm:text-sm font-bold text-emerald-400">
+                      {zoomModal.labelA || (isSw ? 'Picha A' : 'Sample A')}
+                    </span>
+                    {zoomModal.metaA && (
+                      <span className="text-[11px] text-slate-400 font-mono bg-slate-900 px-2 py-0.5 rounded">
+                        {zoomModal.metaA}
+                      </span>
+                    )}
+                  </div>
+                  <div className="rounded-2xl border border-slate-800 bg-slate-900 p-2 overflow-hidden shadow-2xl">
+                    <img
+                      src={zoomModal.urlA}
+                      alt="Sample A Full Detail"
+                      onError={handleImageError}
+                      referrerPolicy="no-referrer"
+                      className="max-h-[75vh] max-w-[90vw] object-contain rounded-xl"
+                    />
+                  </div>
+                </div>
+              ) : zoomModal.activeTab === 'b' && zoomModal.urlB ? (
+                <div className="flex flex-col items-center max-w-5xl w-full">
+                  <div className="mb-2 flex items-center gap-3">
+                    <span className="text-xs sm:text-sm font-bold text-indigo-400">
+                      {zoomModal.labelB || (isSw ? 'Picha B' : 'Sample B')}
+                    </span>
+                    {zoomModal.metaB && (
+                      <span className="text-[11px] text-slate-400 font-mono bg-slate-900 px-2 py-0.5 rounded">
+                        {zoomModal.metaB}
+                      </span>
+                    )}
+                  </div>
+                  <div className="rounded-2xl border border-slate-800 bg-slate-900 p-2 overflow-hidden shadow-2xl">
+                    <img
+                      src={zoomModal.urlB}
+                      alt="Sample B Full Detail"
+                      onError={handleImageError}
+                      referrerPolicy="no-referrer"
+                      className="max-h-[75vh] max-w-[90vw] object-contain rounded-xl"
+                    />
+                  </div>
+                </div>
+              ) : null}
+            </div>
+
+            {/* Footer tip */}
+            <div className="pt-2 border-t border-slate-800 text-center text-[11px] text-slate-400 shrink-0">
+              {isSw
+                ? '✓ Picha zote mbili zimefunguka vizuri bila shida yoyote. Unaweza kubadili mwonekano hapo juu.'
+                : '✓ Both images loaded cleanly without errors. You can switch between views above.'}
+            </div>
           </div>
         )}
       </div>

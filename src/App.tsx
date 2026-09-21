@@ -6,6 +6,7 @@ import { BottomNav } from './components/BottomNav';
 import { Footer } from './components/Footer';
 import { TaskEngine } from './components/TaskEngine';
 import { SuccessModal } from './components/SuccessModal';
+import { LockedTaskModal } from './components/LockedTaskModal';
 import { PwaModal } from './components/PwaModal';
 import { LivePayoutToast } from './components/LivePayoutToast';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
@@ -47,6 +48,7 @@ export default function App() {
           {/* Global Floating Modals & Widgets */}
           <TaskEngine />
           <SuccessModal />
+          <LockedTaskModal />
           <PwaModal />
           <LivePayoutToast />
           <FloatingWhatsApp />

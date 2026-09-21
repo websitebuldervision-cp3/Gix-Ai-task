@@ -29,7 +29,8 @@ const MASTER_DAILY_TASK_POOL = [
     tag: { sw: 'Kazi ya Mwanzo', en: 'Instant Task' },
     rewardUSD: 2.50,
     time: '2 min',
-    image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&auto=format&fit=crop&q=80',
+    imageB: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&auto=format&fit=crop&q=80',
     description: {
       sw: 'Linganisha picha mbili za AI na uthibitishe ipi ina uwazi wa juu zaidi, makali ya milima bila mikwaruzo.',
       en: 'Compare two AI renders and identify which capture has superior dynamic range and zero digital artifacts.',
@@ -49,7 +50,7 @@ const MASTER_DAILY_TASK_POOL = [
     tag: { sw: 'Kazi ya Mwanzo', en: 'Instant Task' },
     rewardUSD: 3.00,
     time: '3 min',
-    image: 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=500&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=800&auto=format&fit=crop&q=80',
     description: {
       sw: 'Sikiliza sauti mbili za Kiswahili na Kiingereza na upime ipi inatamka maneno kiasili kama binadamu.',
       en: 'Listen to two synthetic neural voices and evaluate which sound has natural cadence and human prosody.',
@@ -69,7 +70,8 @@ const MASTER_DAILY_TASK_POOL = [
     tag: { sw: 'Kazi ya Mwanzo', en: 'Instant Task' },
     rewardUSD: 2.80,
     time: '2 min',
-    image: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&auto=format&fit=crop&q=80',
+    imageB: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?w=800&auto=format&fit=crop&q=80',
     description: {
       sw: 'Kagua picha za uchunguzi wa afya zilizoboreshwa na AI na uchague yenye uwazi wa mifupa na tishu.',
       en: 'Review AI-enhanced medical scans and verify tissue density contrast and diagnostic clarity.',
@@ -89,7 +91,8 @@ const MASTER_DAILY_TASK_POOL = [
     tag: { sw: 'Kazi ya Mwanzo', en: 'Instant Task' },
     rewardUSD: 2.60,
     time: '2 min',
-    image: 'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?w=500&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?w=800&auto=format&fit=crop&q=80',
+    imageB: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800&auto=format&fit=crop&q=80',
     description: {
       sw: 'Tathmini afya ya mimea na mahindi kupitia picha za drone za mashambani Afrika Mashariki.',
       en: 'Classify crop foliage health and pest infestation markers from East African aerial drone imagery.',
@@ -109,7 +112,8 @@ const MASTER_DAILY_TASK_POOL = [
     tag: { sw: 'Kazi Mpya Leo', en: 'New Today' },
     rewardUSD: 3.20,
     time: '3 min',
-    image: 'https://images.unsplash.com/photo-1508974239320-0a029497e820?w=500&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1508974239320-0a029497e820?w=800&auto=format&fit=crop&q=80',
+    imageB: 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=800&auto=format&fit=crop&q=80',
     description: {
       sw: 'Linganisha mifumo miwili ya kamera za usiku inayotambua watembea kwa miguu na vizuizi barabarani.',
       en: 'Compare low-light camera feeds identifying pedestrians and road obstacles in autonomous navigation.',
@@ -149,7 +153,8 @@ const MASTER_DAILY_TASK_POOL = [
     tag: { sw: 'Kazi Mpya Leo', en: 'New Today' },
     rewardUSD: 2.40,
     time: '2 min',
-    image: 'https://images.unsplash.com/photo-1568667256549-094345857637?w=500&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1568667256549-094345857637?w=800&auto=format&fit=crop&q=80',
+    imageB: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=800&auto=format&fit=crop&q=80',
     description: {
       sw: 'Kagua risiti ya kielektroniki ya M-Pesa/TigoPesa na uhakikishe namba ya kumbukumbu na kiasi.',
       en: 'Inspect scanned transaction slips and verify extracted reference IDs and numerical amounts.',
@@ -169,7 +174,8 @@ const MASTER_DAILY_TASK_POOL = [
     tag: { sw: 'Kazi Mpya Leo', en: 'New Today' },
     rewardUSD: 2.30,
     time: '2 min',
-    image: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=500&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=800&auto=format&fit=crop&q=80',
+    imageB: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=80',
     description: {
       sw: 'Tambua kama bidhaa inayouzwa mtandaoni inakidhi viwango halisi au ina maelezo ya ulaghai.',
       en: 'Identify misleading product claims and counterfeit indicators in digital catalog listings.',
@@ -189,7 +195,8 @@ const MASTER_DAILY_TASK_POOL = [
     tag: { sw: 'Kazi Mpya Leo', en: 'New Today' },
     rewardUSD: 3.50,
     time: '3 min',
-    image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=500&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&auto=format&fit=crop&q=80',
+    imageB: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop&q=80',
     description: {
       sw: 'Linganisha kanuni mbili za hesabu za kompyuta na uchague iliyo thabiti bila hitilafu za kumbukumbu.',
       en: 'Evaluate two AI-generated algorithm functions for runtime efficiency and zero syntax errors.',
@@ -209,7 +216,8 @@ const MASTER_DAILY_TASK_POOL = [
     tag: { sw: 'Kazi Mpya Leo', en: 'New Today' },
     rewardUSD: 2.90,
     time: '2 min',
-    image: 'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=500&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=800&auto=format&fit=crop&q=80',
+    imageB: 'https://images.unsplash.com/photo-1524661135-423995f22d0b?w=800&auto=format&fit=crop&q=80',
     description: {
       sw: 'Pima upanuzi wa miji na miundombinu ya barabara kupitia picha za satelaiti zenye ubora wa juu.',
       en: 'Annotate municipal infrastructure expansion and road networks from high-res satellite tiles.',
@@ -229,7 +237,7 @@ const MASTER_DAILY_TASK_POOL = [
     tag: { sw: 'Kazi Mpya Leo', en: 'New Today' },
     rewardUSD: 3.10,
     time: '3 min',
-    image: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=500&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800&auto=format&fit=crop&q=80',
     description: {
       sw: 'Sikiliza mlio wa wanyama na ndege porini na uainishe spishi husika kwa usahihi wa kibaolojia.',
       en: 'Identify animal species vocalizations and bioacoustic frequencies recorded in national parks.',
@@ -249,7 +257,8 @@ const MASTER_DAILY_TASK_POOL = [
     tag: { sw: 'Kazi Mpya Leo', en: 'New Today' },
     rewardUSD: 2.70,
     time: '2 min',
-    image: 'https://images.unsplash.com/photo-1509391365360-2e959784a276?w=500&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1509391365360-2e959784a276?w=800&auto=format&fit=crop&q=80',
+    imageB: 'https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=800&auto=format&fit=crop&q=80',
     description: {
       sw: 'Linganisha viwango vya uzalishaji umeme wa jua kulingana na hali ya hewa na mionzi ya jua.',
       en: 'Verify solar inverter kilowatt output logs mapped against irradiance telemetry.',
@@ -269,7 +278,8 @@ const MASTER_DAILY_TASK_POOL = [
     tag: { sw: 'Kazi Mpya Leo', en: 'New Today' },
     rewardUSD: 2.65,
     time: '2 min',
-    image: 'https://images.unsplash.com/photo-1541888946425-d0fbb186f5f8?w=500&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1541888946425-d0fbb186f5f8?w=800&auto=format&fit=crop&q=80',
+    imageB: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&auto=format&fit=crop&q=80',
     description: {
       sw: 'Tathmini sampuli za maji na uainishe uwazi wa maji kulingana na viwango vya afya ya jamii.',
       en: 'Assess water sample turbidity optical clarity under standardized laboratory metrics.',
@@ -289,7 +299,8 @@ const MASTER_DAILY_TASK_POOL = [
     tag: { sw: 'Kazi Mpya Leo', en: 'New Today' },
     rewardUSD: 2.85,
     time: '2 min',
-    image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&auto=format&fit=crop&q=80',
+    imageB: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&auto=format&fit=crop&q=80',
     description: {
       sw: 'Baini makosa ya kufunga vifungashio vya viwandani kwenye laini ya uzalishaji ya kiotomatiki.',
       en: 'Inspect automated assembly line conveyor captures for seal defects and label alignment.',
@@ -309,7 +320,7 @@ const MASTER_DAILY_TASK_POOL = [
     tag: { sw: 'Kazi Mpya Leo', en: 'New Today' },
     rewardUSD: 3.15,
     time: '3 min',
-    image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=500&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&auto=format&fit=crop&q=80',
     description: {
       sw: 'Sikiliza sampuli mbili za sauti ya mahojiano na uchague ile iliyoondolewa kelele za feni na upepo.',
       en: 'Evaluate spectral noise suppression preserving vocal resonance and removing ambient hums.',
@@ -329,7 +340,8 @@ const MASTER_DAILY_TASK_POOL = [
     tag: { sw: 'Kazi Mpya Leo', en: 'New Today' },
     rewardUSD: 2.95,
     time: '2 min',
-    image: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=500&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=800&auto=format&fit=crop&q=80',
+    imageB: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&auto=format&fit=crop&q=80',
     description: {
       sw: 'Hakiki namba za nambari za magari zilizokamatwa na kamera za barabarani zenye mwendo kasi.',
       en: 'Verify optical character segmentation on highway high-speed license plate sensors.',
@@ -446,8 +458,8 @@ export function getDailyTasks(date = new Date()): DailyDisplayTask[] {
             },
             itemB: {
               label: { sw: 'Picha B (Ubora wa Kawaida)', en: 'Sample B (Standard Compression)' },
-              url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=80',
-              meta: 'Resolution: 1920x1080 • Noticeable Compression',
+              url: (item as any).imageB || 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&auto=format&fit=crop&q=80',
+              meta: 'Resolution: 1920x1080 • Standard Compression',
             },
           },
       options: [

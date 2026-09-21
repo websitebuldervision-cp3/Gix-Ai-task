@@ -1,6 +1,6 @@
 {
-  "name": "GIX AI TASKS",
-  "short_name": "GIX AI",
+  "name": "GIX CHAT",
+  "short_name": "GIX CHAT",
   "description": "Complete verified AI tasks and earn instant daily rewards.",
   "start_url": "/",
   "display": "standalone",

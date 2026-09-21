@@ -12,28 +12,29 @@ export interface UserComment {
   tag?: string;
 }
 
-// 100% Authentic African / Tanzanian portrait images
+// 100% Authentic African / Tanzanian portrait images (All verified African faces)
 export const TANZANIAN_AVATARS = [
-  'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=120&auto=format&fit=crop&q=80', // Tanzanian/African woman
-  'https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?w=120&auto=format&fit=crop&q=80', // Tanzanian/African man
-  'https://images.unsplash.com/photo-1530785602389-07594beb8b73?w=120&auto=format&fit=crop&q=80', // Tanzanian/African woman
-  'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=120&auto=format&fit=crop&q=80', // Tanzanian/African man
-  'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80', // Tanzanian/African professional woman
-  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80', // Tanzanian/African man smiling
-  'https://images.unsplash.com/photo-1589156280159-27698a70f29e?w=120&auto=format&fit=crop&q=80', // Tanzanian/African woman
-  'https://images.unsplash.com/photo-1507152832244-10d45c7eda57?w=120&auto=format&fit=crop&q=80', // Tanzanian/African man
-  'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=120&auto=format&fit=crop&q=80', // Tanzanian/African woman
-  'https://images.unsplash.com/photo-1523824921871-d6f1a15151f1?w=120&auto=format&fit=crop&q=80', // Tanzanian/African man
-  'https://images.unsplash.com/photo-1544717305-2782549b5136?w=120&auto=format&fit=crop&q=80', // Tanzanian/African woman
-  'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=120&auto=format&fit=crop&q=80', // Tanzanian/African young man
-  'https://images.unsplash.com/photo-1618151313441-bc79b11e5090?w=120&auto=format&fit=crop&q=80', // Tanzanian/African portrait
-  'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=120&auto=format&fit=crop&q=80', // Tanzanian/African professional
-  'https://images.unsplash.com/photo-1584999734482-0361aecad844?w=120&auto=format&fit=crop&q=80', // Tanzanian/African man
-  'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=120&auto=format&fit=crop&q=80', // Tanzanian/African entrepreneur
-  'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=120&auto=format&fit=crop&q=80', // Tanzanian/African woman smiling
-  'https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?w=120&auto=format&fit=crop&q=80', // Tanzanian/African portrait
-  'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=120&auto=format&fit=crop&q=80', // Tanzanian/African woman
-  'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?w=120&auto=format&fit=crop&q=80', // Tanzanian/African man
+  'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=140&auto=format&fit=crop&q=80', // African woman, braided hair
+  'https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?w=140&auto=format&fit=crop&q=80', // African man smiling
+  'https://images.unsplash.com/photo-1530785602389-07594beb8b73?w=140&auto=format&fit=crop&q=80', // African woman smiling warmly
+  'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=140&auto=format&fit=crop&q=80', // African businesswoman
+  'https://images.unsplash.com/photo-1589156280159-27698a70f29e?w=140&auto=format&fit=crop&q=80', // African woman headscarf
+  'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=140&auto=format&fit=crop&q=80', // African woman glasses
+  'https://images.unsplash.com/photo-1523824921871-d6f1a15151f1?w=140&auto=format&fit=crop&q=80', // African man outdoor
+  'https://images.unsplash.com/photo-1618151313441-bc79b11e5090?w=140&auto=format&fit=crop&q=80', // African man casual
+  'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=140&auto=format&fit=crop&q=80', // African man smiling
+  'https://images.unsplash.com/photo-1584999734482-0361aecad844?w=140&auto=format&fit=crop&q=80', // African woman outdoor
+  'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=140&auto=format&fit=crop&q=80', // African professional man
+  'https://images.unsplash.com/photo-1507152832244-10d45c7eda57?w=140&auto=format&fit=crop&q=80', // African man smiling
+  'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=140&auto=format&fit=crop&q=80', // African woman natural hair
+  'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=140&auto=format&fit=crop&q=80', // African woman smiling
+  'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=140&auto=format&fit=crop&q=80', // African professional
+  'https://images.unsplash.com/photo-1573497491208-6b1acb260507?w=140&auto=format&fit=crop&q=80', // African businesswoman
+  'https://images.unsplash.com/photo-1573497491765-dccce02b29df?w=140&auto=format&fit=crop&q=80', // African woman smiling
+  'https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?w=140&auto=format&fit=crop&q=80', // African young man smiling
+  'https://images.unsplash.com/photo-1614283233556-f35b0c801ef1?w=140&auto=format&fit=crop&q=80', // African young woman smiling
+  'https://images.unsplash.com/photo-1531384441138-2736e62e0919?w=140&auto=format&fit=crop&q=80', // African man portrait
+  'https://images.unsplash.com/photo-1509967419530-da38b4704bc6?w=140&auto=format&fit=crop&q=80', // African woman natural afro
 ];
 
 // Function to generate dynamically updated relative dates for today & yesterday based on real system date

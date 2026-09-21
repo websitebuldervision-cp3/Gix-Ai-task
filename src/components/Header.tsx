@@ -76,7 +76,7 @@ export const Header: React.FC = () => {
           <div>
             <div className="flex items-center gap-1.5">
               <span className="font-display text-base font-bold tracking-tight text-white sm:text-lg">
-                GIX <span className="text-cyan-400">AI</span> TASKS
+                GIX <span className="text-cyan-400">CHAT</span>
               </span>
               <span className="hidden rounded-full bg-cyan-500/10 px-1.5 py-0.5 text-[9px] font-semibold text-cyan-300 border border-cyan-500/20 sm:inline-block">
                 360°

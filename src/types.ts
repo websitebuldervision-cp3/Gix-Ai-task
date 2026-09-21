@@ -87,10 +87,11 @@ export interface TaskSubmission {
   submittedAt: string;
   rewardUSD: number;
   rewardTZS: number;
-  status: 'pending' | 'under_review' | 'accepted';
+  status: 'pending' | 'under_review' | 'accepted' | 'paid';
   selectedOptionLabel: LocalizedText;
   isIncorrect?: boolean;
   rewardPercentage?: number;
+  paidDate?: string;
 }
 
 export interface LeaderboardUser {

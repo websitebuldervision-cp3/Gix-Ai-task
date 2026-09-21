@@ -38,14 +38,29 @@ export const AccountView: React.FC = () => {
     <div className="space-y-6 pb-12">
       {/* Header */}
       <div className="rounded-3xl border border-slate-800 bg-slate-900/90 p-6 sm:p-8">
-        <div className="max-w-2xl">
-          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-400">
-            <User className="h-3.5 w-3.5" />
-            <span>{t.accountPage.profile}</span>
+        <div className="flex items-center gap-4">
+          {/* Circular 360-rotating profile picture on the top left of profile header */}
+          <div className="relative flex h-12 w-12 sm:h-14 sm:w-14 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-cyan-500 via-blue-500 to-indigo-500 p-[2px] shadow-lg shadow-cyan-500/30 ring-2 ring-cyan-400/50">
+            <img
+              src="/gix_chats_profile.jpg"
+              alt="GIX Profile 360"
+              referrerPolicy="no-referrer"
+              className="h-full w-full rounded-full object-cover animate-rotate-360"
+            />
+            <span className="absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-emerald-500 text-[8px] text-slate-950 font-black ring-1.5 ring-slate-900">
+              ✓
+            </span>
           </div>
-          <h1 className="font-display mt-3 text-2xl sm:text-3xl font-extrabold text-white">
-            {t.accountPage.title}
-          </h1>
+
+          <div className="max-w-2xl">
+            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-400">
+              <User className="h-3.5 w-3.5" />
+              <span>{t.accountPage.profile}</span>
+            </div>
+            <h1 className="font-display mt-2 text-2xl sm:text-3xl font-extrabold text-white">
+              {t.accountPage.title}
+            </h1>
+          </div>
         </div>
       </div>
 

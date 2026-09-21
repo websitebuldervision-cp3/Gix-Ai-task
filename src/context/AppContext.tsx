@@ -49,6 +49,9 @@ interface AppContextType {
   isPwaModalOpen: boolean;
   isPwaInstalled: boolean;
   canInstallPwa: boolean;
+  isTaskPaidToday: (taskIdOrCatId: string) => boolean;
+  lockedTaskNotice: string | null;
+  closeLockedTaskNotice: () => void;
   startTask: (categoryId?: string) => void;
   closeTask: () => void;
   submitTask: (optionId: string) => void;
@@ -71,6 +74,7 @@ const STORAGE_KEYS = {
   USER: 'gix_ai_tasks_user',
   SUBMISSIONS: 'gix_ai_tasks_submissions',
   COMPLETED_IDS: 'gix_ai_tasks_completed_ids',
+  DAILY_PAID_TASKS: 'gix_chat_daily_paid_tasks_map',
 };
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -268,6 +272,49 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return saved ? JSON.parse(saved) : ['task_trans_eval_01'];
   });
 
+  const getTodayDateKey = () => new Date().toISOString().split('T')[0];
+
+  // Daily paid tasks map: [taskIdOrCategoryId]: 'YYYY-MM-DD'
+  const [dailyPaidTasks, setDailyPaidTasks] = useState<Record<string, string>>(() => {
+    const saved = localStorage.getItem(STORAGE_KEYS.DAILY_PAID_TASKS);
+    if (saved) {
+      try {
+        const parsed: Record<string, string> = JSON.parse(saved);
+        const todayKey = new Date().toISOString().split('T')[0];
+        // Retain only tasks paid today; yesterday's tasks expire so user can do tasks next day
+        const validToday: Record<string, string> = {};
+        for (const [id, date] of Object.entries(parsed)) {
+          if (date === todayKey) {
+            validToday[id] = date;
+          }
+        }
+        return validToday;
+      } catch (e) {
+        console.error('Failed to parse dailyPaidTasks', e);
+      }
+    }
+    return {};
+  });
+
+  const [lockedTaskNotice, setLockedTaskNotice] = useState<string | null>(null);
+
+  const closeLockedTaskNotice = () => setLockedTaskNotice(null);
+
+  const isTaskPaidToday = (identifier: string): boolean => {
+    if (!identifier) return false;
+    const todayKey = getTodayDateKey();
+    if (dailyPaidTasks[identifier] === todayKey) return true;
+
+    return submissions.some((s) => {
+      const isMatch = s.taskId === identifier || s.id === identifier;
+      const isToday =
+        s.paidDate === todayKey ||
+        s.submittedAt.toLowerCase().includes('today') ||
+        s.submittedAt.toLowerCase().includes('leo');
+      return isMatch && (s.status === 'paid' || isToday);
+    });
+  };
+
   // Save changes to localStorage
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
@@ -280,6 +327,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.COMPLETED_IDS, JSON.stringify(completedTaskIds));
   }, [completedTaskIds]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.DAILY_PAID_TASKS, JSON.stringify(dailyPaidTasks));
+  }, [dailyPaidTasks]);
 
   // 5. Active Task Modal / State
   const [currentTask, setCurrentTask] = useState<TaskItem | null>(null);
@@ -341,7 +392,31 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // 7. Task Actions
   const startTask = (categoryId?: string) => {
-    const nextTask = getRotatingTask(categoryId, completedTaskIds);
+    if (categoryId && isTaskPaidToday(categoryId)) {
+      setLockedTaskNotice(
+        language === 'sw'
+          ? 'Kazi hii tayari umeshaifanya na umeshalipwa (PAID) kwa siku ya leo! Hauruhusiwi kuifanya tena leo maana umeshalipwa. Kazi itafunguliwa tena kesho.'
+          : 'You have already completed and received PAYMENT (PAID) for this task today! You cannot repeat it today. It will be available again tomorrow.'
+      );
+      return;
+    }
+
+    // Exclude tasks paid or completed today so rotation engine picks fresh tasks
+    const allExcluded = Array.from(
+      new Set([...completedTaskIds, ...Object.keys(dailyPaidTasks)])
+    );
+
+    const nextTask = getRotatingTask(categoryId, allExcluded);
+
+    if (nextTask && isTaskPaidToday(nextTask.id)) {
+      setLockedTaskNotice(
+        language === 'sw'
+          ? 'Kazi hii tayari umeshaifanya na umeshalipwa (PAID) kwa siku ya leo! Tafadhali chagua kazi nyingine.'
+          : 'You have already completed and received PAYMENT (PAID) for this task today! Please select another task.'
+      );
+      return;
+    }
+
     setCurrentTask(nextTask);
   };
 
@@ -379,19 +454,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           en: task.wrongAnswerFeedback?.en || `Incorrect answer! The benchmark standard answer was "${expectedOpt.label.en}". Under quality guidelines, you have been awarded 15% partial payout ($${finalRewardUSD.toFixed(2)} / TSh ${finalRewardTZS.toLocaleString()}) instead of 100%.`,
         };
 
-    // Prevent duplicate credit
+    const todayKey = getTodayDateKey();
+
+    // Prevent duplicate credit & explicitly mark as 'paid'
     const newSubmission: TaskSubmission = {
       id: `sub_${Date.now()}`,
       taskId: task.id,
       taskTitle: task.title,
       categoryName: task.categoryName,
-      submittedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      submittedAt: `${language === 'sw' ? 'Leo' : 'Today'}, ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
       rewardUSD: finalRewardUSD,
       rewardTZS: finalRewardTZS,
-      status: 'pending',
+      status: 'paid', // Marked as PAID immediately
       selectedOptionLabel: selectedOpt.label,
       isIncorrect: !isCorrect,
       rewardPercentage: isCorrect ? 100 : 15,
+      paidDate: todayKey,
     };
 
     // Update balances securely with the actual awarded reward (full or 15%)
@@ -402,7 +480,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }));
 
     setSubmissions((prev) => [newSubmission, ...prev]);
-    setCompletedTaskIds((prev) => [...prev, task.id]);
+    setCompletedTaskIds((prev) => [...prev, task.id, task.categoryId]);
+
+    // Lock this task and category for today
+    setDailyPaidTasks((prev) => ({
+      ...prev,
+      [task.id]: todayKey,
+      [task.categoryId]: todayKey,
+    }));
 
     // Close task engine and trigger animated success/result modal
     setCurrentTask(null);
@@ -436,6 +521,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     localStorage.removeItem(STORAGE_KEYS.USER);
     localStorage.removeItem(STORAGE_KEYS.SUBMISSIONS);
     localStorage.removeItem(STORAGE_KEYS.COMPLETED_IDS);
+    localStorage.removeItem(STORAGE_KEYS.DAILY_PAID_TASKS);
     window.location.reload();
   };
 
@@ -460,6 +546,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         isPwaModalOpen,
         isPwaInstalled,
         canInstallPwa: !!deferredPwaPrompt,
+        isTaskPaidToday,
+        lockedTaskNotice,
+        closeLockedTaskNotice,
         startTask,
         closeTask,
         submitTask,

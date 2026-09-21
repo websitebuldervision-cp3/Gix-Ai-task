@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Volume2, VolumeX, X } from 'lucide-react';
-import { LIVE_PAYOUTS_LIST, PayoutNotification } from '../data/livePayouts';
+import { getDailyPayoutsList, PayoutNotification } from '../data/livePayouts';
 import { playPayoutChime } from '../utils/audioChime';
 import { useApp } from '../context/AppContext';
 
@@ -8,16 +8,22 @@ export const LivePayoutToast: React.FC = () => {
   const { language } = useApp();
   const isSw = language === 'sw';
 
-  const [currentIndex, setCurrentIndex] = useState(0);
+  // Dynamic daily randomized payouts pool
+  const payouts = useMemo(() => getDailyPayoutsList(), []);
+
+  // Start with a randomized index so each visitor sees different people right from the start
+  const [currentIndex, setCurrentIndex] = useState(() =>
+    Math.floor(Math.random() * Math.min(payouts.length, 50))
+  );
   const [isVisible, setIsVisible] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
-    // Initial delay before first toast (5 seconds after load)
+    // Initial delay before first toast (4 seconds after load)
     const initialTimer = setTimeout(() => {
       triggerToast();
-    }, 5000);
+    }, 4000);
 
     // Schedule next toast with interval between 1 minute (60s) and 1.5 minutes (90s)
     let nextTimeout: number;
@@ -37,10 +43,10 @@ export const LivePayoutToast: React.FC = () => {
       clearTimeout(initialTimer);
       clearTimeout(nextTimeout);
     };
-  }, [soundEnabled]);
+  }, [soundEnabled, payouts.length]);
 
   const triggerToast = () => {
-    setCurrentIndex((prev) => (prev + 1) % LIVE_PAYOUTS_LIST.length);
+    setCurrentIndex((prev) => (prev + 1 + Math.floor(Math.random() * 2)) % payouts.length);
     setIsVisible(true);
 
     if (soundEnabled) {
@@ -53,7 +59,7 @@ export const LivePayoutToast: React.FC = () => {
     }, 8000);
   };
 
-  const current: PayoutNotification = LIVE_PAYOUTS_LIST[currentIndex] || LIVE_PAYOUTS_LIST[0];
+  const current: PayoutNotification = payouts[currentIndex] || payouts[0];
 
   if (dismissed || !isVisible) return null;
 

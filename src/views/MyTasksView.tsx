@@ -14,7 +14,7 @@ import { formatUSD, formatTZS } from '../data/translations';
 export const MyTasksView: React.FC = () => {
   const { language, t, submissions, startTask } = useApp();
   const isSw = language === 'sw';
-  const [filter, setFilter] = useState<'all' | 'pending' | 'under_review' | 'accepted'>('all');
+  const [filter, setFilter] = useState<'all' | 'paid' | 'pending' | 'under_review' | 'accepted'>('all');
 
   const filteredSubmissions = submissions.filter((sub) => {
     if (filter === 'all') return true;
@@ -23,6 +23,13 @@ export const MyTasksView: React.FC = () => {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
+      case 'paid':
+        return (
+          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/20 px-2.5 py-0.5 text-[11px] font-extrabold text-emerald-300 border border-emerald-500/40">
+            <CheckCircle2 className="h-3 w-3 text-emerald-400" />
+            PAID
+          </span>
+        );
       case 'accepted':
         return (
           <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-bold text-emerald-400 border border-emerald-500/20">
@@ -87,6 +94,17 @@ export const MyTasksView: React.FC = () => {
             }`}
           >
             {t.myTasksPage.filterAll} ({submissions.length})
+          </button>
+          <button
+            id="filter-paid-tasks"
+            onClick={() => setFilter('paid')}
+            className={`rounded-xl px-3.5 py-1.5 text-xs font-semibold transition-all ${
+              filter === 'paid'
+                ? 'bg-emerald-600 text-white shadow-sm'
+                : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+            }`}
+          >
+            PAID ({submissions.filter((s) => s.status === 'paid').length})
           </button>
           <button
             id="filter-pending-tasks"
