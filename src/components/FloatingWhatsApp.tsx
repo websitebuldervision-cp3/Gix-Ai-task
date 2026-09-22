@@ -1,5 +1,6 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
+import { WHATSAPP_PHONE } from '../data/translations';
 
 export const FloatingWhatsApp: React.FC = () => {
   const { language, openWhatsAppSupport } = useApp();
@@ -16,8 +17,8 @@ export const FloatingWhatsApp: React.FC = () => {
         <span className="text-emerald-300 uppercase tracking-wider font-display">
           CUSTOMER CARE
         </span>
-        <span className="text-[9px] text-slate-400 font-normal hidden sm:inline">
-          (0624542565)
+        <span className="text-[9px] text-slate-400 font-normal hidden sm:inline font-mono">
+          ({WHATSAPP_PHONE})
         </span>
       </div>
 

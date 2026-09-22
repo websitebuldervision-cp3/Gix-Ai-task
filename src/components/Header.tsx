@@ -178,7 +178,7 @@ export const Header: React.FC = () => {
               rel="noopener noreferrer"
               className="hidden lg:flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-pink-500 to-rose-600 px-3 py-1.5 text-xs font-black text-white shadow-md shadow-pink-500/30 hover:scale-105 active:scale-95 uppercase tracking-wide border border-pink-400/50 animate-pulse"
             >
-              <span>{language === 'sw' ? 'FUNGUA ACCOUNT' : 'ACTIVATE'}</span>
+              <span>{language === 'sw' ? 'GUSA HAPA FUNGUA ACCOUNT' : 'ACTIVATE'}</span>
               <ExternalLink className="h-3 w-3" />
             </a>
           )}

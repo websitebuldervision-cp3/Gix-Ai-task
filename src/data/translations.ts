@@ -40,12 +40,12 @@ export const translations = {
     hero: {
       badge: 'Verified AI Microtask Network',
       title: 'Complete Verified AI Tasks & Get Paid Instantly',
-      subtitle: 'Earn from TSh 50,000+ ($20 - $50+) daily completing fast AI evaluations on your mobile phone. Open your account and start today for instant mobile money payouts!',
+      subtitle: 'Earn from TSh 50,000+ daily. Open your account to start today for only 16,000 TSh and receive instant mobile money payouts!',
       startTasks: 'START NOW',
       exploreTasks: 'EXPLORE AI TASKS',
       installApp: 'INSTALL APP',
       customerCare: 'CUSTOMER CARE',
-      activateAccount: 'OPEN YOUR ACCOUNT & START TODAY',
+      activateAccount: 'TAP HERE TO OPEN ACCOUNT',
       statCategories: '55+ AI Task Categories',
       statContributors: '42,800+ Contributors',
       statPaidOut: '$380,000+ Total Distributed',
@@ -238,7 +238,7 @@ export const translations = {
       title: 'Customer Care Support',
       desc: 'Our dedicated support agents are available 24/7 on WhatsApp to assist you with tasks, activations, and rewards.',
       whatsappBtn: 'Open WhatsApp Chat',
-      phone: '0624542565',
+      phone: '0669187451',
       prefillMsg: 'Hello Customer Care, please guide me about GIX CHAT.',
     },
     general: {
@@ -276,12 +276,12 @@ export const translations = {
     hero: {
       badge: 'Mtandao Rasmi wa Kazi za AI',
       title: 'Anza Kufanya Task Mbalimbali za AI na Kulipwa Hapo Hapo',
-      subtitle: 'Tengeneza kuanzia TSh 50,000/= na kuendelea kwa siku kupitia simu yako. Fungua account yako uanze leo kupokea malipo ya moja kwa moja kupitia M-Pesa, Tigo Pesa, Airtel Money, na HaloPesa!',
+      subtitle: 'Tengeneza kuanzia TSh 50,000/= na kuendelea kwa siku kwa kufanya kazi za AI, fungua account yako uweze kuanza leo kwa 16,000 pekee kupokea malipo ya moja kwa moja kupitia M-Pesa, Tigo Pesa, Airtel Money, na HaloPesa!',
       startTasks: 'START NOW',
       exploreTasks: 'EXPLORE TASKS',
       installApp: 'INSTALL APP',
       customerCare: 'CUSTOMER CARE',
-      activateAccount: 'FUNGUA ACCOUNT YAKO UANZE LEO',
+      activateAccount: 'GUSA HAPA FUNGUA ACCOUNT',
       statCategories: 'Categories 55+ za AI Tasks',
       statContributors: '42,800+ Contributors Wanaoendelea',
       statPaidOut: '$380,000+ Total Distributed',
@@ -474,7 +474,7 @@ export const translations = {
       title: 'Customer Care Support',
       desc: 'Customer support team yetu ipo available 24/7 kupitia WhatsApp kukusaidia kuhusu tasks, account activation, na rewards.',
       whatsappBtn: 'Open WhatsApp Chat',
-      phone: '0624542565',
+      phone: '0669187451',
       prefillMsg: 'Hello Customer Care, naomba msaada kuhusu GIX CHAT.',
     },
     general: {
@@ -491,8 +491,8 @@ export const translations = {
 };
 
 export const ACTIVATION_URL = 'https://moxeraagencies.com/register?ref=Cp3';
-export const WHATSAPP_PHONE = '0624542565';
-export const WHATSAPP_INTERNATIONAL = '255624542565';
+export const WHATSAPP_PHONE = '0669187451';
+export const WHATSAPP_INTERNATIONAL = '255669187451';
 
 export function getWhatsAppLink(lang: Language): string {
   const msg = translations[lang].support.prefillMsg;

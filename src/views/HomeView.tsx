@@ -109,10 +109,10 @@ export const HomeView: React.FC = () => {
           </h1>
 
           {/* Subtitle / Earnings Highlight */}
-          <div className="mt-2 inline-block rounded-lg border border-emerald-500/40 bg-emerald-500/15 px-3 py-1 text-xs font-extrabold text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.15)]">
+          <div className="mt-2 inline-block rounded-lg border border-emerald-500/40 bg-emerald-500/15 px-3 py-1.5 text-xs sm:text-sm font-extrabold text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.15)] leading-relaxed">
             {isSw
-              ? '💰 Tengeneza kuanzia TSh 50,000/= kwa siku na kuendelea kupitia simu yako'
-              : '💰 Earn from TSh 50,000+ ($20 - $50+) daily completing simple tasks on your phone'}
+              ? '💰 Tengeneza kuanzia TSh 50,000/= na kuendelea kwa siku kwa kufanya kazi za AI, fungua account yako uweze kuanza leo kwa 16,000 pekee'
+              : '💰 Earn from TSh 50,000+ daily doing AI tasks. Open your account to start today for only 16,000 TSh'}
           </div>
 
           {/* Glowing Pink GUSA HAPA FUNGUA ACCOUNT Button */}
