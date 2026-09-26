@@ -20,7 +20,8 @@ export interface PushStatus {
 }
 
 export const PUSH_STORAGE_KEYS = {
-  HAS_PROMPTED_SESSION: 'gix_notification_prompt_dismissed_session',
+  HAS_PROMPTED_ONCE: 'gix_notification_prompt_shown_once_permanent',
+  ENABLED_PERMANENT: 'gix_notifications_enabled_permanently',
   LAST_ENTRY_NOTIFICATION: 'gix_last_entry_notification_ts',
 };
 
@@ -130,7 +131,7 @@ export class PushNotificationService {
     try {
       // 1. Request real browser notification permission (only on explicit user click)
       const permission = await Notification.requestPermission();
-      sessionStorage.setItem(PUSH_STORAGE_KEYS.HAS_PROMPTED_SESSION, 'true');
+      this.markPromptAsShown();
 
       if (permission !== 'granted') {
         return {
@@ -142,6 +143,8 @@ export class PushNotificationService {
             : 'Permission haijatolewa na mtumiaji.',
         };
       }
+
+      this.markAsEnabledPermanently();
 
       // 2. Fetch VAPID Public Key from backend
       const keyRes = await fetch('/api/push/public-key');
@@ -336,18 +339,38 @@ export class PushNotificationService {
   public shouldShowInitialPrompt(): boolean {
     if (!this.isSupported()) return false;
 
-    // If user already granted permission, no need to show the prompt again
+    // 1. If user already granted permission, NEVER show prompt
     if (Notification.permission === 'granted') {
       return false;
     }
 
-    // If dismissed in this session, don't show again this session
-    const hasDismissedSession = sessionStorage.getItem(PUSH_STORAGE_KEYS.HAS_PROMPTED_SESSION);
-    return hasDismissedSession !== 'true';
+    // 2. If user already enabled notifications before, NEVER show prompt
+    if (localStorage.getItem(PUSH_STORAGE_KEYS.ENABLED_PERMANENT) === 'true') {
+      return false;
+    }
+
+    // 3. If prompt has already been shown once, NEVER show again (ije mara moja tu!)
+    const alreadyShown = localStorage.getItem(PUSH_STORAGE_KEYS.HAS_PROMPTED_ONCE);
+    if (alreadyShown === 'true') {
+      return false;
+    }
+
+    return true;
   }
 
   public dismissInitialPrompt(): void {
-    sessionStorage.setItem(PUSH_STORAGE_KEYS.HAS_PROMPTED_SESSION, 'true');
+    // Record permanently in localStorage so it never shows again
+    localStorage.setItem(PUSH_STORAGE_KEYS.HAS_PROMPTED_ONCE, 'true');
+  }
+
+  public markPromptAsShown(): void {
+    // Record permanently that the prompt was shown once
+    localStorage.setItem(PUSH_STORAGE_KEYS.HAS_PROMPTED_ONCE, 'true');
+  }
+
+  public markAsEnabledPermanently(): void {
+    localStorage.setItem(PUSH_STORAGE_KEYS.ENABLED_PERMANENT, 'true');
+    localStorage.setItem(PUSH_STORAGE_KEYS.HAS_PROMPTED_ONCE, 'true');
   }
 
   public async sendTestNotification(): Promise<{ success: boolean; message: string }> {

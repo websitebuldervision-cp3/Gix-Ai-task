@@ -10,12 +10,13 @@ export const NotificationPromptModal: React.FC = () => {
   const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
-    // Show immediately upon entering the site
+    // Show after exactly 10 seconds upon entering the site, and only once ever
     const timer = setTimeout(() => {
       if (pushService.shouldShowInitialPrompt()) {
+        pushService.markPromptAsShown();
         setIsOpen(true);
       }
-    }, 400);
+    }, 10000); // 10 seconds
 
     return () => clearTimeout(timer);
   }, []);
@@ -26,6 +27,7 @@ export const NotificationPromptModal: React.FC = () => {
     setIsLoading(true);
 
     try {
+      pushService.markAsEnabledPermanently();
       await pushService.subscribeUser(language);
       setIsSuccess(true);
       setTimeout(() => {
