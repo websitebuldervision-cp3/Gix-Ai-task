@@ -1,20 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
   Bell,
-  BellOff,
   CheckCircle2,
   AlertTriangle,
-  Info,
-  Volume2,
-  Send,
   X,
-  Smartphone,
-  ShieldCheck,
-  Clock,
-  Sparkles,
-  ExternalLink
+  Send,
+  HelpCircle,
 } from 'lucide-react';
-import { pushService, PushStatus, playChimeSound } from '../services/pushNotificationService';
+import { pushService, PushStatus } from '../services/pushNotificationService';
 import { useApp } from '../context/AppContext';
 
 interface Props {
@@ -26,8 +19,8 @@ export const NotificationSettingsModal: React.FC<Props> = ({ isOpen, onClose }) 
   const { language } = useApp();
   const [status, setStatus] = useState<PushStatus | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
-  const [testResult, setTestResult] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
-  const [isSendingTest, setIsSendingTest] = useState(false);
+  const [showHowToUnblock, setShowHowToUnblock] = useState(false);
+  const [testResult, setTestResult] = useState<string | null>(null);
 
   const refreshStatus = async () => {
     const s = await pushService.getStatus();
@@ -37,11 +30,15 @@ export const NotificationSettingsModal: React.FC<Props> = ({ isOpen, onClose }) 
   useEffect(() => {
     if (isOpen) {
       refreshStatus();
+      setShowHowToUnblock(false);
       setTestResult(null);
     }
   }, [isOpen]);
 
   if (!isOpen) return null;
+
+  const isGranted = status?.permission === 'granted' && status?.isSubscribed;
+  const isDenied = status?.permission === 'denied';
 
   const handleToggle = async () => {
     if (!status) return;
@@ -49,230 +46,157 @@ export const NotificationSettingsModal: React.FC<Props> = ({ isOpen, onClose }) 
     setTestResult(null);
 
     try {
-      if (status.isSubscribed) {
+      if (isGranted) {
         await pushService.unsubscribeUser();
+      } else if (!isDenied) {
+        const res = await pushService.subscribeUser(language);
+        if (res.isBlocked || res.permission === 'denied') {
+          setShowHowToUnblock(true);
+        }
       } else {
-        await pushService.subscribeUser(language);
+        setShowHowToUnblock(true);
       }
       await refreshStatus();
     } catch (e) {
-      console.error('Failed to toggle notifications:', e);
+      console.error(e);
     } finally {
       setIsUpdating(false);
     }
   };
 
   const handleSendTest = async () => {
-    setIsSendingTest(true);
     setTestResult(null);
+    setIsUpdating(true);
     try {
-      const res = await pushService.sendTestNotification();
-      if (res.success) {
-        setTestResult({
-          type: 'success',
-          message: res.message,
+      if (status?.subscription) {
+        const res = await fetch('/api/push/send-test', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ subscription: status.subscription }),
         });
-      } else {
-        setTestResult({
-          type: 'error',
-          message: res.message,
-        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          setTestResult('Notification imetumwa kwenye simu yako!');
+        } else {
+          setTestResult(data.error || 'Imeshindwa kutuma.');
+        }
       }
-    } catch (e: any) {
-      setTestResult({
-        type: 'error',
-        message: e.message || 'Hitilafu wakati wa kutuma jaribio.',
-      });
+    } catch {
+      setTestResult('Hitilafu ya mtandao.');
     } finally {
-      setIsSendingTest(false);
+      setIsUpdating(false);
     }
   };
 
-  const isDenied = status?.permission === 'denied';
-  const isGranted = status?.permission === 'granted' && status?.isSubscribed;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl border border-slate-700 bg-slate-900 p-5 sm:p-6 shadow-2xl text-slate-100">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="relative w-full max-w-sm rounded-2xl border border-slate-700 bg-slate-900 p-5 shadow-2xl text-white">
         {/* Close Button */}
         <button
           onClick={onClose}
           aria-label="Funga"
-          className="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition"
+          className="absolute top-3.5 right-3.5 p-1 text-slate-400 hover:text-white rounded-lg transition-colors"
         >
-          <X className="h-5 w-5" />
+          <X className="h-4 w-4" />
         </button>
 
-        {/* Modal Header */}
-        <div className="flex items-center gap-3 pb-4 border-b border-slate-800">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-500/40">
-            <Bell className="h-6 w-6" />
+        {/* Header */}
+        <div className="flex items-center gap-2.5 pb-3 border-b border-slate-800">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400">
+            <Bell className="h-5 w-5" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-white font-display flex items-center gap-2">
-              <span>🔔 Notification Settings</span>
-            </h2>
-            <p className="text-xs text-slate-400">
-              Usimamizi wa taarifa za Web Push kwenye simu yako
+            <h3 className="text-base font-bold font-display text-white">
+              🔔 Notifications
+            </h3>
+            <p className="text-[11px] text-slate-400">
+              Taarifa za simu za GIX CHATS
             </p>
           </div>
         </div>
 
-        {/* Current Status Card */}
-        <div className="mt-4 rounded-xl border border-slate-800 bg-slate-950/60 p-4">
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <span className="text-xs text-slate-400 uppercase tracking-wider font-semibold">Hali ya Sasa:</span>
-              <div className="flex items-center gap-2">
-                {isGranted ? (
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 px-2.5 py-1 text-xs font-bold text-emerald-300">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
-                    Zimewashwa (Active)
-                  </span>
-                ) : isDenied ? (
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-500/20 border border-rose-500/40 px-2.5 py-1 text-xs font-bold text-rose-300">
-                    <AlertTriangle className="h-3.5 w-3.5 text-rose-400" />
-                    Zimezuiwa na Browser
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/20 border border-amber-500/40 px-2.5 py-1 text-xs font-bold text-amber-300">
-                    <Info className="h-3.5 w-3.5 text-amber-400" />
-                    Bado Hazijawashwa
-                  </span>
-                )}
-              </div>
-            </div>
-
-            {/* Toggle Switch */}
-            <div>
-              {!isDenied && (
-                <button
-                  id="btn-toggle-notification-push"
-                  onClick={handleToggle}
-                  disabled={isUpdating}
-                  className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                    isGranted ? 'bg-emerald-500' : 'bg-slate-700'
-                  }`}
-                >
-                  <span
-                    className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${
-                      isGranted ? 'translate-x-5' : 'translate-x-0'
-                    }`}
-                  />
-                </button>
-              )}
-            </div>
+        {/* Clean Toggle Section */}
+        <div className="mt-4 flex items-center justify-between p-3 rounded-xl bg-slate-950/60 border border-slate-800">
+          <div>
+            <span className="text-xs font-semibold block text-white">
+              {isGranted
+                ? 'Notifications zimewashwa.'
+                : isDenied
+                ? 'Notifications zimezuiwa na browser.'
+                : 'Washa notifications.'}
+            </span>
+            <span className="text-[11px] text-slate-400">
+              {isGranted
+                ? 'Utapokea taarifa 08:00, 13:00 na 19:00 EAT.'
+                : isDenied
+                ? 'Ruhusu kwenye browser site settings.'
+                : 'Pata taarifa za AI Jobs kwenye simu.'}
+            </span>
           </div>
 
-          <p className="mt-3 text-xs text-slate-300 leading-relaxed">
-            {isGranted
-              ? 'Simu yako itapokea taarifa za AI Jobs hata ukiwa nje ya website au ukitumia app nyingine kama WhatsApp au TikTok.'
-              : isDenied
-              ? 'Umezizuia notifications kwenye browser yako. Fuata maelekezo hapa chini ili kuziwezesha tena.'
-              : 'Washa notifications ili usikose nafasi za AI Jobs za kila siku na taarifa za akaunti.'}
-          </p>
+          {!isDenied ? (
+            <button
+              onClick={handleToggle}
+              disabled={isUpdating}
+              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                isGranted ? 'bg-emerald-500' : 'bg-slate-700'
+              }`}
+            >
+              <span
+                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                  isGranted ? 'translate-x-5' : 'translate-x-0'
+                }`}
+              />
+            </button>
+          ) : (
+            <button
+              onClick={() => setShowHowToUnblock(!showHowToUnblock)}
+              className="text-[11px] font-semibold text-amber-400 underline hover:text-amber-300"
+            >
+              Jinsi ya kuwasha
+            </button>
+          )}
         </div>
 
-        {/* Action Buttons: Test Notification & Sound */}
-        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-          <button
-            id="btn-send-test-push"
-            onClick={handleSendTest}
-            disabled={!isGranted || isSendingTest}
-            className="flex items-center justify-center gap-2 rounded-xl bg-emerald-600/30 border border-emerald-500/50 py-2.5 px-3 text-xs font-bold text-emerald-200 hover:bg-emerald-600/50 disabled:opacity-40 disabled:cursor-not-allowed transition"
-          >
-            {isSendingTest ? (
-              <>
-                <div className="h-3.5 w-3.5 rounded-full border-2 border-emerald-400 border-t-transparent animate-spin" />
-                <span>Inatuma jaribio...</span>
-              </>
-            ) : (
-              <>
-                <Send className="h-3.5 w-3.5" />
-                <span>Tuma Notification ya Majaribio</span>
-              </>
-            )}
-          </button>
-
-          <button
-            onClick={() => playChimeSound()}
-            className="flex items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-800/80 py-2.5 px-3 text-xs font-medium text-slate-300 hover:bg-slate-700 hover:text-white transition"
-          >
-            <Volume2 className="h-3.5 w-3.5 text-teal-400" />
-            <span>Sikia Sauti ya Notification 🔔</span>
-          </button>
-        </div>
-
-        {/* Test Result Message */}
-        {testResult && (
-          <div
-            className={`mt-3 p-3 rounded-xl text-xs flex items-center gap-2 ${
-              testResult.type === 'success'
-                ? 'bg-emerald-950/60 border border-emerald-500/40 text-emerald-300'
-                : 'bg-rose-950/60 border border-rose-500/40 text-rose-300'
-            }`}
-          >
-            {testResult.type === 'success' ? (
-              <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400" />
-            ) : (
-              <AlertTriangle className="h-4 w-4 shrink-0 text-rose-400" />
-            )}
-            <span>{testResult.message}</span>
+        {/* How to Unblock Instructions */}
+        {(showHowToUnblock || isDenied) && (
+          <div className="mt-3 p-3 rounded-xl bg-amber-950/30 border border-amber-500/30 text-xs text-amber-200 leading-relaxed">
+            <div className="flex items-center gap-1.5 font-bold mb-1 text-amber-300">
+              <HelpCircle className="h-3.5 w-3.5 shrink-0" />
+              <span>Jinsi ya kuwasha tena kwenye Chrome:</span>
+            </div>
+            <p className="text-[11px] text-slate-300">
+              1. Gusa alama ya <strong>🔒 (kufuli)</strong> au <strong>Site Settings</strong> juu kushoto mwa address bar.
+              <br />
+              2. Chagua <strong>Notifications</strong> ➔ Weka <strong>Allow</strong>.
+            </p>
           </div>
         )}
 
-        {/* 3 Daily Schedules info */}
-        <div className="mt-4 rounded-xl border border-slate-800 bg-slate-950/40 p-3.5">
-          <div className="flex items-center gap-2 text-xs font-bold text-slate-200 mb-2">
-            <Clock className="h-4 w-4 text-emerald-400" />
-            <span>Ratiba ya Kutuma Notifications (Tanzania Time - EAT):</span>
+        {/* Test Push Button if active */}
+        {isGranted && (
+          <div className="mt-3">
+            <button
+              onClick={handleSendTest}
+              disabled={isUpdating}
+              className="w-full flex items-center justify-center gap-1.5 rounded-xl border border-slate-700 bg-slate-800/80 py-2 text-xs font-semibold text-slate-200 hover:bg-slate-800 transition"
+            >
+              <Send className="h-3 w-3 text-emerald-400" />
+              <span>Tuma Notification ya Majaribio</span>
+            </button>
+            {testResult && (
+              <p className="mt-1.5 text-center text-[11px] text-emerald-400 font-medium">
+                {testResult}
+              </p>
+            )}
           </div>
-          <div className="grid grid-cols-3 gap-2 text-center">
-            <div className="rounded-lg bg-slate-900 border border-slate-800 p-2">
-              <span className="text-[10px] text-slate-400 block font-medium">🌅 Asubuhi</span>
-              <span className="text-xs font-bold text-emerald-400 font-mono">08:00 EAT</span>
-            </div>
-            <div className="rounded-lg bg-slate-900 border border-slate-800 p-2">
-              <span className="text-[10px] text-slate-400 block font-medium">☀️ Mchana</span>
-              <span className="text-xs font-bold text-amber-400 font-mono">13:00 EAT</span>
-            </div>
-            <div className="rounded-lg bg-slate-900 border border-slate-800 p-2">
-              <span className="text-[10px] text-slate-400 block font-medium">🌙 Jioni</span>
-              <span className="text-xs font-bold text-indigo-400 font-mono">19:00 EAT</span>
-            </div>
-          </div>
-          <p className="mt-2 text-[11px] text-slate-400 text-center">
-            Ujumbe unazungushwa kila siku ili kuleta kazi mpya na taarifa za kufungua account kwa 15,000 TSh.
-          </p>
-        </div>
+        )}
 
-        {/* Browser Unblock Guide (if denied or for general troubleshooting) */}
-        <div className="mt-4 rounded-xl border border-slate-800 bg-slate-800/40 p-3.5">
-          <div className="flex items-center gap-2 text-xs font-bold text-cyan-300 mb-2">
-            <Smartphone className="h-4 w-4" />
-            <span>Jinsi ya Kuwasha Notifications kwenye Browser:</span>
-          </div>
-          <div className="space-y-2 text-[11px] text-slate-300">
-            <div className="p-2 rounded-lg bg-slate-900/60 border border-slate-800/80">
-              <strong className="text-white block mb-0.5">Kwenye Android (Chrome):</strong>
-              Gusa alama ya kufuli (🔒) au settings kushoto mwa website address ➔ Chagua <strong>"Permissions"</strong> au <strong>"Site settings"</strong> ➔ Washa <strong>"Notifications"</strong> kwa kuchagua "Allow".
-            </div>
-            <div className="p-2 rounded-lg bg-slate-900/60 border border-slate-800/80">
-              <strong className="text-white block mb-0.5">Kwenye iPhone (Safari):</strong>
-              Gusa alama ya Share (📤) chini ya Safari ➔ Chagua <strong>"Add to Home Screen"</strong> (Weka kwenye screen ya simu) ➔ Fungua app kutoka home screen na uruhusu notifications.
-            </div>
-          </div>
-        </div>
-
-        {/* Footer info */}
-        <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
-          <span className="flex items-center gap-1 text-slate-400">
-            <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
-            Usalama na Faragha umehifadhiwa
-          </span>
+        {/* Bottom Close */}
+        <div className="mt-4 pt-3 border-t border-slate-800 flex justify-end">
           <button
             onClick={onClose}
-            className="rounded-lg bg-slate-800 px-3 py-1.5 text-slate-200 hover:bg-slate-700 transition"
+            className="rounded-lg bg-slate-800 px-3 py-1.5 text-xs text-slate-300 hover:bg-slate-700 transition"
           >
             Funga
           </button>

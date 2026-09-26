@@ -123,46 +123,46 @@ interface NotificationPayload {
 
 const MORNING_MESSAGES: Omit<NotificationPayload, 'url' | 'tag'>[] = [
   {
-    title: '🌅 🤖 GIX CHATS - Asubuhi',
-    body: 'Usikose AI Jobs za leo! Fungua account yako kwa 15,000 TSh na uanze kupokea kazi sasa.',
+    title: '🤖 GIX CHATS',
+    body: 'AI Jobs zinakusubiri leo. Fungua GIX CHATS na anza.',
   },
   {
-    title: '🌅 🔔 GIX CHATS - Asubuhi Njema',
-    body: 'Karibu tena! Fungua account yako ya GIX CHATS kwa 15,000 TSh uanze kutathmini AI Tasks leo.',
+    title: '🔔 GIX CHATS',
+    body: 'Usikose taarifa za AI Jobs. Fungua site yako sasa.',
   },
   {
-    title: '🌅 💻 GIX CHATS - Nafasi za Asubuhi',
-    body: 'AI Jobs mpya zimewekwa. Fungua account yako kwa 15,000 TSh uanze safari yako ya kidijitali.',
+    title: '🌅 GIX CHATS',
+    body: 'Usikose AI Jobs za leo. Fungua account yako kwa 15,000 TSh na uanze.',
   },
 ];
 
 const AFTERNOON_MESSAGES: Omit<NotificationPayload, 'url' | 'tag'>[] = [
   {
-    title: '☀️ 💰 GIX CHATS - Mchana',
-    body: 'Uko tayari kuanza? Fungua account yako ya GIX CHATS kwa 15,000 TSh na uanze kufanya AI Jobs.',
+    title: '💻 GIX CHATS',
+    body: 'Karibu tena! Fungua account yako na fuata hatua za kuanza.',
   },
   {
-    title: '☀️ 🚀 GIX CHATS - AI Jobs',
-    body: 'Anza safari yako leo. Fungua account yako kwa 15,000 TSh na uone jinsi mfumo unavyofanya kazi.',
+    title: '🚀 GIX CHATS',
+    body: 'Anza leo na ujifunze jinsi ya kufanya AI Jobs kwa Kiswahili.',
   },
   {
-    title: '☀️ 📱 GIX CHATS - Kazi kwa Simu',
-    body: 'Fanya AI Jobs moja kwa moja kwenye simu yako. Fungua account kwa 15,000 TSh leo.',
+    title: '☀️ GIX CHATS',
+    body: 'Fungua account kwa 15,000 TSh na uanze kufanya AI Jobs leo.',
   },
 ];
 
 const EVENING_MESSAGES: Omit<NotificationPayload, 'url' | 'tag'>[] = [
   {
-    title: '🌙 ✨ GIX CHATS - Jioni',
-    body: 'Kamilisha AI Jobs za jioni. Fungua account yako kwa 15,000 TSh na ujiunge na maelfu ya watumiaji.',
+    title: '💰 GIX CHATS',
+    body: 'Fungua account kwa 15,000 TSh na uanze kufanya AI Jobs leo.',
   },
   {
-    title: '🌙 🤖 GIX CHATS - Usiku Mwema',
-    body: 'AI Jobs zinakusubiri. Fungua account yako leo kwa 15,000 TSh uwe tayari kwa kazi mpya.',
+    title: '🌙 GIX CHATS',
+    body: 'Kamilisha AI Jobs za leo. Fungua account yako kwa 15,000 TSh.',
   },
   {
-    title: '🌙 🔔 GIX CHATS - Ukumbusho',
-    body: 'Bado hujafungua account? Jiunge kwa 15,000 TSh pekee na uanze kufanya AI Jobs kwa Kiswahili.',
+    title: '🤖 GIX CHATS',
+    body: 'AI Jobs zinakusubiri leo. Fungua GIX CHATS na anza.',
   },
 ];
 
@@ -397,7 +397,7 @@ app.post('/api/push/send-welcome', async (req, res) => {
 
     const payload: NotificationPayload = {
       title: '🤖 GIX CHATS',
-      body: 'Karibu GIX CHATS! Fungua account yako na uanze kufanya AI Jobs kwa Kiswahili. 💰',
+      body: 'Karibu GIX CHATS! Fungua account yako na uanze AI Jobs kwa Kiswahili. 💰',
       url: '/?tab=account',
       tag: 'gix-welcome-first',
       target: 'account',

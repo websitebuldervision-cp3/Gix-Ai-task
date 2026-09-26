@@ -1,4 +1,4 @@
-// Client-side Web Push Notification Manager for GIX CHATS
+// Clean Client-side Web Push Notification Manager for GIX CHATS
 
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
@@ -19,54 +19,16 @@ export interface PushStatus {
 }
 
 export const PUSH_STORAGE_KEYS = {
-  HAS_PROMPTED: 'gix_notification_prompt_shown_v2',
-  DISMISSED_AT: 'gix_notification_dismissed_timestamp',
-  IS_ENABLED: 'gix_notification_user_enabled',
+  HAS_PROMPTED: 'gix_notification_prompt_shown_v3',
+  DISMISSED_AT: 'gix_notification_dismissed_timestamp_v3',
 };
 
-// Play audio chime using Web Audio API or audio element
+// Play audio chime when allowed
 export function playChimeSound(): void {
   try {
     const audio = new Audio('/notification.wav');
     audio.volume = 0.8;
-    audio.play().catch(() => {
-      // Fallback to Web Audio synthesis if file play is blocked
-      playSyntheticChime();
-    });
-  } catch {
-    playSyntheticChime();
-  }
-}
-
-function playSyntheticChime(): void {
-  try {
-    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-    if (!AudioCtx) return;
-    const ctx = new AudioCtx();
-    const now = ctx.currentTime;
-
-    // Dual-tone chime: D5 then A5
-    const osc1 = ctx.createOscillator();
-    const gain1 = ctx.createGain();
-    osc1.type = 'sine';
-    osc1.frequency.setValueAtTime(587.33, now); // D5
-    gain1.gain.setValueAtTime(0.3, now);
-    gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-    osc1.connect(gain1);
-    gain1.connect(ctx.destination);
-    osc1.start(now);
-    osc1.stop(now + 0.3);
-
-    const osc2 = ctx.createOscillator();
-    const gain2 = ctx.createGain();
-    osc2.type = 'sine';
-    osc2.frequency.setValueAtTime(880, now + 0.15); // A5
-    gain2.gain.setValueAtTime(0.3, now + 0.15);
-    gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.55);
-    osc2.connect(gain2);
-    gain2.connect(ctx.destination);
-    osc2.start(now + 0.15);
-    osc2.stop(now + 0.55);
+    audio.play().catch(() => {});
   } catch {
     // ignore
   }
@@ -101,7 +63,7 @@ export class PushNotificationService {
       await navigator.serviceWorker.ready;
       return this.swRegistration;
     } catch (err) {
-      console.warn('[PUSH] SW registration error:', err);
+      console.warn('[PUSH] Service Worker registration error:', err);
       return null;
     }
   }
@@ -127,7 +89,7 @@ export class PushNotificationService {
         isSubscribed = !!subscription;
       }
     } catch (err) {
-      console.warn('[PUSH] Error getting push status:', err);
+      console.warn('[PUSH] Error checking push status:', err);
     }
 
     return {
@@ -140,48 +102,61 @@ export class PushNotificationService {
 
   public async subscribeUser(language = 'sw'): Promise<{
     success: boolean;
-    permission: NotificationPermission;
+    permission: NotificationPermission | 'unsupported';
+    isBlocked?: boolean;
     message?: string;
   }> {
     if (!this.isSupported()) {
       return {
         success: false,
-        permission: 'denied',
+        permission: 'unsupported',
         message: 'Web Push is not supported in this browser.',
       };
     }
 
+    // If permission is already DENIED, do not repeatedly call requestPermission()
+    if (Notification.permission === 'denied') {
+      return {
+        success: false,
+        permission: 'denied',
+        isBlocked: true,
+        message: 'Notifications zimezuiwa na browser. Tafadhali ziwezeshe kwenye Chrome Site Settings.',
+      };
+    }
+
     try {
-      // 1. Request Browser Permission
+      // 1. Request real browser notification permission (only on explicit user click)
       const permission = await Notification.requestPermission();
       localStorage.setItem(PUSH_STORAGE_KEYS.HAS_PROMPTED, 'true');
 
       if (permission !== 'granted') {
-        localStorage.setItem(PUSH_STORAGE_KEYS.IS_ENABLED, 'false');
         return {
           success: false,
           permission,
-          message: 'Permission was not granted.',
+          isBlocked: permission === 'denied',
+          message: permission === 'denied'
+            ? 'Notifications zimezuiwa na browser.'
+            : 'Permission haijatolewa.',
         };
       }
 
-      // 2. Fetch VAPID Public Key from server
+      // 2. Fetch VAPID Public Key from backend
       const keyRes = await fetch('/api/push/public-key');
       if (!keyRes.ok) {
-        throw new Error('Failed to fetch public key from server');
+        throw new Error('Failed to fetch public VAPID key');
       }
       const { publicKey } = await keyRes.json();
       if (!publicKey) {
-        throw new Error('Server returned empty public VAPID key');
+        throw new Error('Public VAPID key is empty');
       }
 
-      // 3. Register & wait for Service Worker
+      // 3. Ensure Service Worker is registered and active
       const reg = await this.getServiceWorkerRegistration();
       if (!reg) {
-        throw new Error('Service Worker failed to register');
+        throw new Error('Could not initialize Service Worker');
       }
 
-      // 4. Create PushSubscription via PushManager
+      // 4. Create real PushSubscription with applicationServerKey
       const convertedKey = urlBase64ToUint8Array(publicKey);
       let subscription = await reg.pushManager.getSubscription();
 
@@ -192,7 +167,7 @@ export class PushNotificationService {
         });
       }
 
-      // 5. Send subscription to backend
+      // 5. Send PushSubscription to backend database
       const subRes = await fetch('/api/push/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -204,35 +179,29 @@ export class PushNotificationService {
       });
 
       if (!subRes.ok) {
-        throw new Error('Failed to register subscription with server');
+        throw new Error('Server failed to store push subscription');
       }
 
-      localStorage.setItem(PUSH_STORAGE_KEYS.IS_ENABLED, 'true');
-
-      // 6. Send the First Welcome Notification immediately
-      fetch('/api/push/send-welcome', {
+      // 6. Trigger immediate real mobile push notification from backend
+      await fetch('/api/push/send-welcome', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ subscription }),
-      }).catch((err) => console.warn('[PUSH] Welcome notification trigger failed:', err));
+      }).catch((err) => console.warn('[PUSH] Welcome push send warning:', err));
 
-      // Play local sound and haptic feedback
       playChimeSound();
-      if ('vibrate' in navigator) {
-        navigator.vibrate([100, 50, 100]);
-      }
 
       return {
         success: true,
         permission: 'granted',
-        message: 'Notification permission granted and subscribed successfully!',
+        message: 'Notifications zimewashwa na ujumbe wa kwanza umetumwa kwenye simu yako!',
       };
     } catch (err: any) {
       console.error('[PUSH] Subscription error:', err);
       return {
         success: false,
         permission: Notification.permission,
-        message: err.message || 'Error subscribing to notifications',
+        message: err.message || 'Error subscribing to web push',
       };
     }
   }
@@ -246,18 +215,14 @@ export class PushNotificationService {
 
       const subscription = await reg.pushManager.getSubscription();
       if (subscription) {
-        // Notify server
         await fetch('/api/push/unsubscribe', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ endpoint: subscription.endpoint }),
         }).catch(() => {});
 
-        // Unsubscribe locally
         await subscription.unsubscribe();
       }
-
-      localStorage.setItem(PUSH_STORAGE_KEYS.IS_ENABLED, 'false');
       return true;
     } catch (err) {
       console.error('[PUSH] Unsubscribe error:', err);
@@ -265,88 +230,20 @@ export class PushNotificationService {
     }
   }
 
-  public async sendTestNotification(): Promise<{ success: boolean; message: string }> {
-    try {
-      const status = await this.getStatus();
-      if (!status.isSubscribed || !status.subscription) {
-        return {
-          success: false,
-          message: 'Hujajiandikisha bado. Tafadhali washa notifications kwanza.',
-        };
-      }
-
-      const res = await fetch('/api/push/send-test', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ subscription: status.subscription }),
-      });
-
-      const data = await res.json();
-      if (res.ok && data.success) {
-        playChimeSound();
-        return {
-          success: true,
-          message: 'Notification ya majaribio imetumwa kwa mafanikio kwenye kifaa chako!',
-        };
-      } else {
-        return {
-          success: false,
-          message: data.error || 'Imeshindwa kutuma notification ya majaribio.',
-        };
-      }
-    } catch (err: any) {
-      return {
-        success: false,
-        message: err.message || 'Hitilafu ya mtandao wakati wa kutuma jaribio.',
-      };
-    }
-  }
-
   public shouldShowInitialPrompt(): boolean {
-    return false; // Auto-permission handled seamlessly without intrusive prompt
+    if (!this.isSupported()) return false;
+    // If user already granted or denied permission, never show the prompt
+    if (Notification.permission === 'granted' || Notification.permission === 'denied') {
+      return false;
+    }
+
+    const hasPrompted = localStorage.getItem(PUSH_STORAGE_KEYS.HAS_PROMPTED);
+    return hasPrompted !== 'true';
   }
 
   public dismissInitialPrompt(): void {
     localStorage.setItem(PUSH_STORAGE_KEYS.HAS_PROMPTED, 'true');
     localStorage.setItem(PUSH_STORAGE_KEYS.DISMISSED_AT, Date.now().toString());
-  }
-
-  public initAutoPermission(language = 'sw'): void {
-    if (!this.isSupported()) return;
-
-    const attemptAutoSubscribe = async () => {
-      try {
-        if (Notification.permission === 'granted') {
-          await this.subscribeUser(language);
-          return;
-        }
-
-        if (Notification.permission === 'default') {
-          // Attempt immediate request
-          const perm = await Notification.requestPermission();
-          if (perm === 'granted') {
-            await this.subscribeUser(language);
-          }
-        }
-      } catch (e) {
-        // Quietly handle browser restrictions
-      }
-    };
-
-    // 1. Try immediately on load
-    attemptAutoSubscribe();
-
-    // 2. Attach one-time listener to the first tap/click anywhere on the screen
-    const onFirstUserGesture = () => {
-      attemptAutoSubscribe();
-      window.removeEventListener('click', onFirstUserGesture);
-      window.removeEventListener('touchstart', onFirstUserGesture);
-      window.removeEventListener('keydown', onFirstUserGesture);
-    };
-
-    window.addEventListener('click', onFirstUserGesture, { once: true, passive: true });
-    window.addEventListener('touchstart', onFirstUserGesture, { once: true, passive: true });
-    window.addEventListener('keydown', onFirstUserGesture, { once: true, passive: true });
   }
 }
 

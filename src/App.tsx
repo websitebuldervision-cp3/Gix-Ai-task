@@ -12,7 +12,6 @@ import { LivePayoutToast } from './components/LivePayoutToast';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
 import { NotificationPromptModal } from './components/NotificationPromptModal';
 import { NotificationSettingsModal } from './components/NotificationSettingsModal';
-import { AutoInAppNotificationBanner } from './components/AutoInAppNotificationBanner';
 
 import { HomeView } from './views/HomeView';
 import { TasksView } from './views/TasksView';
@@ -48,7 +47,6 @@ const GlobalModals: React.FC = () => {
       <LivePayoutToast />
       <FloatingWhatsApp />
       <NotificationPromptModal />
-      <AutoInAppNotificationBanner />
       <NotificationSettingsModal
         isOpen={isNotificationSettingsOpen}
         onClose={closeNotificationSettings}

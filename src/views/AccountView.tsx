@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   User,
   ShieldAlert,
@@ -14,10 +14,12 @@ import {
   ChevronRight,
   TrendingUp,
   Bell,
+  HelpCircle,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { Language } from '../types';
 import { formatUSD, formatTZS, ACTIVATION_URL } from '../data/translations';
+import { pushService, PushStatus } from '../services/pushNotificationService';
 
 export const AccountView: React.FC = () => {
   const {
@@ -35,6 +37,39 @@ export const AccountView: React.FC = () => {
   } = useApp();
 
   const isSw = language === 'sw';
+
+  const [pushStatus, setPushStatus] = useState<PushStatus | null>(null);
+  const [showUnblockGuide, setShowUnblockGuide] = useState(false);
+  const [isTogglingPush, setIsTogglingPush] = useState(false);
+
+  useEffect(() => {
+    pushService.getStatus().then(setPushStatus);
+  }, []);
+
+  const isPushGranted = pushStatus?.permission === 'granted' && pushStatus?.isSubscribed;
+  const isPushDenied = pushStatus?.permission === 'denied';
+
+  const handlePushToggle = async () => {
+    setIsTogglingPush(true);
+    try {
+      if (isPushGranted) {
+        await pushService.unsubscribeUser();
+      } else if (!isPushDenied) {
+        const res = await pushService.subscribeUser(language);
+        if (res.isBlocked || res.permission === 'denied') {
+          setShowUnblockGuide(true);
+        }
+      } else {
+        setShowUnblockGuide(true);
+      }
+      const updated = await pushService.getStatus();
+      setPushStatus(updated);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsTogglingPush(false);
+    }
+  };
 
   return (
     <div className="space-y-6 pb-12">
@@ -219,31 +254,87 @@ export const AccountView: React.FC = () => {
 
       {/* Customer Care, Notifications & PWA Shortcuts */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Web Push Notification Settings */}
-        <div className="rounded-2xl border border-indigo-500/30 bg-indigo-950/20 p-5 shadow-sm flex flex-col justify-between">
+        {/* Simple Notifications Setting */}
+        <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-5 shadow-sm flex flex-col justify-between">
           <div>
-            <div className="flex items-center gap-2 text-indigo-400 font-bold text-sm">
-              <Bell className="h-5 w-5" />
-              <span>🔔 Notification Settings</span>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-indigo-400 font-bold text-sm">
+                <Bell className="h-5 w-5" />
+                <span>🔔 Notifications</span>
+              </div>
+
+              {!isPushDenied ? (
+                <button
+                  id="btn-toggle-notifications-account"
+                  onClick={handlePushToggle}
+                  disabled={isTogglingPush}
+                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                    isPushGranted ? 'bg-emerald-500' : 'bg-slate-700'
+                  }`}
+                >
+                  <span
+                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                      isPushGranted ? 'translate-x-5' : 'translate-x-0'
+                    }`}
+                  />
+                </button>
+              ) : (
+                <span className="rounded-full bg-rose-500/20 px-2 py-0.5 text-[10px] font-semibold text-rose-300">
+                  Zimezuiwa
+                </span>
+              )}
             </div>
-            <p className="mt-2 text-xs text-slate-300 leading-relaxed">
-              {isSw
-                ? 'Washa au zima taarifa za Web Push za AI Jobs zinazotumwa mara 3 kwa siku (08:00, 13:00, 19:00 EAT) zenye sauti na mtetemo.'
-                : 'Manage Web Push notifications for daily AI tasks (08:00, 13:00, 19:00 EAT) with sound & vibration.'}
+
+            <p className="mt-2.5 text-xs text-slate-200 font-semibold">
+              {isPushGranted
+                ? 'Notifications zimewashwa.'
+                : isPushDenied
+                ? 'Notifications zimezuiwa na browser.'
+                : 'Washa notifications.'}
             </p>
-            <p className="mt-1 text-xs font-mono font-bold text-indigo-300">
-              {isSw ? 'Ratiba: 08:00 | 13:00 | 19:00 EAT' : 'Schedule: 08:00 | 13:00 | 19:00 EAT'}
+
+            <p className="mt-1 text-[11px] text-slate-400 leading-relaxed">
+              {isPushGranted
+                ? 'Utapokea taarifa za AI Jobs moja kwa moja kwenye simu yako hata ukiwa nje ya website.'
+                : isPushDenied
+                ? 'Ruhusu kwenye browser site settings ili simu yako ipokee taarifa za AI Jobs.'
+                : 'Pata taarifa za AI Jobs moja kwa moja kwenye simu yako.'}
             </p>
           </div>
 
-          <button
-            id="btn-account-open-notifications"
-            onClick={openNotificationSettings}
-            className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 py-2.5 text-xs font-bold text-white shadow-md hover:from-indigo-500 hover:to-indigo-400 transition"
-          >
-            <Bell className="h-4 w-4" />
-            <span>{isSw ? 'Fungua Notification Settings' : 'Open Notification Settings'}</span>
-          </button>
+          <div className="mt-4">
+            {isPushDenied ? (
+              <button
+                onClick={() => setShowUnblockGuide(!showUnblockGuide)}
+                className="w-full rounded-xl bg-slate-800 border border-slate-700 py-2 px-3 text-xs font-semibold text-amber-300 hover:bg-slate-700 transition"
+              >
+                Jinsi ya kuwasha tena
+              </button>
+            ) : isPushGranted ? (
+              <div className="flex items-center gap-1.5 text-[11px] text-emerald-400 font-medium">
+                <CheckCircle2 className="h-3.5 w-3.5" />
+                <span>Simu yako ipo tayari kupokea taarifa</span>
+              </div>
+            ) : (
+              <button
+                onClick={handlePushToggle}
+                disabled={isTogglingPush}
+                className="w-full flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 py-2 px-3 text-xs font-bold text-white hover:bg-emerald-500 transition shadow-sm"
+              >
+                <Bell className="h-3.5 w-3.5" />
+                <span>Washa Notifications</span>
+              </button>
+            )}
+
+            {showUnblockGuide && (
+              <div className="mt-3 p-3 rounded-xl bg-slate-950 border border-amber-500/30 text-[11px] text-slate-300 leading-relaxed">
+                <strong className="text-amber-300 block mb-1">Kwenye Chrome:</strong>
+                1. Gusa alama ya <strong>🔒 (kufuli)</strong> au Site Settings juu kushoto mwa address bar.
+                <br />
+                2. Chagua <strong>Notifications</strong> ➔ Weka <strong>Allow</strong>.
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Customer Care WhatsApp */}
