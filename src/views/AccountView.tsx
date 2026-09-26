@@ -39,7 +39,6 @@ export const AccountView: React.FC = () => {
   const isSw = language === 'sw';
 
   const [pushStatus, setPushStatus] = useState<PushStatus | null>(null);
-  const [showUnblockGuide, setShowUnblockGuide] = useState(false);
   const [isTogglingPush, setIsTogglingPush] = useState(false);
 
   useEffect(() => {
@@ -47,20 +46,16 @@ export const AccountView: React.FC = () => {
   }, []);
 
   const isPushGranted = pushStatus?.permission === 'granted' && pushStatus?.isSubscribed;
-  const isPushDenied = pushStatus?.permission === 'denied';
+
+  const [testPushMsg, setTestPushMsg] = useState<string | null>(null);
 
   const handlePushToggle = async () => {
     setIsTogglingPush(true);
     try {
       if (isPushGranted) {
         await pushService.unsubscribeUser();
-      } else if (!isPushDenied) {
-        const res = await pushService.subscribeUser(language);
-        if (res.isBlocked || res.permission === 'denied') {
-          setShowUnblockGuide(true);
-        }
       } else {
-        setShowUnblockGuide(true);
+        await pushService.subscribeUser(language);
       }
       const updated = await pushService.getStatus();
       setPushStatus(updated);
@@ -263,76 +258,66 @@ export const AccountView: React.FC = () => {
                 <span>🔔 Notifications</span>
               </div>
 
-              {!isPushDenied ? (
-                <button
-                  id="btn-toggle-notifications-account"
-                  onClick={handlePushToggle}
-                  disabled={isTogglingPush}
-                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                    isPushGranted ? 'bg-emerald-500' : 'bg-slate-700'
+              <button
+                id="btn-toggle-notifications-account"
+                onClick={handlePushToggle}
+                disabled={isTogglingPush}
+                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                  isPushGranted ? 'bg-emerald-500' : 'bg-slate-700'
+                }`}
+              >
+                <span
+                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                    isPushGranted ? 'translate-x-5' : 'translate-x-0'
                   }`}
-                >
-                  <span
-                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
-                      isPushGranted ? 'translate-x-5' : 'translate-x-0'
-                    }`}
-                  />
-                </button>
-              ) : (
-                <span className="rounded-full bg-rose-500/20 px-2 py-0.5 text-[10px] font-semibold text-rose-300">
-                  Zimezuiwa
-                </span>
-              )}
+                />
+              </button>
             </div>
 
             <p className="mt-2.5 text-xs text-slate-200 font-semibold">
-              {isPushGranted
-                ? 'Notifications zimewashwa.'
-                : isPushDenied
-                ? 'Notifications zimezuiwa na browser.'
-                : 'Washa notifications.'}
+              {isPushGranted ? 'Notifications zimewashwa.' : 'Washa notifications.'}
             </p>
 
             <p className="mt-1 text-[11px] text-slate-400 leading-relaxed">
               {isPushGranted
                 ? 'Utapokea taarifa za AI Jobs moja kwa moja kwenye simu yako hata ukiwa nje ya website.'
-                : isPushDenied
-                ? 'Ruhusu kwenye browser site settings ili simu yako ipokee taarifa za AI Jobs.'
                 : 'Pata taarifa za AI Jobs moja kwa moja kwenye simu yako.'}
             </p>
           </div>
 
           <div className="mt-4">
-            {isPushDenied ? (
-              <button
-                onClick={() => setShowUnblockGuide(!showUnblockGuide)}
-                className="w-full rounded-xl bg-slate-800 border border-slate-700 py-2 px-3 text-xs font-semibold text-amber-300 hover:bg-slate-700 transition"
-              >
-                Jinsi ya kuwasha tena
-              </button>
-            ) : isPushGranted ? (
-              <div className="flex items-center gap-1.5 text-[11px] text-emerald-400 font-medium">
-                <CheckCircle2 className="h-3.5 w-3.5" />
-                <span>Simu yako ipo tayari kupokea taarifa</span>
+            {isPushGranted ? (
+              <div className="space-y-2">
+                <div className="flex items-center gap-1.5 text-[11px] text-emerald-400 font-medium">
+                  <CheckCircle2 className="h-3.5 w-3.5" />
+                  <span>Simu yako ipo tayari kupokea taarifa</span>
+                </div>
+                <button
+                  onClick={async () => {
+                    setTestPushMsg('Inatuma...');
+                    const res = await pushService.sendTestNotification();
+                    setTestPushMsg(res.message);
+                  }}
+                  className="w-full flex items-center justify-center gap-1.5 rounded-xl border border-emerald-500/40 bg-emerald-950/40 py-2 px-3 text-xs font-bold text-emerald-300 hover:bg-emerald-900/40 transition cursor-pointer"
+                >
+                  <Bell className="h-3.5 w-3.5" />
+                  <span>🔔 Jaribu Tuma Ujumbe Kwenye Simu</span>
+                </button>
+                {testPushMsg && (
+                  <p className="text-[11px] text-center text-emerald-400 font-medium animate-in fade-in">
+                    {testPushMsg}
+                  </p>
+                )}
               </div>
             ) : (
               <button
                 onClick={handlePushToggle}
                 disabled={isTogglingPush}
-                className="w-full flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 py-2 px-3 text-xs font-bold text-white hover:bg-emerald-500 transition shadow-sm"
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 py-2.5 px-3 text-xs font-extrabold text-slate-950 hover:bg-emerald-400 transition shadow-md uppercase tracking-wider cursor-pointer"
               >
-                <Bell className="h-3.5 w-3.5" />
-                <span>Washa Notifications</span>
+                <Bell className="h-4 w-4 fill-current stroke-[2]" />
+                <span>🔔 Gusa Hapa Kuruhusu</span>
               </button>
-            )}
-
-            {showUnblockGuide && (
-              <div className="mt-3 p-3 rounded-xl bg-slate-950 border border-amber-500/30 text-[11px] text-slate-300 leading-relaxed">
-                <strong className="text-amber-300 block mb-1">Kwenye Chrome:</strong>
-                1. Gusa alama ya <strong>🔒 (kufuli)</strong> au Site Settings juu kushoto mwa address bar.
-                <br />
-                2. Chagua <strong>Notifications</strong> ➔ Weka <strong>Allow</strong>.
-              </div>
             )}
           </div>
         </div>

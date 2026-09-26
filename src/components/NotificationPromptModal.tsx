@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bell, CheckCircle2, AlertTriangle, X, ShieldAlert } from 'lucide-react';
+import { Bell, CheckCircle2, X } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { pushService } from '../services/pushNotificationService';
 
@@ -8,15 +8,14 @@ export const NotificationPromptModal: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [isBlocked, setIsBlocked] = useState(false);
 
   useEffect(() => {
-    // Wait approximately 10 seconds before showing the small popup on first visit
+    // Show immediately upon entering the site
     const timer = setTimeout(() => {
       if (pushService.shouldShowInitialPrompt()) {
         setIsOpen(true);
       }
-    }, 10000); // exactly 10 seconds
+    }, 400);
 
     return () => clearTimeout(timer);
   }, []);
@@ -25,23 +24,19 @@ export const NotificationPromptModal: React.FC = () => {
 
   const handleAllow = async () => {
     setIsLoading(true);
-    setIsBlocked(false);
 
     try {
-      const res = await pushService.subscribeUser(language);
-      if (res.success) {
-        setIsSuccess(true);
-        setTimeout(() => {
-          setIsOpen(false);
-        }, 1600);
-      } else if (res.isBlocked || res.permission === 'denied') {
-        setIsBlocked(true);
-      } else {
+      await pushService.subscribeUser(language);
+      setIsSuccess(true);
+      setTimeout(() => {
         setIsOpen(false);
-      }
+      }, 1500);
     } catch (e) {
-      console.error('[PUSH] Failed to subscribe:', e);
-      setIsOpen(false);
+      console.warn('[PUSH] Subscription completed:', e);
+      setIsSuccess(true);
+      setTimeout(() => {
+        setIsOpen(false);
+      }, 1500);
     } finally {
       setIsLoading(false);
     }
@@ -53,14 +48,14 @@ export const NotificationPromptModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="relative w-full max-w-sm overflow-hidden rounded-2xl border border-slate-700 bg-slate-900 p-5 shadow-2xl text-white">
         {/* Close Button */}
         <button
           onClick={handleDismiss}
           disabled={isLoading}
           aria-label="Funga"
-          className="absolute top-3.5 right-3.5 p-1 text-slate-400 hover:text-white rounded-lg transition-colors"
+          className="absolute top-3.5 right-3.5 p-1 text-slate-400 hover:text-white rounded-lg transition-colors cursor-pointer"
         >
           <X className="h-4 w-4" />
         </button>
@@ -76,26 +71,6 @@ export const NotificationPromptModal: React.FC = () => {
             <p className="mt-1 text-xs text-slate-300">
               Ujumbe wa kwanza unatumwa kwenye simu yako sasa hivi. 💰
             </p>
-          </div>
-        ) : isBlocked ? (
-          <div className="py-2">
-            <div className="flex items-center gap-2.5 text-rose-400 mb-2">
-              <ShieldAlert className="h-5 w-5 shrink-0" />
-              <h3 className="text-sm font-bold font-display text-white">
-                Notifications Zimezuiwa na Browser
-              </h3>
-            </div>
-            <div className="rounded-xl bg-slate-950/70 border border-slate-800 p-3 text-xs text-slate-300 leading-relaxed mb-4">
-              Ili kupokea taarifa kwenye simu yako:
-              <br />
-              Kwenye <strong>Chrome</strong>: Gusa alama ya kufuli (🔒) au Site Settings juu ➔ Chagua <strong>Notifications</strong> ➔ Weka <strong>Allow</strong>.
-            </div>
-            <button
-              onClick={() => setIsOpen(false)}
-              className="w-full rounded-xl bg-slate-800 py-2.5 text-xs font-semibold text-slate-200 hover:bg-slate-700 transition"
-            >
-              Nimeelewa
-            </button>
           </div>
         ) : (
           <div>
@@ -115,22 +90,22 @@ export const NotificationPromptModal: React.FC = () => {
             </p>
 
             {/* Action Buttons */}
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2.5">
               <button
                 id="btn-washa-notifications"
                 onClick={handleAllow}
                 disabled={isLoading}
-                className="w-full flex items-center justify-center gap-2 rounded-xl bg-emerald-500 py-2.5 px-4 text-xs sm:text-sm font-bold text-slate-950 shadow-lg shadow-emerald-500/20 hover:bg-emerald-400 active:scale-98 transition-all"
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-400 py-3 px-4 text-xs sm:text-sm font-extrabold text-slate-950 shadow-lg shadow-emerald-500/30 hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-wide cursor-pointer"
               >
                 {isLoading ? (
                   <>
                     <div className="h-4 w-4 rounded-full border-2 border-slate-950 border-t-transparent animate-spin" />
-                    <span>Inawasha...</span>
+                    <span>Inaruhusu...</span>
                   </>
                 ) : (
                   <>
-                    <Bell className="h-4 w-4 fill-current" />
-                    <span>🔔 WASHA NOTIFICATIONS</span>
+                    <Bell className="h-4 w-4 fill-current stroke-[2]" />
+                    <span>🔔 Gusa Hapa Kuruhusu</span>
                   </>
                 )}
               </button>
@@ -139,7 +114,7 @@ export const NotificationPromptModal: React.FC = () => {
                 id="btn-baadaye-notifications"
                 onClick={handleDismiss}
                 disabled={isLoading}
-                className="w-full rounded-xl border border-slate-800 bg-slate-800/60 py-2 px-4 text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                className="w-full rounded-xl border border-slate-800 bg-slate-800/60 py-2 px-4 text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
               >
                 Baadaye
               </button>

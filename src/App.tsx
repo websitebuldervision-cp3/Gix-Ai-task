@@ -12,6 +12,7 @@ import { LivePayoutToast } from './components/LivePayoutToast';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
 import { NotificationPromptModal } from './components/NotificationPromptModal';
 import { NotificationSettingsModal } from './components/NotificationSettingsModal';
+import { pushService } from './services/pushNotificationService';
 
 import { HomeView } from './views/HomeView';
 import { TasksView } from './views/TasksView';
@@ -36,7 +37,12 @@ const MainContent: React.FC = () => {
 };
 
 const GlobalModals: React.FC = () => {
-  const { isNotificationSettingsOpen, closeNotificationSettings } = useApp();
+  const { isNotificationSettingsOpen, closeNotificationSettings, language } = useApp();
+
+  React.useEffect(() => {
+    // If user already granted permission, ensure they are synced and receive entry alert
+    pushService.syncOnEntry(language);
+  }, [language]);
 
   return (
     <>

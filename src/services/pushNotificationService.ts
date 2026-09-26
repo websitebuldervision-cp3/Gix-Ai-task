@@ -15,12 +15,13 @@ export interface PushStatus {
   supported: boolean;
   permission: NotificationPermission | 'unsupported';
   isSubscribed: boolean;
+  isInIframe: boolean;
   subscription: PushSubscription | null;
 }
 
 export const PUSH_STORAGE_KEYS = {
-  HAS_PROMPTED: 'gix_notification_prompt_shown_v3',
-  DISMISSED_AT: 'gix_notification_dismissed_timestamp_v3',
+  HAS_PROMPTED_SESSION: 'gix_notification_prompt_dismissed_session',
+  LAST_ENTRY_NOTIFICATION: 'gix_last_entry_notification_ts',
 };
 
 // Play audio chime when allowed
@@ -37,6 +38,7 @@ export function playChimeSound(): void {
 export class PushNotificationService {
   private static instance: PushNotificationService;
   private swRegistration: ServiceWorkerRegistration | null = null;
+  private isSyncingOnEntry = false;
 
   public static getInstance(): PushNotificationService {
     if (!PushNotificationService.instance) {
@@ -52,6 +54,14 @@ export class PushNotificationService {
       'PushManager' in window &&
       'Notification' in window
     );
+  }
+
+  public isInIframe(): boolean {
+    try {
+      return typeof window !== 'undefined' && window.self !== window.top;
+    } catch {
+      return true;
+    }
   }
 
   public async getServiceWorkerRegistration(): Promise<ServiceWorkerRegistration | null> {
@@ -74,6 +84,7 @@ export class PushNotificationService {
         supported: false,
         permission: 'unsupported',
         isSubscribed: false,
+        isInIframe: this.isInIframe(),
         subscription: null,
       };
     }
@@ -96,6 +107,7 @@ export class PushNotificationService {
       supported: true,
       permission,
       isSubscribed,
+      isInIframe: this.isInIframe(),
       subscription,
     };
   }
@@ -104,6 +116,7 @@ export class PushNotificationService {
     success: boolean;
     permission: NotificationPermission | 'unsupported';
     isBlocked?: boolean;
+    isInIframe?: boolean;
     message?: string;
   }> {
     if (!this.isSupported()) {
@@ -114,20 +127,10 @@ export class PushNotificationService {
       };
     }
 
-    // If permission is already DENIED, do not repeatedly call requestPermission()
-    if (Notification.permission === 'denied') {
-      return {
-        success: false,
-        permission: 'denied',
-        isBlocked: true,
-        message: 'Notifications zimezuiwa na browser. Tafadhali ziwezeshe kwenye Chrome Site Settings.',
-      };
-    }
-
     try {
       // 1. Request real browser notification permission (only on explicit user click)
       const permission = await Notification.requestPermission();
-      localStorage.setItem(PUSH_STORAGE_KEYS.HAS_PROMPTED, 'true');
+      sessionStorage.setItem(PUSH_STORAGE_KEYS.HAS_PROMPTED_SESSION, 'true');
 
       if (permission !== 'granted') {
         return {
@@ -136,7 +139,7 @@ export class PushNotificationService {
           isBlocked: permission === 'denied',
           message: permission === 'denied'
             ? 'Notifications zimezuiwa na browser.'
-            : 'Permission haijatolewa.',
+            : 'Permission haijatolewa na mtumiaji.',
         };
       }
 
@@ -156,37 +159,63 @@ export class PushNotificationService {
         throw new Error('Could not initialize Service Worker');
       }
 
-      // 4. Create real PushSubscription with applicationServerKey
+      // 4. Clean up any stale subscription from previous VAPID key mismatch
       const convertedKey = urlBase64ToUint8Array(publicKey);
-      let subscription = await reg.pushManager.getSubscription();
-
-      if (!subscription) {
-        subscription = await reg.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: convertedKey,
-        });
+      let existingSub = await reg.pushManager.getSubscription();
+      if (existingSub) {
+        try {
+          await existingSub.unsubscribe();
+        } catch {
+          // ignore
+        }
       }
 
-      // 5. Send PushSubscription to backend database
-      const subRes = await fetch('/api/push/subscribe', {
+      // 5. Create fresh PushSubscription with active applicationServerKey
+      const subscription = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: convertedKey,
+      });
+
+      const subJson = subscription.toJSON();
+
+      // 6. Send PushSubscription to backend database
+      await fetch('/api/push/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          subscription,
+          subscription: subJson,
           userAgent: navigator.userAgent,
           language,
         }),
       });
 
-      if (!subRes.ok) {
-        throw new Error('Server failed to store push subscription');
+      // 7. Show immediate local Service Worker notification on Android notification drawer
+      try {
+        if ('showNotification' in reg) {
+          await reg.showNotification('🤖 GIX CHATS', {
+            body: 'Karibu GIX CHATS! Fungua account yako na uanze AI Jobs kwa Kiswahili. 💰',
+            icon: '/pwa-192x192.png',
+            badge: '/pwa-192x192.png',
+            tag: 'gix-welcome-first',
+            renotify: true,
+            requireInteraction: true,
+            vibrate: [200, 100, 200, 100, 300],
+            data: { url: '/?tab=account', target: 'account' },
+            actions: [
+              { action: 'open_account', title: '👉 Fungua Account (15,000 TSh)' },
+              { action: 'dismiss', title: 'Baadaye' },
+            ],
+          } as NotificationOptions);
+        }
+      } catch (swErr) {
+        console.warn('[SW] showNotification warning:', swErr);
       }
 
-      // 6. Trigger immediate real mobile push notification from backend
+      // 8. Trigger backend push notification to phone
       await fetch('/api/push/send-welcome', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ subscription }),
+        body: JSON.stringify({ subscription: subJson }),
       }).catch((err) => console.warn('[PUSH] Welcome push send warning:', err));
 
       playChimeSound();
@@ -230,20 +259,152 @@ export class PushNotificationService {
     }
   }
 
+  // Auto-sync on site entry: If user already has permission granted, make sure they are subscribed and send arrival alert
+  public async syncOnEntry(language = 'sw'): Promise<void> {
+    if (!this.isSupported() || this.isInIframe()) return;
+    if (Notification.permission !== 'granted') return;
+    if (this.isSyncingOnEntry) return;
+
+    this.isSyncingOnEntry = true;
+    try {
+      const reg = await this.getServiceWorkerRegistration();
+      if (!reg) return;
+
+      let subscription = await reg.pushManager.getSubscription();
+
+      // If not subscribed yet even though permission is granted, subscribe now
+      if (!subscription) {
+        const keyRes = await fetch('/api/push/public-key');
+        if (keyRes.ok) {
+          const { publicKey } = await keyRes.json();
+          if (publicKey) {
+            subscription = await reg.pushManager.subscribe({
+              userVisibleOnly: true,
+              applicationServerKey: urlBase64ToUint8Array(publicKey),
+            });
+          }
+        }
+      }
+
+      if (subscription) {
+        const subJson = subscription.toJSON();
+        // Sync to backend
+        await fetch('/api/push/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            subscription: subJson,
+            userAgent: navigator.userAgent,
+            language,
+          }),
+        });
+
+        // Send an entry notification if it has been more than 30 minutes since the last one
+        const lastEntryTs = parseInt(sessionStorage.getItem(PUSH_STORAGE_KEYS.LAST_ENTRY_NOTIFICATION) || '0', 10);
+        const now = Date.now();
+        if (now - lastEntryTs > 1000 * 60 * 30) {
+          sessionStorage.setItem(PUSH_STORAGE_KEYS.LAST_ENTRY_NOTIFICATION, now.toString());
+
+          // Show on phone
+          if ('showNotification' in reg) {
+            reg.showNotification('🤖 GIX CHATS', {
+              body: 'Karibu tena GIX CHATS! AI Jobs zinakusubiri leo. Fungua account kwa 15,000 TSh na uanze. 💰',
+              icon: '/pwa-192x192.png',
+              badge: '/pwa-192x192.png',
+              tag: 'gix-entry-' + Math.floor(now / (1000 * 60 * 30)),
+              renotify: true,
+              vibrate: [200, 100, 200, 100, 300],
+              data: { url: '/?tab=account', target: 'account' },
+            } as NotificationOptions).catch(() => {});
+          }
+
+          // Also trigger backend push
+          fetch('/api/push/send-welcome', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ subscription: subJson }),
+          }).catch(() => {});
+        }
+      }
+    } catch (err) {
+      console.warn('[PUSH] syncOnEntry warning:', err);
+    } finally {
+      this.isSyncingOnEntry = false;
+    }
+  }
+
   public shouldShowInitialPrompt(): boolean {
     if (!this.isSupported()) return false;
-    // If user already granted or denied permission, never show the prompt
-    if (Notification.permission === 'granted' || Notification.permission === 'denied') {
+
+    // If user already granted permission, no need to show the prompt again
+    if (Notification.permission === 'granted') {
       return false;
     }
 
-    const hasPrompted = localStorage.getItem(PUSH_STORAGE_KEYS.HAS_PROMPTED);
-    return hasPrompted !== 'true';
+    // If dismissed in this session, don't show again this session
+    const hasDismissedSession = sessionStorage.getItem(PUSH_STORAGE_KEYS.HAS_PROMPTED_SESSION);
+    return hasDismissedSession !== 'true';
   }
 
   public dismissInitialPrompt(): void {
-    localStorage.setItem(PUSH_STORAGE_KEYS.HAS_PROMPTED, 'true');
-    localStorage.setItem(PUSH_STORAGE_KEYS.DISMISSED_AT, Date.now().toString());
+    sessionStorage.setItem(PUSH_STORAGE_KEYS.HAS_PROMPTED_SESSION, 'true');
+  }
+
+  public async sendTestNotification(): Promise<{ success: boolean; message: string }> {
+    if (!this.isSupported()) {
+      return { success: false, message: 'Web Push haipatikani kwenye browser hii.' };
+    }
+
+    if (Notification.permission !== 'granted') {
+      return { success: false, message: 'Tafadhali washa notifications kwanza.' };
+    }
+
+    try {
+      const reg = await this.getServiceWorkerRegistration();
+      if (!reg) {
+        return { success: false, message: 'Service worker haijapatikana.' };
+      }
+
+      let sub = await reg.pushManager.getSubscription();
+      if (!sub) {
+        const keyRes = await fetch('/api/push/public-key');
+        if (keyRes.ok) {
+          const { publicKey } = await keyRes.json();
+          sub = await reg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(publicKey),
+          });
+        }
+      }
+
+      // 1. Show immediate local Service Worker notification
+      if ('showNotification' in reg) {
+        await reg.showNotification('🔔 GIX CHATS (Majaribio)', {
+          body: 'Hongera! Notifications zinafanya kazi vizuri kwenye simu yako. Fungua account kwa 15,000 TSh uanze AI Jobs! 🚀',
+          icon: '/pwa-192x192.png',
+          badge: '/pwa-192x192.png',
+          tag: 'gix-test-' + Date.now(),
+          renotify: true,
+          vibrate: [200, 100, 200, 100, 300],
+          data: { url: '/?tab=account', target: 'account' },
+        } as NotificationOptions);
+      }
+
+      // 2. Also send via backend push
+      if (sub) {
+        await fetch('/api/push/send-test', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ subscription: sub.toJSON() }),
+        });
+      }
+
+      playChimeSound();
+      return { success: true, message: 'Notification imetumwa kwenye simu yako!' };
+    } catch (err: any) {
+      console.error('[PUSH] sendTestNotification error:', err);
+      return { success: false, message: err.message || 'Hitilafu wakati wa kutuma.' };
+    }
   }
 }
 
