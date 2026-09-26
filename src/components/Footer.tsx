@@ -1,7 +1,7 @@
 import React from 'react';
 import { Bot, MessageCircle, ShieldCheck, Heart, ExternalLink, Globe } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { ACTIVATION_URL, WHATSAPP_INTERNATIONAL } from '../data/translations';
+import { ACTIVATION_URL, WHATSAPP_INTERNATIONAL, WHATSAPP_PHONE } from '../data/translations';
 
 export const Footer: React.FC = () => {
   const {
@@ -143,7 +143,7 @@ export const Footer: React.FC = () => {
                   className="flex items-center gap-1.5 text-emerald-400 hover:text-emerald-300"
                 >
                   <MessageCircle className="h-3.5 w-3.5" />
-                  <span>WhatsApp: +{WHATSAPP_INTERNATIONAL}</span>
+                  <span>WhatsApp: +{WHATSAPP_INTERNATIONAL} / {WHATSAPP_PHONE}</span>
                 </button>
               </li>
               <li>

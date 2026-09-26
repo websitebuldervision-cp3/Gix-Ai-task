@@ -12,6 +12,7 @@ import {
   Check,
   ChevronDown,
   ExternalLink,
+  Bell,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { Language } from '../types';
@@ -31,6 +32,7 @@ export const Header: React.FC = () => {
     openPwaModal,
     openWhatsAppSupport,
     redirectToActivation,
+    openNotificationSettings,
   } = useApp();
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -204,6 +206,18 @@ export const Header: React.FC = () => {
             <span className="sm:hidden">{language === 'sw' ? 'Msaada' : 'Care'}</span>
           </button>
 
+          {/* Web Push Notifications Button */}
+          <button
+            id="btn-notifications-header"
+            onClick={openNotificationSettings}
+            title={language === 'sw' ? 'Washa/Zima Notifications' : 'Push Notifications'}
+            aria-label="Push Notifications"
+            className="flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-900/90 px-2.5 py-1.5 text-xs font-semibold text-slate-300 transition-all hover:bg-slate-800 hover:border-indigo-500/50 hover:text-white"
+          >
+            <Bell className="h-3.5 w-3.5 text-indigo-400" />
+            <span className="hidden xl:inline">{language === 'sw' ? 'Taarifa' : 'Alerts'}</span>
+          </button>
+
           {/* Account Status Pill */}
           <button
             id="btn-account-header-pill"
@@ -373,6 +387,17 @@ export const Header: React.FC = () => {
             >
               <MessageCircle className="h-3.5 w-3.5 text-emerald-400" />
               {t.nav.customerCare}
+            </button>
+            <button
+              id="btn-mobile-notifications"
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                openNotificationSettings();
+              }}
+              className="flex items-center justify-center gap-1.5 rounded-xl border border-indigo-500/40 bg-indigo-950/40 py-2 text-xs font-semibold text-indigo-300 col-span-2 mt-1"
+            >
+              <Bell className="h-3.5 w-3.5 text-indigo-400" />
+              <span>🔔 Washa / Zima Notifications (08:00, 13:00, 19:00 EAT)</span>
             </button>
           </div>
         </div>

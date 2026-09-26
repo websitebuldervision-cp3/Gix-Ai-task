@@ -10,6 +10,9 @@ import { LockedTaskModal } from './components/LockedTaskModal';
 import { PwaModal } from './components/PwaModal';
 import { LivePayoutToast } from './components/LivePayoutToast';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
+import { NotificationPromptModal } from './components/NotificationPromptModal';
+import { NotificationSettingsModal } from './components/NotificationSettingsModal';
+import { AutoInAppNotificationBanner } from './components/AutoInAppNotificationBanner';
 
 import { HomeView } from './views/HomeView';
 import { TasksView } from './views/TasksView';
@@ -33,6 +36,27 @@ const MainContent: React.FC = () => {
   );
 };
 
+const GlobalModals: React.FC = () => {
+  const { isNotificationSettingsOpen, closeNotificationSettings } = useApp();
+
+  return (
+    <>
+      <TaskEngine />
+      <SuccessModal />
+      <LockedTaskModal />
+      <PwaModal />
+      <LivePayoutToast />
+      <FloatingWhatsApp />
+      <NotificationPromptModal />
+      <AutoInAppNotificationBanner />
+      <NotificationSettingsModal
+        isOpen={isNotificationSettingsOpen}
+        onClose={closeNotificationSettings}
+      />
+    </>
+  );
+};
+
 export default function App() {
   return (
     <ErrorBoundary>
@@ -45,13 +69,8 @@ export default function App() {
           <Footer />
           <BottomNav />
 
-          {/* Global Floating Modals & Widgets */}
-          <TaskEngine />
-          <SuccessModal />
-          <LockedTaskModal />
-          <PwaModal />
-          <LivePayoutToast />
-          <FloatingWhatsApp />
+          {/* Global Floating Modals & Push Widgets */}
+          <GlobalModals />
         </div>
       </AppProvider>
     </ErrorBoundary>

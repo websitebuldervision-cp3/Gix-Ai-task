@@ -17,15 +17,15 @@ export const FloatingWhatsApp: React.FC = () => {
         <span className="text-emerald-300 uppercase tracking-wider font-display">
           CUSTOMER CARE
         </span>
-        <span className="text-[9px] text-slate-400 font-normal hidden sm:inline font-mono">
-          ({WHATSAPP_PHONE})
+        <span className="text-[10px] text-slate-300 font-semibold hidden sm:inline font-mono">
+          (+255624542565 / {WHATSAPP_PHONE})
         </span>
       </div>
 
       {/* Main Circular WhatsApp Button */}
       <button
         onClick={openWhatsAppSupport}
-        aria-label="Contact Customer Care on WhatsApp"
+        aria-label="Contact Customer Care on WhatsApp (+255624542565 / 0624542565)"
         className="relative flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-[#25D366] text-white shadow-2xl shadow-emerald-500/50 transition-all duration-300 hover:scale-110 active:scale-95 ring-4 ring-[#25D366]/30 hover:ring-[#25D366]/60"
       >
         {/* Subtle pulsing background wave */}
@@ -42,7 +42,7 @@ export const FloatingWhatsApp: React.FC = () => {
 
         {/* Hover Tooltip */}
         <span className="absolute right-full mr-3 hidden sm:group-hover:block whitespace-nowrap rounded-lg bg-slate-900 border border-emerald-500/30 px-3 py-1.5 text-xs font-semibold text-emerald-300 shadow-xl backdrop-blur-md">
-          {isSw ? 'Msaada wa WhatsApp 24/7' : '24/7 WhatsApp Support'}
+          {isSw ? 'Msaada wa WhatsApp 24/7 (+255624542565 / 0624542565)' : '24/7 WhatsApp Support (+255624542565 / 0624542565)'}
         </span>
       </button>
     </div>

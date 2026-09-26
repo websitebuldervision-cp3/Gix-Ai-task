@@ -49,6 +49,9 @@ interface AppContextType {
   isPwaModalOpen: boolean;
   isPwaInstalled: boolean;
   canInstallPwa: boolean;
+  isNotificationSettingsOpen: boolean;
+  openNotificationSettings: () => void;
+  closeNotificationSettings: () => void;
   isTaskPaidToday: (taskIdOrCatId: string) => boolean;
   lockedTaskNotice: string | null;
   closeLockedTaskNotice: () => void;
@@ -181,9 +184,36 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const detectedCountryMeta = getCountryMeta(detectedCountry);
   const t = translations[language];
 
-  // 2. Active Tab
-  const [activeTab, setActiveTab] = useState<string>('home');
+  // 2. Active Tab & Push Notification settings modal
+  const [activeTab, setActiveTab] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const tabParam = urlParams.get('tab');
+      if (tabParam && ['home', 'tasks', 'my-tasks', 'rewards', 'leaderboard', 'account'].includes(tabParam)) {
+        return tabParam;
+      }
+    }
+    return 'home';
+  });
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+  const [isNotificationSettingsOpen, setIsNotificationSettingsOpen] = useState(false);
+  const openNotificationSettings = () => setIsNotificationSettingsOpen(true);
+  const closeNotificationSettings = () => setIsNotificationSettingsOpen(false);
+
+  // Listen for click events from ServiceWorker to route to account/registration
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+      const handleMessage = (event: MessageEvent) => {
+        if (event.data?.type === 'NOTIFICATION_CLICKED') {
+          setActiveTab('account');
+        }
+      };
+      navigator.serviceWorker.addEventListener('message', handleMessage);
+      return () => {
+        navigator.serviceWorker.removeEventListener('message', handleMessage);
+      };
+    }
+  }, []);
 
   // 3. User profile & balances (as per prompt specification: initial default displays matching examples)
   const [user, setUser] = useState<UserProfile>(() => {
@@ -546,6 +576,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         isPwaModalOpen,
         isPwaInstalled,
         canInstallPwa: !!deferredPwaPrompt,
+        isNotificationSettingsOpen,
+        openNotificationSettings,
+        closeNotificationSettings,
         isTaskPaidToday,
         lockedTaskNotice,
         closeLockedTaskNotice,

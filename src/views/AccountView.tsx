@@ -13,6 +13,7 @@ import {
   Lock,
   ChevronRight,
   TrendingUp,
+  Bell,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { Language } from '../types';
@@ -29,6 +30,7 @@ export const AccountView: React.FC = () => {
     user,
     openPwaModal,
     openWhatsAppSupport,
+    openNotificationSettings,
     resetSessionData,
   } = useApp();
 
@@ -215,8 +217,35 @@ export const AccountView: React.FC = () => {
         </p>
       </div>
 
-      {/* Customer Care & PWA Shortcuts */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {/* Customer Care, Notifications & PWA Shortcuts */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Web Push Notification Settings */}
+        <div className="rounded-2xl border border-indigo-500/30 bg-indigo-950/20 p-5 shadow-sm flex flex-col justify-between">
+          <div>
+            <div className="flex items-center gap-2 text-indigo-400 font-bold text-sm">
+              <Bell className="h-5 w-5" />
+              <span>🔔 Notification Settings</span>
+            </div>
+            <p className="mt-2 text-xs text-slate-300 leading-relaxed">
+              {isSw
+                ? 'Washa au zima taarifa za Web Push za AI Jobs zinazotumwa mara 3 kwa siku (08:00, 13:00, 19:00 EAT) zenye sauti na mtetemo.'
+                : 'Manage Web Push notifications for daily AI tasks (08:00, 13:00, 19:00 EAT) with sound & vibration.'}
+            </p>
+            <p className="mt-1 text-xs font-mono font-bold text-indigo-300">
+              {isSw ? 'Ratiba: 08:00 | 13:00 | 19:00 EAT' : 'Schedule: 08:00 | 13:00 | 19:00 EAT'}
+            </p>
+          </div>
+
+          <button
+            id="btn-account-open-notifications"
+            onClick={openNotificationSettings}
+            className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 py-2.5 text-xs font-bold text-white shadow-md hover:from-indigo-500 hover:to-indigo-400 transition"
+          >
+            <Bell className="h-4 w-4" />
+            <span>{isSw ? 'Fungua Notification Settings' : 'Open Notification Settings'}</span>
+          </button>
+        </div>
+
         {/* Customer Care WhatsApp */}
         <div className="rounded-2xl border border-emerald-500/30 bg-emerald-950/20 p-5 shadow-sm flex flex-col justify-between">
           <div>
@@ -228,7 +257,7 @@ export const AccountView: React.FC = () => {
               {t.support.desc}
             </p>
             <p className="mt-1 text-xs font-mono font-bold text-emerald-300">
-              WhatsApp: {t.support.phone}
+              WhatsApp: +255624542565 / {t.support.phone}
             </p>
           </div>
 
