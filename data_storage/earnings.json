@@ -1,0 +1,50 @@
+[
+  {
+    "id": "earn_1790532608399",
+    "userId": "user_tanzania_demo",
+    "chatSessionId": "sess_room_user_tanzania_demo_partner_sarah_usa_1790532608399",
+    "partnerName": "Sarah Jenkins",
+    "partnerFlag": "🌍",
+    "durationSeconds": 60,
+    "amountUSD": 0.5,
+    "amountTZS": 1300,
+    "status": "pending",
+    "date": "Leo, 06:10 PM",
+    "notes": {
+      "sw": "Umekamilisha dakika 1 ya chat na kumfundisha Sarah Jenkins Kiswahili.",
+      "en": "Completed 1 minute of language exchange teaching Kiswahili to Sarah Jenkins."
+    }
+  },
+  {
+    "id": "earn_01",
+    "userId": "user_tanzania_demo",
+    "chatSessionId": "sess_sarah_01",
+    "partnerName": "Sarah Jenkins",
+    "partnerFlag": "🇺🇸",
+    "durationSeconds": 60,
+    "amountUSD": 0.5,
+    "amountTZS": 1300,
+    "status": "pending",
+    "date": "Leo, 10:15 AM",
+    "notes": {
+      "sw": "Mazungumzo ya dakika 1 ya salamu za Kiswahili na Sarah (Marekani).",
+      "en": "1-minute Kiswahili greetings conversation with Sarah (USA)."
+    }
+  },
+  {
+    "id": "earn_02",
+    "userId": "user_tanzania_demo",
+    "chatSessionId": "sess_michael_01",
+    "partnerName": "Michael Sterling",
+    "partnerFlag": "🇬🇧",
+    "durationSeconds": 60,
+    "amountUSD": 0.5,
+    "amountTZS": 1300,
+    "status": "pending",
+    "date": "Leo, 09:30 AM",
+    "notes": {
+      "sw": "Kufundisha maneno ya bei na namba na Michael (Uingereza).",
+      "en": "Teaching numbers and market bargaining with Michael (UK)."
+    }
+  }
+]

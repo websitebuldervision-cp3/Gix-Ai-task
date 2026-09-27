@@ -1,0 +1,20 @@
+[
+  {
+    "id": "room_user_tanzania_demo_partner_sarah_usa",
+    "userId": "user_tanzania_demo",
+    "partnerId": "partner_sarah_usa",
+    "partnerName": "Sarah Jenkins",
+    "partnerUsername": "sarah_travels",
+    "partnerAvatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200",
+    "partnerCountry": "United States",
+    "partnerFlag": "🇺🇸",
+    "partnerStatus": "online",
+    "partnerLevel": "beginner",
+    "lastMessage": "Habari Sarah! Karibu ujifunze Kiswahili.",
+    "lastMessageTime": "06:10 PM",
+    "unreadCount": 0,
+    "createdAt": "2026-09-27T18:10:01.933Z",
+    "updatedAt": "2026-09-27T18:10:05.231Z",
+    "activeSessionSeconds": 0
+  }
+]

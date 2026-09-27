@@ -1,0 +1,27 @@
+[
+  {
+    "id": "user_tanzania_demo",
+    "username": "Baraka_Mswahili",
+    "fullName": "Baraka Emmanuel",
+    "emailOrPhone": "baraka@gixchats.com",
+    "country": "Tanzania",
+    "countryCode": "TZ",
+    "countryFlag": "🇹🇿",
+    "age": 24,
+    "languagesSpoken": [
+      "Kiswahili (Native)",
+      "English (Fluent)"
+    ],
+    "kiswahiliLevel": "native",
+    "bio": "Mzawa wa Tanzania, mwalimu wa Kiswahili wa vitendo. Karibu tujifunze pamoja!",
+    "avatarUrl": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80",
+    "accountStatus": "not_activated",
+    "balancePendingUSD": 18.5,
+    "balanceAvailableUSD": 0,
+    "totalEarnedUSD": 18.5,
+    "completedChatsCount": 37,
+    "chatMinutesCount": 37,
+    "joinedDate": "Agosti 2026",
+    "status": "online"
+  }
+]

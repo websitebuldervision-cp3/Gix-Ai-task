@@ -9,7 +9,8 @@ interface Props {
 }
 
 export const NotificationSettingsModal: React.FC<Props> = ({ isOpen, onClose }) => {
-  const { language } = useApp();
+  const app = useApp();
+  const language = app?.language || 'sw';
   const [status, setStatus] = useState<PushStatus | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
   const [testResult, setTestResult] = useState<string | null>(null);

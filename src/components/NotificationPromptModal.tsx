@@ -4,7 +4,8 @@ import { useApp } from '../context/AppContext';
 import { pushService } from '../services/pushNotificationService';
 
 export const NotificationPromptModal: React.FC = () => {
-  const { language } = useApp();
+  const app = useApp();
+  const language = app?.language || 'sw';
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -88,7 +89,9 @@ export const NotificationPromptModal: React.FC = () => {
 
             {/* Message Body */}
             <p className="text-xs sm:text-sm text-slate-200 leading-relaxed mb-5">
-              "Pata taarifa muhimu za AI Jobs moja kwa moja kwenye simu yako."
+              {language === 'sw'
+                ? '"Pata taarifa za chat mpya kutoka kwa wageni na malipo ya Kiswahili moja kwa moja kwenye simu yako."'
+                : '"Get alerts when foreign learners message you and when chat earnings are credited directly to your phone."'}
             </p>
 
             {/* Action Buttons */}

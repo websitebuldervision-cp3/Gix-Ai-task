@@ -1,188 +1,114 @@
 import React from 'react';
-import { Bot, MessageCircle, ShieldCheck, Heart, ExternalLink, Globe } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { ACTIVATION_URL, WHATSAPP_INTERNATIONAL, WHATSAPP_PHONE } from '../data/translations';
+import { MessageSquare, Shield, HelpCircle, PhoneCall, ExternalLink } from 'lucide-react';
+import { WHATSAPP_PHONE } from '../data/translations';
 
 export const Footer: React.FC = () => {
-  const {
-    language,
-    setLanguage,
-    detectedCountry,
-    detectedCountryMeta,
-    t,
-    setActiveTab,
-    openWhatsAppSupport,
-    openPwaModal,
-  } = useApp();
-  const isSw = language === 'sw';
+  const { language, openWhatsAppSupport, openActivationLink, openSafetyModal, setActiveTab } = useApp();
 
   return (
-    <footer className="border-t border-slate-800/80 bg-[#080B11]/90 pt-10 pb-24 lg:pb-12 text-xs text-slate-400">
+    <footer className="mt-12 border-t border-slate-800/80 bg-slate-950/70 pb-20 pt-8 sm:pb-12 text-slate-400">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-          {/* Brand Col */}
-          <div className="space-y-3 md:col-span-2">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400">
-                <Bot className="h-4 w-4" />
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
+          {/* Brand Info */}
+          <div className="md:col-span-2 space-y-3">
+            <div className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500 text-slate-950 font-bold">
+                <MessageSquare className="h-4 w-4" />
               </div>
-              <span className="font-display text-base font-bold text-white">
-                GIX <span className="text-emerald-400">CHAT</span>
-              </span>
+              <span className="font-display text-lg font-bold text-white">GIX CHATS</span>
             </div>
-
-            <p className="text-xs text-slate-300 font-medium max-w-sm">
-              {t.brand.tagline}
+            <p className="text-xs leading-relaxed text-slate-400 max-w-md">
+              {language === 'sw'
+                ? 'Jukwaa rasmi la kuunganisha watu duniani kote na wazawa wa lugha ya Kiswahili. Fundisha Kiswahili kupitia mazungumzo halisi na ulipwe kwa muda wako wa chat.'
+                : 'The official global platform connecting international learners with native Swahili speakers. Teach Kiswahili through real-time conversations and earn for your chat time.'}
             </p>
-
-            <p className="text-[11px] text-slate-400 leading-relaxed max-w-md">
-              {isSw
-                ? 'Jukwaa la kimataifa la microtasks za akili mnemba (AI). Fanya tathmini za picha, sauti, video, maandishi na modeli za AI ujipatie ujira papo hapo.'
-                : 'A next-generation AI microtask platform enabling distributed human feedback for computer vision, natural language processing, and multimodal intelligence.'}
-            </p>
-
-            {/* Quick Language Switcher & Geolocation Status */}
-            <div className="pt-2 flex flex-wrap items-center gap-2">
-              <span className="text-[11px] text-slate-400 flex items-center gap-1 font-medium">
-                <Globe className="h-3.5 w-3.5 text-emerald-400" />
-                <span>{isSw ? 'Lugha:' : 'Language:'}</span>
+            <div className="pt-2 flex flex-wrap items-center gap-2 text-xs">
+              <span className="inline-flex items-center gap-1 rounded-md bg-slate-900 border border-slate-800 px-2 py-1 text-slate-300">
+                <Shield className="h-3 w-3 text-emerald-400" />
+                <span>Verified Moderation</span>
               </span>
-              <div className="inline-flex rounded-lg border border-slate-800 bg-slate-900/90 p-0.5">
-                <button
-                  id="btn-footer-lang-sw"
-                  onClick={() => setLanguage('sw', true)}
-                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
-                    language === 'sw'
-                      ? 'bg-emerald-600 text-white shadow-xs'
-                      : 'text-slate-400 hover:text-slate-200'
-                  }`}
-                >
-                  <span>🇹🇿</span>
-                  <span>Kiswahili</span>
-                </button>
-                <button
-                  id="btn-footer-lang-en"
-                  onClick={() => setLanguage('en', true)}
-                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
-                    language === 'en'
-                      ? 'bg-emerald-600 text-white shadow-xs'
-                      : 'text-slate-400 hover:text-slate-200'
-                  }`}
-                >
-                  <span>🇬🇧</span>
-                  <span>English</span>
-                </button>
-              </div>
-              {detectedCountry && (
-                <span className="text-[10px] text-slate-400 bg-slate-900/80 px-2 py-0.5 rounded-md border border-slate-800 flex items-center gap-1">
-                  <span>{detectedCountryMeta.flag}</span>
-                  <span>{detectedCountryMeta.nameEn} ({detectedCountryMeta.code})</span>
-                </span>
-              )}
+              <span className="inline-flex items-center gap-1 rounded-md bg-slate-900 border border-slate-800 px-2 py-1 text-slate-300">
+                <span>Earning Rate: $0.50 / min</span>
+              </span>
             </div>
           </div>
 
           {/* Quick Links */}
           <div className="space-y-2.5">
-            <p className="font-bold text-white text-xs uppercase tracking-wider">
-              {isSw ? 'Quick Links' : 'Navigation'}
-            </p>
-            <ul className="space-y-2 text-xs">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-200">
+              {language === 'sw' ? 'Kurasa Kuu' : 'Navigation'}
+            </h4>
+            <ul className="space-y-1.5 text-xs">
               <li>
-                <button
-                  onClick={() => setActiveTab('home')}
-                  className="hover:text-emerald-400 transition-colors"
-                >
-                  {t.nav.home}
+                <button onClick={() => setActiveTab('home')} className="hover:text-emerald-400 transition">
+                  {language === 'sw' ? 'Mwanzo' : 'Home'}
                 </button>
               </li>
               <li>
-                <button
-                  onClick={() => setActiveTab('tasks')}
-                  className="hover:text-emerald-400 transition-colors"
-                >
-                  {t.nav.tasks} (55+)
+                <button onClick={() => setActiveTab('find')} className="hover:text-emerald-400 transition">
+                  {language === 'sw' ? 'Tafuta Wageni' : 'Find Partners'}
                 </button>
               </li>
               <li>
-                <button
-                  onClick={() => setActiveTab('rewards')}
-                  className="hover:text-emerald-400 transition-colors"
-                >
-                  {t.nav.rewards}
+                <button onClick={() => setActiveTab('earnings')} className="hover:text-emerald-400 transition">
+                  {language === 'sw' ? 'Mapato Yako' : 'Earnings Dashboard'}
                 </button>
               </li>
               <li>
-                <button
-                  onClick={() => setActiveTab('leaderboard')}
-                  className="hover:text-emerald-400 transition-colors"
-                >
-                  {t.nav.leaderboard}
+                <button onClick={() => setActiveTab('withdraw')} className="hover:text-emerald-400 transition">
+                  {language === 'sw' ? 'Kutoa Pesa' : 'Withdrawal Center'}
                 </button>
               </li>
               <li>
-                <button
-                  onClick={openPwaModal}
-                  className="hover:text-emerald-400 transition-colors"
-                >
-                  {t.nav.downloadApp}
+                <button onClick={openActivationLink} className="text-emerald-400 font-semibold hover:underline inline-flex items-center gap-1">
+                  <span>{language === 'sw' ? 'Fungua Akaunti' : 'Open Account'}</span>
+                  <ExternalLink className="h-3 w-3" />
                 </button>
               </li>
             </ul>
           </div>
 
-          {/* Customer Care & Legal */}
+          {/* Safety & Customer Care */}
           <div className="space-y-2.5">
-            <p className="font-bold text-white text-xs uppercase tracking-wider">
-              {isSw ? 'Msaada na Usajili' : 'Support & Activation'}
-            </p>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-200">
+              {language === 'sw' ? 'Msaada & Usalama' : 'Support & Safety'}
+            </h4>
             <ul className="space-y-2 text-xs">
               <li>
                 <button
                   onClick={openWhatsAppSupport}
-                  className="flex items-center gap-1.5 text-emerald-400 hover:text-emerald-300"
+                  className="flex items-center gap-1.5 text-emerald-400 hover:text-emerald-300 transition font-medium"
                 >
-                  <MessageCircle className="h-3.5 w-3.5" />
-                  <span>WhatsApp: +{WHATSAPP_INTERNATIONAL} / {WHATSAPP_PHONE}</span>
+                  <PhoneCall className="h-3.5 w-3.5" />
+                  <span>Customer Care ({WHATSAPP_PHONE})</span>
                 </button>
               </li>
               <li>
-                <a
-                  href={ACTIVATION_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 text-amber-400 hover:text-amber-300"
+                <button
+                  onClick={openSafetyModal}
+                  className="hover:text-slate-200 transition text-left"
                 >
-                  <span>{t.activation.activateBtn}</span>
-                  <ExternalLink className="h-3 w-3" />
-                </a>
+                  {language === 'sw' ? 'Kanuni za Usalama na Ulinzi' : 'Community Safety Guidelines'}
+                </button>
               </li>
               <li>
-                <span className="text-[11px] text-slate-400 block pt-1">
-                  {t.activation.feeLabel} {t.activation.feeAmount}
-                </span>
+                <button
+                  onClick={openSafetyModal}
+                  className="hover:text-slate-200 transition text-left"
+                >
+                  {language === 'sw' ? 'Sera ya Faragha & Vigezo' : 'Terms & Privacy Policy'}
+                </button>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center justify-between border-t border-slate-800/80 pt-6 text-[11px] text-slate-400 gap-3">
-          <p>© {new Date().getFullYear()} GIX CHAT. {isSw ? 'Haki zote zimehifadhiwa.' : 'All rights reserved.'}</p>
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
-            <span>{isSw ? 'Jukwaa Salama la Kazi za AI' : 'Certified AI Evaluation Architecture'}</span>
-          </div>
-        </div>
-
-        {/* Powered By Cp3 salela FX 👑 */}
-        <div className="mt-4 pt-3 border-t border-slate-900 flex justify-center items-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-gradient-to-r from-amber-500/10 via-yellow-500/10 to-amber-500/10 px-4 py-1.5 shadow-sm">
-            <span className="text-xs font-semibold text-slate-300">Powered by</span>
-            <span className="font-display text-xs sm:text-sm font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400 drop-shadow">
-              Cp3 salela FX
-            </span>
-            <span className="text-sm">👑</span>
-          </div>
+        {/* Bottom Disclaimer */}
+        <div className="mt-8 border-t border-slate-900 pt-6 text-center text-[11px] text-slate-500">
+          <p>
+            © {new Date().getFullYear()} GIX CHATS. All rights reserved. Platform rules apply to all eligible chat sessions.
+          </p>
         </div>
       </div>
     </footer>
