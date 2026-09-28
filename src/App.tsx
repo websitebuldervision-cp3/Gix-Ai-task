@@ -856,21 +856,20 @@ function PaidAlertModal() {
         </p>
 
         <div className="mt-4 flex flex-col gap-2">
-          <button
-            onClick={() => setPaidAlertForeigner(null)}
-            className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#00E5FF] to-[#6C3BFF] text-white font-bold text-xs uppercase cursor-pointer"
+          <a
+            href={REG_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#00E5FF] via-[#6C3BFF] to-[#ec4899] text-white font-black text-xs uppercase shadow-[0_0_15px_rgba(0,229,255,0.4)] cursor-pointer block text-center border border-white/20"
           >
-            Chagua Mzungu Mwingine
-          </button>
+            GUSA HAPA KUFUNGUA ACCOUNT
+          </a>
 
           <button
-            onClick={() => {
-              setPaidAlertForeigner(null);
-              openWithdraw();
-            }}
-            className="w-full py-2 rounded-xl bg-[#19243a] text-emerald-300 font-semibold text-xs border border-gray-700 cursor-pointer"
+            onClick={() => setPaidAlertForeigner(null)}
+            className="w-full py-2 rounded-xl bg-[#19243a] text-gray-300 font-semibold text-xs border border-gray-700 hover:text-white cursor-pointer"
           >
-            Angalia Salio Lako
+            Chagua Mzungu Mwingine
           </button>
         </div>
       </motion.div>
@@ -941,7 +940,7 @@ function WithdrawModal() {
             <span>AKAUNTI INAHITAJI KUFUNGULIWA KWANZA</span>
           </div>
           <p className="mt-1 text-[11px] text-gray-300 leading-snug">
-            Salio lako la <strong className="text-emerald-400">TZS {balance.toLocaleString()}</strong> lipo kwenye subira (Pending). Ili kuhamisha fedha hizi kwenye namba yako ya simu (M-Pesa, TigoPesa, Airtel Money, Halopesa au AzamPesa), unapaswa kufungua akaunti yako kwanza.
+            Salio lako la <strong className="text-emerald-400">TZS {balance.toLocaleString()}</strong> lipo PENDING. Ili kuhamisha fedha hizi kwenye namba yako ya simu (M-Pesa, TigoPesa, Airtel Money, Halopesa au AzamPesa), unapaswa kufungua akaunti yako kwanza.
           </p>
           <a
             href={REG_URL}

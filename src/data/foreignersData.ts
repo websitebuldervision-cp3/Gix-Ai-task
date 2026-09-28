@@ -15,6 +15,10 @@ export interface ForeignerProfile {
   profession: string;
   topic: string; // The unique topic for this foreigner
   bio: string;
+  weekdayRate: number; // TZS 15,000 - 32,000 (Jumatatu - Ijumaa)
+  weekdayUsd: number;
+  weekendRate: number; // TZS 45,000+ (Jumamosi - Jumapili)
+  weekendUsd: number;
   usdRate: number;
   ratePerChat: number;
   network: Network;
@@ -31,8 +35,16 @@ export const REG_URL = 'https://moxeraagencies.com/register?ref=Cp3';
 export const WHATSAPP_URL =
   'https://wa.me/255776387522?text=hello%20Customer%20care%20naomba%20nielekeze%20Jinsi%20ya%20kufungua%20account%20kwenye%20hii%20site%20ela%20ya%20kufungua%20account%2015000%20ninayo%20nipo%20tayar%20kufungua%20account%20leo';
 
-// Master catalog of foreigners with VERY SHORT, PUNCHY, REALISTIC SMS-STYLE MESSAGES
-export const ALL_FOREIGNERS: ForeignerProfile[] = [
+// Check if today is Saturday (6) or Sunday (0)
+export const isWeekend = (date: Date = new Date()): boolean => {
+  const day = date.getDay();
+  return day === 0 || day === 6; // 0 = Jumapili, 6 = Jumamosi
+};
+
+// Master catalog of foreigners:
+// Weekdays (Jumatatu - Ijumaa): 15,000 - 32,000 TZS tu (haizidi 32,000 TZS)
+// Weekends (Jumamosi - Jumapili): 45,000 TZS na kuendelea
+const RAW_FOREIGNERS: ForeignerProfile[] = [
   {
     id: 'f1',
     name: 'Dr. Jessica Miller',
@@ -43,8 +55,12 @@ export const ALL_FOREIGNERS: ForeignerProfile[] = [
     topic: 'Hospitali Zanzibar',
     avatar: 'https://images.pexels.com/photos/16869444/pexels-photo-16869444.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
     bio: 'Nakuja Zanzibar hospitalini. Nifundishe salamu za wagonjwa!',
-    usdRate: 22,
-    ratePerChat: 46000,
+    weekdayRate: 26000,
+    weekdayUsd: 11,
+    weekendRate: 46000,
+    weekendUsd: 19,
+    usdRate: 11,
+    ratePerChat: 26000,
     network: 'M-Pesa',
     rating: 4.95,
     chatsCompleted: 154,
@@ -90,8 +106,12 @@ export const ALL_FOREIGNERS: ForeignerProfile[] = [
     topic: 'Safari ya Serengeti',
     avatar: 'https://images.pexels.com/photos/15014092/pexels-photo-15014092.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
     bio: 'Napanga safari Serengeti. Nifundishe majina ya wanyama!',
-    usdRate: 25,
-    ratePerChat: 52000,
+    weekdayRate: 32000, // Kiwango cha juu siku za kazi (haizidi 32,000)
+    weekdayUsd: 13,
+    weekendRate: 52000,
+    weekendUsd: 21,
+    usdRate: 13,
+    ratePerChat: 32000,
     network: 'TigoPesa',
     rating: 4.88,
     chatsCompleted: 112,
@@ -133,8 +153,12 @@ export const ALL_FOREIGNERS: ForeignerProfile[] = [
     topic: 'Methali za Kiswahili',
     avatar: 'https://images.pexels.com/photos/1820575/pexels-photo-1820575.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
     bio: 'Ninaandika thesis ya methali. Nifundishe methali yako bora!',
-    usdRate: 28,
-    ratePerChat: 58000,
+    weekdayRate: 22000,
+    weekdayUsd: 9,
+    weekendRate: 45000,
+    weekendUsd: 18,
+    usdRate: 9,
+    ratePerChat: 22000,
     network: 'Airtel Money',
     rating: 5.0,
     chatsCompleted: 220,
@@ -176,8 +200,12 @@ export const ALL_FOREIGNERS: ForeignerProfile[] = [
     topic: 'Soko la Samaki Mafia',
     avatar: 'https://images.pexels.com/photos/15019490/pexels-photo-15019490.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
     bio: 'Nakuja Mafia kuogelea na Papa. Nifundishe kupatana bei!',
-    usdRate: 30,
-    ratePerChat: 63000,
+    weekdayRate: 18000,
+    weekdayUsd: 7,
+    weekendRate: 48000,
+    weekendUsd: 20,
+    usdRate: 7,
+    ratePerChat: 18000,
     network: 'Halopesa',
     rating: 4.84,
     chatsCompleted: 95,
@@ -219,8 +247,12 @@ export const ALL_FOREIGNERS: ForeignerProfile[] = [
     topic: 'Salamu za Arusha',
     avatar: 'https://images.pexels.com/photos/35367077/pexels-photo-35367077.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
     bio: 'Ninahamia Arusha kufanya kazi. Nifundishe salamu za heshima!',
-    usdRate: 20,
-    ratePerChat: 42000,
+    weekdayRate: 30000,
+    weekdayUsd: 12,
+    weekendRate: 50000,
+    weekendUsd: 20,
+    usdRate: 12,
+    ratePerChat: 30000,
     network: 'AzamPesa',
     rating: 4.92,
     chatsCompleted: 180,
@@ -262,8 +294,12 @@ export const ALL_FOREIGNERS: ForeignerProfile[] = [
     topic: 'Vyakula vya Asili',
     avatar: 'https://images.pexels.com/photos/6102841/pexels-photo-6102841.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
     bio: 'Ninafungua mgahawa Paris. Nifundishe vyakula vya Kitanzania!',
-    usdRate: 35,
-    ratePerChat: 73000,
+    weekdayRate: 20000,
+    weekdayUsd: 8,
+    weekendRate: 47000,
+    weekendUsd: 19,
+    usdRate: 8,
+    ratePerChat: 20000,
     network: 'M-Pesa',
     rating: 4.89,
     chatsCompleted: 130,
@@ -305,8 +341,12 @@ export const ALL_FOREIGNERS: ForeignerProfile[] = [
     topic: 'Kanga na Vitenge',
     avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
     bio: 'Ninapenda vitenge na kanga. Nifundishe misemo ya kanga!',
-    usdRate: 26,
-    ratePerChat: 54000,
+    weekdayRate: 28000,
+    weekdayUsd: 11,
+    weekendRate: 49000,
+    weekendUsd: 20,
+    usdRate: 11,
+    ratePerChat: 28000,
     network: 'TigoPesa',
     rating: 4.96,
     chatsCompleted: 145,
@@ -344,8 +384,12 @@ export const ALL_FOREIGNERS: ForeignerProfile[] = [
     topic: 'Kusalimia Vijijini',
     avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
     bio: 'Ninaendesha baiskeli vijijini. Nifundishe kuomba maji na njia!',
-    usdRate: 27,
-    ratePerChat: 56000,
+    weekdayRate: 15000, // Kiwango cha kuanzia cha kawaida (15,000)
+    weekdayUsd: 6,
+    weekendRate: 45000,
+    weekendUsd: 18,
+    usdRate: 6,
+    ratePerChat: 15000,
     network: 'M-Pesa',
     rating: 4.87,
     chatsCompleted: 88,
@@ -374,6 +418,28 @@ export const ALL_FOREIGNERS: ForeignerProfile[] = [
     ],
   },
 ];
+
+// Configure dynamic ratePerChat & usdRate getters so they are ALWAYS accurate based on day of week:
+// Weekdays (Mon-Fri): 15,000 - 32,000 TZS
+// Weekends (Sat-Sun): 45,000+ TZS
+RAW_FOREIGNERS.forEach((f) => {
+  Object.defineProperty(f, 'ratePerChat', {
+    get() {
+      return isWeekend() ? f.weekendRate : f.weekdayRate;
+    },
+    enumerable: true,
+    configurable: true,
+  });
+  Object.defineProperty(f, 'usdRate', {
+    get() {
+      return isWeekend() ? f.weekendUsd : f.weekdayUsd;
+    },
+    enumerable: true,
+    configurable: true,
+  });
+});
+
+export const ALL_FOREIGNERS: ForeignerProfile[] = RAW_FOREIGNERS;
 
 // Swahili day & month names for authentic Tanzanian dynamic dates
 const SWAHILI_DAYS = [

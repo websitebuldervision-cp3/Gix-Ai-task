@@ -83,10 +83,10 @@ export const ChatRewardPendingModal: React.FC<Props> = ({
           <AlertTriangle size={18} className="text-amber-400 shrink-0 mt-0.5" />
           <div>
             <span className="font-black text-amber-200 uppercase tracking-wide block">
-              Hali ya Malipo: PENDING (Yapo Kwenye Subira)
+              Hali ya Malipo: PENDING
             </span>
             <p className="text-[11px] text-gray-300 mt-0.5 leading-snug">
-              Malipo haya yamewekwa kwenye <strong>Pending Balance (Jumla: TZS {totalPending.toLocaleString()})</strong>. Ili yaweze kuingia kwenye Salio la Kutoa (Withdrawal) na kuhamishiwa kwenye simu yako, unapaswa kufungua na ku-activate akaunti yako kwanza.
+              Malipo haya yapo <strong>PENDING (Jumla: TZS {totalPending.toLocaleString()})</strong>. Ili yaweze kuingia kwenye Salio la Kutoa (Withdrawal) na kuhamishiwa kwenye simu yako, unapaswa kufungua na ku-activate akaunti yako kwanza.
             </p>
           </div>
         </div>
