@@ -417,6 +417,350 @@ const RAW_FOREIGNERS: ForeignerProfile[] = [
       'Asante sana!',
     ],
   },
+  {
+    id: 'f9',
+    name: 'Dr. Sarah Jenkins',
+    age: 32,
+    country: 'Sweden',
+    flag: '🇸🇪',
+    profession: 'Mtafiti wa Wanyamapori',
+    topic: 'Hifadhi ya Ngorongoro',
+    avatar: 'https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
+    bio: 'Ninafanya utafiti wa faru Ngorongoro. Nifundishe salamu za heshima porini!',
+    weekdayRate: 27000,
+    weekdayUsd: 11,
+    weekendRate: 48000,
+    weekendUsd: 20,
+    usdRate: 11,
+    ratePerChat: 27000,
+    network: 'TigoPesa',
+    rating: 4.93,
+    chatsCompleted: 118,
+    badge: 'Mpya Leo',
+    initialMessage: 'Hej! Faru na Kiboko wanaitwaje kwa heshima huko?',
+    quickChips: [
+      'Faru mwenye pembe',
+      'Kiboko yupo majini',
+      'Hifadhi ni salama',
+      'Tazama kule bonde',
+    ],
+    conversationFlow: [
+      {
+        triggerKeywords: ['faru', 'kiboko', 'mnyama', 'bonde'],
+        replyText: 'Asante sana! Nimeandika "Faru" na "Kiboko" kwa umakini mkubwa.',
+      },
+      {
+        triggerKeywords: ['usalama', 'pori', 'ngorongoro', 'mazingira'],
+        replyText: 'Ngorongoro ni eneo la kustaajabisha duniani!',
+      },
+    ],
+    fallbackResponses: [
+      'Tack så mycket!',
+      'Asante sana mwalimu wangu!',
+      'Nimefurahi kujifunza kutoka kwako!',
+    ],
+  },
+  {
+    id: 'f10',
+    name: 'Alexander Weber',
+    age: 35,
+    country: 'Germany',
+    flag: '🇩🇪',
+    profession: 'Mwalimu wa Jiografia',
+    topic: 'Kupanda Kilimanjaro',
+    avatar: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
+    bio: 'Napanga kupanda kilele cha Kibo. Nifundishe maneno ya kutia moyo njiani!',
+    weekdayRate: 29000,
+    weekdayUsd: 12,
+    weekendRate: 51000,
+    weekendUsd: 21,
+    usdRate: 12,
+    ratePerChat: 29000,
+    network: 'M-Pesa',
+    rating: 4.97,
+    chatsCompleted: 210,
+    badge: 'Top Earner',
+    initialMessage: 'Hallo! "Pole pole" inasaidiaje kufika kileleni Kilimanjaro?',
+    quickChips: [
+      'Pole pole ndio mwendo',
+      'Kunywa maji mengi',
+      'Kesho tutafika kileleni',
+      'Hongera sana umefika',
+    ],
+    conversationFlow: [
+      {
+        triggerKeywords: ['pole pole', 'kibo', 'kilele', 'mlima'],
+        replyText: '"Pole pole ndio mwendo"! Huu usemi utanipa nguvu hadi Kibo!',
+      },
+      {
+        triggerKeywords: ['baridi', 'theluji', 'koti', 'nguo'],
+        replyText: 'Nimejiandaa na nguo nzito za theluji!',
+      },
+    ],
+    fallbackResponses: [
+      'Vielen Dank!',
+      'Safi sana rafiki yangu!',
+      'Asante kwa mwongozo bora!',
+    ],
+  },
+  {
+    id: 'f11',
+    name: 'Chloe Martin',
+    age: 28,
+    country: 'France',
+    flag: '🇫🇷',
+    profession: 'Mwanahabari wa Utalii',
+    topic: 'Milima ya Usambara',
+    avatar: 'https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
+    bio: 'Niko Lushoto kuandika makala ya milima. Nifundishe maneno ya ukarimu!',
+    weekdayRate: 24000,
+    weekdayUsd: 10,
+    weekendRate: 46000,
+    weekendUsd: 19,
+    usdRate: 10,
+    ratePerChat: 24000,
+    network: 'Airtel Money',
+    rating: 4.91,
+    chatsCompleted: 98,
+    badge: 'Online Sasa',
+    initialMessage: 'Bonjour! Nikiwa sokoni Lushoto nasemaje "habari za asubuhi"?',
+    quickChips: [
+      'Habari za asubuhi Lushoto',
+      'Matunda haya ni matamu',
+      'Milima ya Usambara inapendeza',
+      'Karibu tena kwetu',
+    ],
+    conversationFlow: [
+      {
+        triggerKeywords: ['asubuhi', 'lushoto', 'habari', 'soko'],
+        replyText: 'C\'est parfait! Nitasalimia kila mtu sokoni kwa ukarimu.',
+      },
+      {
+        triggerKeywords: ['matunda', 'kahawa', 'chai', 'chakula'],
+        replyText: 'Kahawa na parachichi za Lushoto zinasifika sana!',
+      },
+    ],
+    fallbackResponses: [
+      'Merci beaucoup!',
+      'Asante sana!',
+      'Nimefurahia mazungumzo yetu!',
+    ],
+  },
+  {
+    id: 'f12',
+    name: 'Oliver Smith',
+    age: 30,
+    country: 'UK',
+    flag: '🇬🇧',
+    profession: 'Mwongoza Safari za Pori',
+    topic: 'Mikumi Safari Tour',
+    avatar: 'https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
+    bio: 'Naleta wageni Mikumi. Nifundishe jinsi ya kuwasalimia wenyeji mtaani!',
+    weekdayRate: 31000,
+    weekdayUsd: 13,
+    weekendRate: 49000,
+    weekendUsd: 20,
+    usdRate: 13,
+    ratePerChat: 31000,
+    network: 'Halopesa',
+    rating: 4.89,
+    chatsCompleted: 142,
+    badge: 'Top Earner',
+    initialMessage: 'Hello mate! Nikitaka kuuliza "vipi hali ya barabara ya Mikumi" nasemaje?',
+    quickChips: [
+      'Barabara iko shwari',
+      'Angalia wanyama wanavuka',
+      'Mikumi ina mandhari nzuri',
+      'Pumzika hapa hotelini',
+    ],
+    conversationFlow: [
+      {
+        triggerKeywords: ['barabara', 'shwari', 'salama', 'usafiri'],
+        replyText: 'Brilliant! "Barabara iko shwari" ni maneno rahisi na sahihi.',
+      },
+      {
+        triggerKeywords: ['wanyama', 'twiga', 'pundamilia', 'chui'],
+        replyText: 'Pundamilia na twiga wengi hupenda kupita hapo!',
+      },
+    ],
+    fallbackResponses: [
+      'Cheers mate!',
+      'Asante sana rafiki yangu!',
+      'Safii sana!',
+    ],
+  },
+  {
+    id: 'f13',
+    name: 'Hannah Becker',
+    age: 25,
+    country: 'Germany',
+    flag: '🇩🇪',
+    profession: 'Mwanafunzi wa Afya ya Jamii',
+    topic: 'Kliniki za Vijijini',
+    avatar: 'https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
+    bio: 'Ninatembelea kliniki za mama na mtoto. Nifundishe salamu za upendo!',
+    weekdayRate: 19000,
+    weekdayUsd: 8,
+    weekendRate: 45000,
+    weekendUsd: 18,
+    usdRate: 8,
+    ratePerChat: 19000,
+    network: 'M-Pesa',
+    rating: 4.88,
+    chatsCompleted: 76,
+    badge: 'Anahitaji Mwalimu',
+    initialMessage: 'Guten Tag! Nikimpongeza mama aliyejifungua mtoto mzuri nasemaje?',
+    quickChips: [
+      'Hongera sana kwa kupata mtoto!',
+      'Mungu amlinde mtoto',
+      'Afya njema kwenu wote',
+      'Karibu mtoto duniani',
+    ],
+    conversationFlow: [
+      {
+        triggerKeywords: ['hongera', 'mtoto', 'mama', 'afya'],
+        replyText: '"Hongera sana kwa mtoto!" Maneno yenye faraja na furaha tele.',
+      },
+      {
+        triggerKeywords: ['kliniki', 'dawa', 'huduma', 'uzazi'],
+        replyText: 'Kazi ya kutoa elimu ya afya vijijini inanitia moyo sana.',
+      },
+    ],
+    fallbackResponses: [
+      'Danke schön!',
+      'Asante sana kwa ufundishaji wako mzuri!',
+      'Nimejifunza mengi leo!',
+    ],
+  },
+  {
+    id: 'f14',
+    name: 'Liam O\'Connor',
+    age: 37,
+    country: 'Ireland',
+    flag: '🇮🇪',
+    profession: 'Mhifadhi Misitu Asili',
+    topic: 'Misitu ya Amani Tanga',
+    avatar: 'https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
+    bio: 'Nalinda vyanzo vya maji na vipepeo Amani. Nifundishe maneno ya miti na mvua!',
+    weekdayRate: 21000,
+    weekdayUsd: 8,
+    weekendRate: 47000,
+    weekendUsd: 19,
+    usdRate: 8,
+    ratePerChat: 21000,
+    network: 'AzamPesa',
+    rating: 4.94,
+    chatsCompleted: 135,
+    badge: 'Online Sasa',
+    initialMessage: 'Dia dhuit! Neno "Mti" na "Mvua" yanatamkwaje kwa sauti nzuri?',
+    quickChips: [
+      'Mti unaleta hewa safi',
+      'Mvua ya baraka imenyesha',
+      'Hifadhi msitu wetu',
+      'Vipepeo wanaruka juu',
+    ],
+    conversationFlow: [
+      {
+        triggerKeywords: ['mti', 'mvua', 'msitu', 'asili'],
+        replyText: '"Mti na Mvua" - maneno matamu sana yenye uhai!',
+      },
+      {
+        triggerKeywords: ['amani', 'tanga', 'vipepeo', 'mazingira'],
+        replyText: 'Misitu ya milima ya Tanga ina spishi za pekee sana duniani.',
+      },
+    ],
+    fallbackResponses: [
+      'Go raibh maith agat!',
+      'Asante sana rafiki yangu!',
+      'Safi sana mwalimu!',
+    ],
+  },
+  {
+    id: 'f15',
+    name: 'Mia Takahashi',
+    age: 27,
+    country: 'Japan',
+    flag: '🇯🇵',
+    profession: 'Mbunifu wa Mifumo ya Tehama',
+    topic: 'Shule za Tehama Mwanza',
+    avatar: 'https://images.pexels.com/photos/1858175/pexels-photo-1858175.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
+    bio: 'Nafundisha programu za kompyuta Mwanza. Nifundishe kuwapongeza wanafunzi!',
+    weekdayRate: 25000,
+    weekdayUsd: 10,
+    weekendRate: 50000,
+    weekendUsd: 20,
+    usdRate: 10,
+    ratePerChat: 25000,
+    network: 'TigoPesa',
+    rating: 4.96,
+    chatsCompleted: 167,
+    badge: 'Mpya Leo',
+    initialMessage: 'Konnichiwa! Nikitaka kuambia mwanafunzi "umefanya kazi nzuri sana" nasemaje?',
+    quickChips: [
+      'Umefanya vizuri sana!',
+      'Endelea kujituma',
+      'Kompyuta ni rahisi kujifunza',
+      'Hongera kwa mafanikio yako',
+    ],
+    conversationFlow: [
+      {
+        triggerKeywords: ['vizuri', 'kazi', 'hongera', 'mwanafunzi'],
+        replyText: '"Umefanya kazi nzuri sana" - nitaipenda sana kusema darasani!',
+      },
+      {
+        triggerKeywords: ['mwanza', 'ziwa', 'victoria', 'samaki'],
+        replyText: 'Mwanza ni jiji zuri sana pembezoni mwa Ziwa Victoria.',
+      },
+    ],
+    fallbackResponses: [
+      'Arigatou gozaimasu!',
+      'Asante sana rafiki yangu!',
+      'Nimefurahi sana!',
+    ],
+  },
+  {
+    id: 'f16',
+    name: 'Carlos Rodriguez',
+    age: 34,
+    country: 'Spain',
+    flag: '🇪🇸',
+    profession: 'Mtayarishaji wa Muziki',
+    topic: 'Muziki wa Taarab Zanzibar',
+    avatar: 'https://images.pexels.com/photos/837358/pexels-photo-837358.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
+    bio: 'Narekodi vyombo vya asili Zanzibar. Nifundishe misemo ya ngoma na sanaa!',
+    weekdayRate: 23000,
+    weekdayUsd: 9,
+    weekendRate: 46000,
+    weekendUsd: 18,
+    usdRate: 9,
+    ratePerChat: 23000,
+    network: 'M-Pesa',
+    rating: 4.9,
+    chatsCompleted: 104,
+    badge: 'Top Earner',
+    initialMessage: 'Hola! Neno "Muziki mtamu wa asili" linasemwaje kwa ladha ya pwani?',
+    quickChips: [
+      'Muziki mtamu wa Taarab',
+      'Ngoma inalia vizuri',
+      'Wapigaji wana ustadi mkubwa',
+      'Burudani safi sana pwani',
+    ],
+    conversationFlow: [
+      {
+        triggerKeywords: ['taarab', 'ngoma', 'muziki', 'asili'],
+        replyText: '¡Qué maravilla! Muziki wa Zanzibar una roho na utulivu mkubwa.',
+      },
+      {
+        triggerKeywords: ['zanzibar', 'pwani', 'bahari', 'forodhani'],
+        replyText: 'Ninapenda sana kutembea Forodhani jioni nikisikiliza ngoma.',
+      },
+    ],
+    fallbackResponses: [
+      '¡Muchas gracias!',
+      'Asante sana ndugu yangu!',
+      'Safii sana!',
+    ],
+  },
 ];
 
 // Configure dynamic ratePerChat & usdRate getters so they are ALWAYS accurate based on day of week:
@@ -490,21 +834,7 @@ export function getSwahiliDateString(date: Date = new Date()): {
   };
 }
 
-// Daily rotation engine: picks 6 distinct foreigners based on the exact day of the year
-export function getDailyForeigners(date: Date = new Date()): ForeignerProfile[] {
-  const startOfYear = new Date(date.getFullYear(), 0, 0);
-  const diff = date.getTime() - startOfYear.getTime();
-  const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
-
-  const total = ALL_FOREIGNERS.length;
-  const count = 6;
-  const offset = (dayOfYear * 3) % total;
-
-  const result: ForeignerProfile[] = [];
-  for (let i = 0; i < count; i++) {
-    const index = (offset + i) % total;
-    result.push(ALL_FOREIGNERS[index]);
-  }
-
-  return result;
+// Return all 16 foreigners on the site
+export function getDailyForeigners(): ForeignerProfile[] {
+  return ALL_FOREIGNERS;
 }

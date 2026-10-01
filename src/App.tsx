@@ -22,6 +22,7 @@ import { ForeignerChatModal } from './components/ForeignerChatModal';
 import { ChatRewardPendingModal } from './components/ChatRewardPendingModal';
 import { pushService } from './services/pushNotificationService';
 import { AppProvider } from './context/AppContext';
+import { UsersCommentsSection } from './components/UsersCommentsSection';
 import {
   ForeignerProfile,
   Network,
@@ -555,21 +556,13 @@ function HeroSection() {
 
 function ForeignersSection() {
   const [query, setQuery] = useState('');
-  const [dailyRotationOffset, setDailyRotationOffset] = useState(0);
   const openChat = useAppStore((s) => s.openChat);
   const paidForeignerIds = useAppStore((s) => s.paidForeignerIds);
   const setPaidAlertForeigner = useAppStore((s) => s.setPaidAlertForeigner);
 
-  // Daily rotation: changes foreigners each day automatically
-  const dailyForeigners = useMemo(() => {
-    const list = getDailyForeigners();
-    if (dailyRotationOffset === 0) return list;
-    const total = ALL_FOREIGNERS.length;
-    return Array.from({ length: 6 }, (_, i) => ALL_FOREIGNERS[(dailyRotationOffset + i) % total]);
-  }, [dailyRotationOffset]);
-
+  // Show all 16 foreigners on the site, with live search filtering
   const filtered = useMemo(() => {
-    if (!query) return dailyForeigners;
+    if (!query) return ALL_FOREIGNERS;
     const q = query.toLowerCase();
     return ALL_FOREIGNERS.filter(
       (c) =>
@@ -578,11 +571,22 @@ function ForeignersSection() {
         c.bio.toLowerCase().includes(q) ||
         c.topic.toLowerCase().includes(q)
     );
-  }, [query, dailyForeigners]);
+  }, [query]);
 
   return (
     <section className="max-w-xl mx-auto px-3 sm:px-4 py-2 sm:py-3">
-      {/* Search Input & Refresh Daily List */}
+      {/* Wazungu Header Count */}
+      <div className="flex items-center justify-between mb-2.5 px-1">
+        <div className="flex items-center gap-1.5 text-xs font-black text-white">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span>Wazungu {filtered.length} Wapo Online Tayari Kuchat</span>
+        </div>
+        <span className="text-[10px] sm:text-[11px] font-bold text-[#00E5FF] bg-[#00E5FF]/10 px-2 py-0.5 rounded-full border border-[#00E5FF]/30">
+          Dakika 1 tu Kila Mmoja
+        </span>
+      </div>
+
+      {/* Search Input */}
       <div className="flex items-center gap-2 mb-3">
         <div className="flex-1 relative">
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -590,7 +594,7 @@ function ForeignersSection() {
             id="search-foreigners-input"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Tafuta mzungu, nchi, mada..."
+            placeholder="Tafuta mzungu (k.m. Jessica, Michael, Sweden, Zanzibar)..."
             className="w-full bg-[#121829] border border-[#00E5FF]/25 rounded-xl pl-9 pr-8 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#00E5FF] shadow-inner transition"
           />
           {query && (
@@ -602,15 +606,6 @@ function ForeignersSection() {
             </button>
           )}
         </div>
-
-        <button
-          onClick={() => setDailyRotationOffset((prev) => (prev + 3) % ALL_FOREIGNERS.length)}
-          className="px-2.5 py-2 rounded-xl bg-[#141b2d] border border-gray-700 text-gray-300 hover:text-white hover:border-[#00E5FF] transition flex items-center gap-1 text-[11px] font-semibold shrink-0 cursor-pointer"
-          title="Angalia wazungu wengine wapya"
-        >
-          <RefreshCw size={12} className="text-[#00E5FF]" />
-          <span className="hidden xs:inline">Wapya</span>
-        </button>
       </div>
 
       {/* 2 Columns on Mobile & Desktop */}
@@ -1223,7 +1218,34 @@ export default function App() {
         <main>
           <HeroSection />
           <ForeignersSection />
+          <UsersCommentsSection />
         </main>
+
+        {/* Footer: Full sponsored by Cp3 */}
+        <footer className="mt-8 pt-8 pb-24 border-t border-gray-800/80 text-center px-4 bg-[#080811]/95 relative overflow-hidden">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-80 h-[2px] bg-gradient-to-r from-transparent via-[#00E5FF] to-transparent" />
+
+          <div className="max-w-xl mx-auto space-y-3.5">
+            {/* Prominent Cp3 Sponsorship Badge */}
+            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-[#6C3BFF]/30 via-[#00E5FF]/20 to-[#ec4899]/30 border border-[#00E5FF]/50 text-xs font-black tracking-wider uppercase shadow-[0_0_25px_rgba(0,229,255,0.35)]">
+              <Sparkles size={14} className="text-[#00E5FF] animate-pulse" />
+              <span className="text-white">FULL SPONSORED BY <span className="text-[#00E5FF] font-black underline decoration-cyan-400 decoration-2 underline-offset-2">CP3</span></span>
+              <Sparkles size={14} className="text-[#ec4899] animate-pulse" />
+            </div>
+
+            <p className="text-gray-300 text-xs leading-relaxed max-w-md mx-auto">
+              Jukwaa rasmi la mtandaoni linalowaunganisha wageni na Watanzania kwa ajili ya kufundisha Kiswahili na kulipana papo hapo kupitia M-Pesa, TigoPesa, Airtel Money, Halopesa na AzamPesa.
+            </p>
+
+            <div className="pt-2 flex items-center justify-center gap-3 text-[11px] text-gray-400 font-medium flex-wrap">
+              <span>© {new Date().getFullYear()} SwahiliConnect</span>
+              <span>•</span>
+              <span className="text-[#00E5FF] font-black uppercase tracking-wide">Full sponsored by Cp3</span>
+              <span>•</span>
+              <span>Tanzania 🇹🇿</span>
+            </div>
+          </div>
+        </footer>
 
         <RegisterModal />
         <WithdrawModal />
