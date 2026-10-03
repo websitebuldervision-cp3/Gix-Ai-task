@@ -16,11 +16,9 @@ import {
   Sparkles,
   RefreshCw,
 } from 'lucide-react';
-import { NotificationPromptModal } from './components/NotificationPromptModal';
 import { NotificationSettingsModal } from './components/NotificationSettingsModal';
 import { ForeignerChatModal } from './components/ForeignerChatModal';
 import { ChatRewardPendingModal } from './components/ChatRewardPendingModal';
-import { pushService } from './services/pushNotificationService';
 import { AppProvider } from './context/AppContext';
 import { UsersCommentsSection } from './components/UsersCommentsSection';
 import {
@@ -556,13 +554,21 @@ function HeroSection() {
 
 function ForeignersSection() {
   const [query, setQuery] = useState('');
+  const [rotationOffset, setRotationOffset] = useState(0);
   const openChat = useAppStore((s) => s.openChat);
   const paidForeignerIds = useAppStore((s) => s.paidForeignerIds);
   const setPaidAlertForeigner = useAppStore((s) => s.setPaidAlertForeigner);
 
-  // Show all 16 foreigners on the site, with live search filtering
+  const swahiliDate = useMemo(() => getSwahiliDateString(), []);
+
+  // Today's 16 foreigners: rotated daily based on exact day of the year so each day is DIFFERENT
+  const dailyForeigners = useMemo(() => {
+    return getDailyForeigners(new Date(), rotationOffset);
+  }, [rotationOffset]);
+
+  // If user searches, filter across ALL_FOREIGNERS catalog; otherwise show today's 16 unique foreigners
   const filtered = useMemo(() => {
-    if (!query) return ALL_FOREIGNERS;
+    if (!query) return dailyForeigners;
     const q = query.toLowerCase();
     return ALL_FOREIGNERS.filter(
       (c) =>
@@ -571,22 +577,24 @@ function ForeignersSection() {
         c.bio.toLowerCase().includes(q) ||
         c.topic.toLowerCase().includes(q)
     );
-  }, [query]);
+  }, [query, dailyForeigners]);
 
   return (
     <section className="max-w-xl mx-auto px-3 sm:px-4 py-2 sm:py-3">
-      {/* Wazungu Header Count */}
-      <div className="flex items-center justify-between mb-2.5 px-1">
+      {/* Wazungu Header Count & Daily Status */}
+      <div className="flex items-center justify-between mb-2.5 px-1 flex-wrap gap-2">
         <div className="flex items-center gap-1.5 text-xs font-black text-white">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span>Wazungu {filtered.length} Wapo Online Tayari Kuchat</span>
+          <span>Wazungu {filtered.length} Wapo Online Leo ({swahiliDate.shortDate})</span>
         </div>
-        <span className="text-[10px] sm:text-[11px] font-bold text-[#00E5FF] bg-[#00E5FF]/10 px-2 py-0.5 rounded-full border border-[#00E5FF]/30">
-          Dakika 1 tu Kila Mmoja
-        </span>
+        <div className="flex items-center gap-1.5">
+          <span className="text-[10px] sm:text-[11px] font-bold text-[#00E5FF] bg-[#00E5FF]/10 px-2 py-0.5 rounded-full border border-[#00E5FF]/30">
+            Wapya Kila Siku
+          </span>
+        </div>
       </div>
 
-      {/* Search Input */}
+      {/* Search Input & Refresh Button */}
       <div className="flex items-center gap-2 mb-3">
         <div className="flex-1 relative">
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -606,6 +614,15 @@ function ForeignersSection() {
             </button>
           )}
         </div>
+
+        <button
+          onClick={() => setRotationOffset((prev) => prev + 1)}
+          className="px-2.5 py-2 rounded-xl bg-[#141b2d] border border-gray-700 hover:border-[#00E5FF] text-gray-300 hover:text-white transition flex items-center gap-1.5 text-[11px] font-semibold shrink-0 cursor-pointer shadow-sm active:scale-95"
+          title="Badilisha orodha ya wazungu"
+        >
+          <RefreshCw size={12} className="text-[#00E5FF]" />
+          <span className="hidden xs:inline">Badilisha</span>
+        </button>
       </div>
 
       {/* 2 Columns on Mobile & Desktop */}
@@ -789,7 +806,7 @@ function RegisterModal() {
           </div>
         </div>
 
-        {/* Primary Action Button - Directed to https://moxeraagencies.com/register?ref=Cp3 */}
+        {/* Primary Action Button - Directed to https://adsblog.app/page/reg.php?reg=Cp3 */}
         <div className="mt-4 px-1">
           <a
             id="direct-register-link-btn"
@@ -1199,10 +1216,6 @@ export default function App() {
   const pendingBalance = useAppStore((s) => s.pendingBalance);
   const openWithdraw = useAppStore((s) => s.openWithdraw);
 
-  useEffect(() => {
-    pushService.syncOnEntry('sw');
-  }, []);
-
   return (
     <AppProvider>
       <div className="min-h-screen bg-[#0b0b12] text-gray-200 pb-20 font-sans selection:bg-[#00E5FF] selection:text-black">
@@ -1282,8 +1295,7 @@ export default function App() {
           />
         )}
 
-        {/* Web Push Prompt & Settings */}
-        <NotificationPromptModal />
+        {/* Web Push Settings */}
         <NotificationSettingsModal isOpen={notifModalOpen} onClose={closeNotifModal} />
       </div>
     </AppProvider>

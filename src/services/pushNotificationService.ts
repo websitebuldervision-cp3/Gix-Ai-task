@@ -337,25 +337,7 @@ export class PushNotificationService {
   }
 
   public shouldShowInitialPrompt(): boolean {
-    if (!this.isSupported()) return false;
-
-    // 1. If user already granted permission, NEVER show prompt
-    if (Notification.permission === 'granted') {
-      return false;
-    }
-
-    // 2. If user already enabled notifications before, NEVER show prompt
-    if (localStorage.getItem(PUSH_STORAGE_KEYS.ENABLED_PERMANENT) === 'true') {
-      return false;
-    }
-
-    // 3. If prompt has already been shown once, NEVER show again (ije mara moja tu!)
-    const alreadyShown = localStorage.getItem(PUSH_STORAGE_KEYS.HAS_PROMPTED_ONCE);
-    if (alreadyShown === 'true') {
-      return false;
-    }
-
-    return true;
+    return false;
   }
 
   public dismissInitialPrompt(): void {

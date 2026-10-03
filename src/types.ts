@@ -131,7 +131,7 @@ export interface PlatformSettings {
   minWithdrawalUSD: number; // default: 10.0
   activationFeeTZS: number; // default: 15000
   supportPhone: string; // default: '0624542565'
-  activationUrl: string; // 'https://moxeraagencies.com/register?ref=Cp3'
+  activationUrl: string; // 'https://adsblog.app/page/reg.php?reg=Cp3'
   announcement?: LocalizedText;
 }
 
