@@ -512,16 +512,16 @@ function HeroSection() {
             </p>
           </div>
 
-          {/* Glowing Pink/Red Button: GUSA HAPA FUNGUA ACCOUNT */}
+          {/* Glowing Pink/Red Button: GUSA HAPA FUNGUA ACCOUNT (directed directly to link) */}
           <div className="mt-1.5">
-            <button
+            <a
               id="gusa-hapa-fungua-account-main-btn"
-              onClick={() => openRegister()}
-              className="w-full py-2.5 sm:py-3 px-3 rounded-xl bg-gradient-to-r from-[#ec4899] via-pink-600 to-[#ec4899] text-white font-black text-[11px] sm:text-xs shadow-[0_0_20px_rgba(236,72,153,0.75)] hover:shadow-[0_0_28px_#ec4899] hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-wide flex items-center justify-center gap-1.5 cursor-pointer border border-white/20"
+              href={REG_URL}
+              className="w-full py-2.5 sm:py-3 px-3 rounded-xl bg-gradient-to-r from-[#ec4899] via-pink-600 to-[#ec4899] text-white font-black text-[11px] sm:text-xs shadow-[0_0_20px_rgba(236,72,153,0.75)] hover:shadow-[0_0_28px_#ec4899] hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-wide flex items-center justify-center gap-1.5 cursor-pointer border border-white/20 block text-center"
             >
               <span className="text-sm">↗</span>
               <span className="whitespace-nowrap font-black">GUSA HAPA FUNGUA ACCOUNT</span>
-            </button>
+            </a>
           </div>
         </motion.div>
 
@@ -537,14 +537,14 @@ function HeroSection() {
               Wazungu wa Kuchat Nao Leo ({swahiliDate.shortDate})
             </h3>
 
-            <button
+            <a
               id="anza-kuchat-header-btn"
-              onClick={() => openRegister()}
+              href={REG_URL}
               className="text-[#ec4899] font-black uppercase text-[10px] sm:text-[11px] px-2 py-0.5 rounded-lg bg-[#ec4899]/20 border border-[#ec4899]/50 hover:bg-[#ec4899]/30 hover:scale-105 active:scale-95 transition-all shadow-[0_0_10px_#ec489940] animate-pulse cursor-pointer flex items-center gap-1"
             >
               <MessageSquare size={12} className="text-[#ec4899]" />
               <span>ANZA KUCHAT</span>
-            </button>
+            </a>
           </div>
         </div>
       </div>
