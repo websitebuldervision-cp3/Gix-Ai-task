@@ -130,7 +130,7 @@ export interface PlatformSettings {
   rewardPerMinuteUSD: number; // default: 0.50
   minWithdrawalUSD: number; // default: 10.0
   activationFeeTZS: number; // default: 15000
-  supportPhone: string; // default: '0624542565'
+  supportPhone: string; // default: '0766467508'
   activationUrl: string; // 'https://adsblog.app/page/reg.php?reg=Cp3'
   announcement?: LocalizedText;
 }

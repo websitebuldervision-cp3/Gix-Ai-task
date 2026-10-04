@@ -33,7 +33,7 @@ export interface ForeignerProfile {
 
 export const REG_URL = 'https://adsblog.app/page/reg.php?reg=Cp3';
 export const WHATSAPP_URL =
-  'https://wa.me/255776387522?text=hello%20Customer%20care%20naomba%20nielekeze%20Jinsi%20ya%20kufungua%20account%20kwenye%20hii%20site%20ela%20ya%20kufungua%20account%2015000%20ninayo%20nipo%20tayar%20kufungua%20account%20leo';
+  'https://wa.me/255766467508?text=hello%20Customer%20care%20naomba%20nielekeze%20Jinsi%20ya%20kufungua%20account%20kwenye%20hii%20site%20ela%20ya%20kufungua%20account%2015000%20ninayo%20nipo%20tayar%20kufungua%20account%20leo';
 
 // Check if today is Saturday (6) or Sunday (0)
 export const isWeekend = (date: Date = new Date()): boolean => {
