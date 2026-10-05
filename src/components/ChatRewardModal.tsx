@@ -1,6 +1,6 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { Sparkles, CheckCircle2, ExternalLink, ArrowRight, ShieldCheck } from 'lucide-react';
+import { CheckCircle2, ExternalLink, ArrowRight, ShieldCheck } from 'lucide-react';
 import { formatUSD, formatTZS } from '../data/translations';
 
 export const ChatRewardModal: React.FC = () => {
@@ -28,7 +28,7 @@ export const ChatRewardModal: React.FC = () => {
 
         {/* Success Icon */}
         <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 shadow-inner">
-          <Sparkles className="h-7 w-7 animate-bounce" />
+          <CheckCircle2 className="h-7 w-7 animate-bounce" />
         </div>
 
         {/* Title */}

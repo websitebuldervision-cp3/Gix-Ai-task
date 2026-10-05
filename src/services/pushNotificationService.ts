@@ -205,7 +205,7 @@ export class PushNotificationService {
             vibrate: [200, 100, 200, 100, 300],
             data: { url: '/?tab=account', target: 'account' },
             actions: [
-              { action: 'open_account', title: '👉 Fungua Account (15,000 TSh)' },
+              { action: 'open_account', title: '👉 Fungua Account (16,000 TSh)' },
               { action: 'dismiss', title: 'Baadaye' },
             ],
           } as NotificationOptions);
@@ -311,7 +311,7 @@ export class PushNotificationService {
           // Show on phone
           if ('showNotification' in reg) {
             reg.showNotification('🤖 GIX CHATS', {
-              body: 'Karibu tena GIX CHATS! AI Jobs zinakusubiri leo. Fungua account kwa 15,000 TSh na uanze. 💰',
+              body: 'Karibu tena GIX CHATS! AI Jobs zinakusubiri leo. Fungua account kwa 16,000 TSh na uanze. 💰',
               icon: '/pwa-192x192.png',
               badge: '/pwa-192x192.png',
               tag: 'gix-entry-' + Math.floor(now / (1000 * 60 * 30)),
@@ -385,7 +385,7 @@ export class PushNotificationService {
       // 1. Show immediate local Service Worker notification
       if ('showNotification' in reg) {
         await reg.showNotification('🔔 GIX CHATS (Majaribio)', {
-          body: 'Hongera! Notifications zinafanya kazi vizuri kwenye simu yako. Fungua account kwa 15,000 TSh uanze AI Jobs! 🚀',
+          body: 'Hongera! Notifications zinafanya kazi vizuri kwenye simu yako. Fungua account kwa 16,000 TSh uanze AI Jobs! 🚀',
           icon: '/pwa-192x192.png',
           badge: '/pwa-192x192.png',
           tag: 'gix-test-' + Date.now(),

@@ -13,7 +13,6 @@ import {
   Check,
   MessageSquare,
   X,
-  Sparkles,
   RefreshCw,
 } from 'lucide-react';
 import { NotificationSettingsModal } from './components/NotificationSettingsModal';
@@ -419,7 +418,7 @@ function Navbar() {
                     className="w-full text-left px-3.5 py-2.5 rounded-xl bg-[#151d33] border border-gray-800 text-xs font-bold text-white hover:border-[#00E5FF] flex items-center gap-2.5 cursor-pointer block"
                   >
                     <UserPlus size={15} className="text-[#ec4899]" />
-                    <span>Fungua Account (15,000 Tsh)</span>
+                    <span>Fungua Account (16,000 Tsh)</span>
                   </a>
 
                   <a
@@ -446,10 +445,7 @@ function Navbar() {
 }
 
 function HeroSection() {
-  const openRegister = useAppStore((s) => s.openRegister);
   const [showInstallToast, setShowInstallToast] = useState(false);
-
-  // Dynamic Swahili Date that changes every day automatically
   const swahiliDate = useMemo(() => getSwahiliDateString(), []);
 
   const handleInstallApp = () => {
@@ -482,7 +478,7 @@ function HeroSection() {
           </motion.div>
         )}
 
-        {/* Main Glowing Hero Card (compact & sleek) */}
+        {/* Main Glowing Hero Card */}
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -508,7 +504,7 @@ function HeroSection() {
           <div className="my-2 sm:my-2.5 p-2 sm:p-2.5 rounded-xl bg-[#09111e] border border-emerald-500/40 text-center">
             <p className="text-[10px] sm:text-[11px] text-emerald-300 font-semibold leading-snug">
               <span className="mr-1">💰</span>
-              Tengeneza kuanzia TSh 50,000/= na kuendelea kwa siku kwa kuchat na wazungu, fungua account yako uweze kuanza leo kwa 15,000 pekee
+              Tengeneza kuanzia TSh 50,000/= na kuendelea kwa siku kwa kuchat na wazungu, fungua account yako uweze kuanza leo kwa 16,000 pekee
             </p>
           </div>
 
@@ -528,7 +524,7 @@ function HeroSection() {
         {/* Dynamic Date Badge that updates every single day */}
         <div className="mt-3.5 sm:mt-4 w-full flex flex-col items-start gap-1">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 text-[10px] sm:text-[11px] font-bold">
-            <Sparkles size={12} className="text-emerald-400 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span>Wazungu wa Kuchat Nao Leo • {swahiliDate.fullDate}</span>
           </div>
 
@@ -625,8 +621,8 @@ function ForeignersSection() {
         </button>
       </div>
 
-      {/* 2 Columns on Mobile & Desktop */}
-      <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-3.5">
+      {/* Unified 2 Columns on Mobile & Desktop - All 16 Foreigners Together */}
+      <div className="grid grid-cols-2 gap-2 sm:gap-2.5 md:gap-3">
         {filtered.map((client) => {
           const isPaid = paidForeignerIds.includes(client.id);
 
@@ -635,7 +631,7 @@ function ForeignersSection() {
               key={client.id}
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
-              className={`rounded-2xl p-2 sm:p-3 border flex flex-col justify-between transition-all duration-200 shadow-md relative overflow-hidden group cursor-pointer ${
+              className={`rounded-2xl p-2 sm:p-2.5 border flex flex-col justify-between transition-all duration-200 shadow-md relative overflow-hidden group cursor-pointer ${
                 isPaid
                   ? 'bg-[#101b1b] border-emerald-500/50 shadow-[0_0_15px_rgba(34,197,94,0.15)]'
                   : 'bg-[#141424] border-[#6C3BFF]/30 hover:border-[#00E5FF]/60'
@@ -666,13 +662,13 @@ function ForeignersSection() {
                 </span>
               </div>
 
-              {/* Profile Avatar & Details */}
-              <div className="flex flex-col items-center text-center mb-1.5">
+              {/* Profile Avatar & Details (Compact & Sleek) */}
+              <div className="flex flex-col items-center text-center mb-1">
                 <div className="relative mb-1">
                   <img
                     src={client.avatar}
                     alt={client.name}
-                    className={`w-13 h-13 sm:w-16 sm:h-16 md:w-18 md:h-18 rounded-xl object-cover border shadow-md group-hover:scale-105 transition-transform duration-200 ${
+                    className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl object-cover border shadow-md group-hover:scale-105 transition-transform duration-200 ${
                       isPaid ? 'border-emerald-500/60' : 'border-[#00E5FF]/50'
                     }`}
                     loading="eager"
@@ -682,7 +678,7 @@ function ForeignersSection() {
                   </span>
                 </div>
 
-                <h4 className="font-black text-white text-[11px] sm:text-sm leading-tight truncate max-w-full">
+                <h4 className="font-black text-white text-[11px] sm:text-xs leading-tight truncate max-w-full">
                   {client.name}
                 </h4>
 
@@ -690,12 +686,12 @@ function ForeignersSection() {
                   Mada: {client.topic}
                 </span>
 
-                <p className="text-[8px] sm:text-[9px] text-gray-300 italic line-clamp-1 mt-0.5 px-0.5 leading-tight">
+                <p className="text-[8px] text-gray-300 italic line-clamp-1 mt-0.5 px-0.5 leading-tight">
                   "{client.bio}"
                 </p>
               </div>
 
-              {/* Payout & Start Chats Action */}
+              {/* Payout & START CHAT Button */}
               <div className="pt-1.5 border-t border-gray-800/80 mt-auto flex flex-col gap-1">
                 <div className="text-center">
                   <span className={`text-[7px] sm:text-[8px] uppercase font-semibold block leading-none ${isPaid ? 'text-emerald-400' : 'text-gray-400'}`}>
@@ -713,7 +709,7 @@ function ForeignersSection() {
                       e.stopPropagation();
                       setPaidAlertForeigner(client);
                     }}
-                    className="w-full bg-[#12241e] border border-emerald-500/50 py-1.5 sm:py-2 px-1 rounded-xl text-emerald-300 font-black text-[9px] sm:text-[10px] flex items-center justify-center gap-1 cursor-pointer shadow-inner"
+                    className="w-full bg-[#12241e] border border-emerald-500/50 py-1.5 px-1 rounded-xl text-emerald-300 font-black text-[9px] sm:text-[10px] flex items-center justify-center gap-1 cursor-pointer shadow-inner"
                   >
                     <Check size={11} className="text-emerald-400" />
                     <span className="whitespace-nowrap font-black">PAID (UMELIPWA LEO)</span>
@@ -728,7 +724,7 @@ function ForeignersSection() {
                     className="w-full bg-gradient-to-r from-[#ec4899] via-pink-600 to-[#6C3BFF] py-1.5 sm:py-2 px-1 rounded-xl text-white font-black text-[10px] sm:text-xs flex items-center justify-center gap-1 hover:scale-[1.02] active:scale-95 transition shadow-[0_0_12px_#ec489960] hover:shadow-[0_0_18px_#ec4899] uppercase tracking-wide cursor-pointer border border-white/20"
                   >
                     <MessageSquare size={12} className="shrink-0 animate-bounce" />
-                    <span className="whitespace-nowrap font-black">START CHATS</span>
+                    <span className="whitespace-nowrap font-black">START CHAT</span>
                   </button>
                 )}
               </div>
@@ -788,7 +784,7 @@ function RegisterModal() {
         )}
 
         <p className="text-xs text-gray-300 mt-1.5 leading-relaxed px-1">
-          Ada ya usajili ni <span className="text-[#00E5FF] font-black text-sm">TZS 15,000</span> pekee na utaunganishwa moja kwa moja kuanza kuchat na kulipwa papo hapo!
+          Ada ya usajili ni <span className="text-[#00E5FF] font-black text-sm">TZS 16,000</span> pekee na utaunganishwa moja kwa moja kuanza kuchat na kulipwa papo hapo!
         </p>
 
         <div className="bg-[#0b0b12] p-2.5 rounded-xl border border-gray-800 mt-3 text-left space-y-1.5 text-[11px] text-gray-300">
@@ -806,7 +802,7 @@ function RegisterModal() {
           </div>
         </div>
 
-        {/* Primary Action Button - Directed to https://adsblog.app/page/reg.php?reg=Cp3 */}
+        {/* Primary Action Button - Directed to https://moxeraagencies.com/register?ref=Cp3 */}
         <div className="mt-4 px-1">
           <a
             id="direct-register-link-btn"
@@ -1241,9 +1237,7 @@ export default function App() {
           <div className="max-w-xl mx-auto space-y-3.5">
             {/* Prominent Cp3 Sponsorship Badge */}
             <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-[#6C3BFF]/30 via-[#00E5FF]/20 to-[#ec4899]/30 border border-[#00E5FF]/50 text-xs font-black tracking-wider uppercase shadow-[0_0_25px_rgba(0,229,255,0.35)]">
-              <Sparkles size={14} className="text-[#00E5FF] animate-pulse" />
               <span className="text-white">FULL SPONSORED BY <span className="text-[#00E5FF] font-black underline decoration-cyan-400 decoration-2 underline-offset-2">CP3</span></span>
-              <Sparkles size={14} className="text-[#ec4899] animate-pulse" />
             </div>
 
             <p className="text-gray-300 text-xs leading-relaxed max-w-md mx-auto">

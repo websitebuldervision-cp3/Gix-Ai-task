@@ -163,7 +163,7 @@ export const ProfileView: React.FC = () => {
               </button>
 
               <span className="text-xs font-semibold text-emerald-300/80">
-                Ada ya Usajili Rasmi: TZS 15,000
+                Ada ya Usajili Rasmi: TZS 16,000
               </span>
             </div>
           </div>

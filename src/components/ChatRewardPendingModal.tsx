@@ -99,7 +99,7 @@ export const ChatRewardPendingModal: React.FC<Props> = ({
           </div>
           <div className="flex items-center gap-1.5 text-emerald-400 font-semibold">
             <ShieldCheck size={13} className="shrink-0" />
-            <span>Ada ya usajili ni TZS 15,000 pekee na utaanza kutoa papo hapo</span>
+            <span>Ada ya usajili ni TZS 16,000 pekee na utaanza kutoa papo hapo</span>
           </div>
         </div>
 

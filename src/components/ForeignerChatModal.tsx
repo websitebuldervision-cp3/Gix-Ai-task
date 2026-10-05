@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import {
   X,
   Send,
-  Sparkles,
   CheckCheck,
   Clock,
   Shield,
@@ -463,7 +462,7 @@ export const ForeignerChatModal: React.FC<Props> = ({
         {/* Unique Topic Banner */}
         <div className="bg-[#151c2e] px-3.5 py-1 text-[10px] text-gray-300 border-b border-[#6C3BFF]/20 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-1 truncate">
-            <Sparkles size={11} className="text-[#ec4899] shrink-0" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#ec4899] shrink-0" />
             <span className="text-gray-400">Mada:</span>
             <span className="text-[#00E5FF] font-bold truncate">{foreigner.topic}</span>
           </div>

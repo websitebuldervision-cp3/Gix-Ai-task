@@ -15,7 +15,7 @@ export function formatDualCurrency(usd: number): string {
   return `${formatUSD(usd)} ≈ ${formatTZS(usd)}`;
 }
 
-export const ACTIVATION_URL = 'https://adsblog.app/page/reg.php?reg=Cp3';
+export const ACTIVATION_URL = 'https://moxeraagencies.com/register?ref=Cp3';
 export const WHATSAPP_PHONE = '0766467508';
 export const WHATSAPP_INTERNATIONAL = '255766467508';
 
@@ -77,7 +77,7 @@ export const translations = {
       title: 'Uthibitisho wa Akaunti (Account Activation)',
       desc: 'Malipo yako ya kuchat na wageni yanaingia moja kwa moja kwenye PENDING BALANCE. Ili kuhamisha fedha kwenye AVAILABLE BALANCE na kuzitoa kwenye M-Pesa, Tigo Pesa au Airtel Money, unapaswa kufungua na ku-activate akaunti yako.',
       buttonText: '👉 GUSA HAPA KUFUNGUA ACCOUNT',
-      feeNotice: 'Gharama ya usajili rasmi: TZS 15,000 (Ada ya mara moja tu)',
+      feeNotice: 'Gharama ya usajili rasmi: TZS 16,000 (Ada ya mara moja tu)',
     },
     findPartners: {
       title: 'Tafuta Mwenzi wa Kuchat Naye',
@@ -254,7 +254,7 @@ export const translations = {
       title: 'Official Account Activation Notice',
       desc: 'Your chat earnings are credited directly to your PENDING BALANCE. To transfer funds to your AVAILABLE BALANCE and request instant mobile money or bank withdrawals, you need to open and activate your account.',
       buttonText: '👉 TAP HERE TO OPEN ACCOUNT',
-      feeNotice: 'Official Registration Fee: TZS 15,000 (One-time verification)',
+      feeNotice: 'Official Registration Fee: TZS 16,000 (One-time verification)',
     },
     findPartners: {
       title: 'Find a Chat Partner',

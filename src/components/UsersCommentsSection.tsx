@@ -2,10 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   MessageCircle,
-  Star,
   CheckCircle2,
   Send,
-  Sparkles,
   ThumbsUp,
   MapPin,
   Clock,
@@ -254,12 +252,9 @@ export const UsersCommentsSection: React.FC = () => {
         {/* Rating Summary Bar */}
         <div className="mt-3 pt-3 border-t border-gray-800/80 flex items-center justify-between text-xs text-gray-300 flex-wrap gap-2">
           <div className="flex items-center gap-1.5">
-            <div className="flex text-amber-400">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} size={13} fill="currentColor" />
-              ))}
-            </div>
-            <span className="font-bold text-white">4.9 / 5</span>
+            <span className="font-black text-amber-300 bg-amber-500/15 border border-amber-500/30 px-2.5 py-0.5 rounded-md text-[11px]">
+              Alama 4.9 / 5.0
+            </span>
             <span className="text-gray-400 text-[11px]">(Zaidi ya maoni 1,840+ nchini Tanzania)</span>
           </div>
           <span className="text-[11px] text-emerald-400 font-semibold flex items-center gap-1">
@@ -284,7 +279,7 @@ export const UsersCommentsSection: React.FC = () => {
             >
               <div className="flex items-center justify-between">
                 <h3 className="font-black text-white text-xs uppercase tracking-wider flex items-center gap-1.5">
-                  <Sparkles size={14} className="text-[#00E5FF]" />
+                  <MessageCircle size={14} className="text-[#00E5FF]" />
                   <span>Andika Ushuhuda / Maoni Yako</span>
                 </h3>
                 <span className="text-[10px] text-gray-400">Yataonekana hapa moja kwa moja</span>
@@ -344,24 +339,25 @@ export const UsersCommentsSection: React.FC = () => {
 
                     <div>
                       <label className="text-[11px] text-gray-300 font-semibold block mb-1">
-                        Kiwango cha Nyota (Rating):
+                        Kiwango cha Alama (Rating):
                       </label>
-                      <div className="flex items-center gap-1.5 py-1.5">
-                        {[1, 2, 3, 4, 5].map((star) => (
+                      <div className="flex items-center gap-1.5 py-1">
+                        {[1, 2, 3, 4, 5].map((val) => (
                           <button
-                            key={star}
+                            key={val}
                             type="button"
-                            onClick={() => setUserRating(star)}
-                            className="text-amber-400 p-0.5 cursor-pointer hover:scale-110 transition"
+                            onClick={() => setUserRating(val)}
+                            className={`w-7 h-7 rounded-lg text-xs font-bold transition flex items-center justify-center cursor-pointer border ${
+                              val <= userRating
+                                ? 'bg-[#00E5FF] text-black border-[#00E5FF]'
+                                : 'bg-[#121829] text-gray-400 border-gray-700'
+                            }`}
                           >
-                            <Star
-                              size={18}
-                              fill={star <= userRating ? 'currentColor' : 'none'}
-                            />
+                            {val}
                           </button>
                         ))}
                         <span className="text-[11px] text-gray-400 ml-2">
-                          ({userRating} / 5 Nyota)
+                          ({userRating} / 5)
                         </span>
                       </div>
                     </div>
@@ -436,15 +432,13 @@ export const UsersCommentsSection: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Network & Stars */}
-                <div className="text-right shrink-0">
-                  <div className="flex text-amber-400 justify-end mb-1">
-                    {[...Array(item.rating)].map((_, i) => (
-                      <Star key={i} size={11} fill="currentColor" />
-                    ))}
-                  </div>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-900/30 text-purple-300 border border-purple-700/40 font-semibold block">
+                {/* Network & Rating */}
+                <div className="text-right shrink-0 flex flex-col items-end gap-1">
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-900/30 text-purple-300 border border-purple-700/40 font-semibold inline-block">
                     {item.network}
+                  </span>
+                  <span className="text-[9px] font-bold text-amber-300 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/25">
+                    Alama {item.rating}/5
                   </span>
                 </div>
               </div>
