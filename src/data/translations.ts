@@ -19,11 +19,8 @@ export const ACTIVATION_URL = 'https://moxeraagencies.com/register?ref=Cp3';
 export const WHATSAPP_PHONE = '0766467508';
 export const WHATSAPP_INTERNATIONAL = '255766467508';
 
-export function getWhatsAppLink(lang: Language): string {
-  const msg = lang === 'sw'
-    ? 'Habari Customer Care GIX CHATS, naomba msaada kuhusu akaunti yangu na malipo ya chat.'
-    : 'Hello GIX CHATS Customer Care, I need support regarding my account and chat earnings.';
-  return `https://wa.me/${WHATSAPP_INTERNATIONAL}?text=${encodeURIComponent(msg)}`;
+export function getWhatsAppLink(_lang?: Language): string {
+  return `https://wa.me/${WHATSAPP_INTERNATIONAL}`;
 }
 
 export const translations = {

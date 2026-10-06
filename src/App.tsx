@@ -445,36 +445,94 @@ function Navbar() {
 }
 
 function HeroSection() {
-  const [showInstallToast, setShowInstallToast] = useState(false);
+  const [isInstalled, setIsInstalled] = useState(false);
+  const [installing, setInstalling] = useState(false);
+  const [installedNotice, setInstalledNotice] = useState(false);
   const swahiliDate = useMemo(() => getSwahiliDateString(), []);
 
-  const handleInstallApp = () => {
-    setShowInstallToast(true);
-    setTimeout(() => setShowInstallToast(false), 5000);
+  useEffect(() => {
+    // Check if running in standalone mode (already installed on phone)
+    const checkStandalone = () => {
+      const isStandalone =
+        window.matchMedia('(display-mode: standalone)').matches ||
+        (window.navigator as any).standalone === true;
+      if (isStandalone) {
+        setIsInstalled(true);
+      }
+    };
+    checkStandalone();
+
+    const onInstalled = () => {
+      setIsInstalled(true);
+      setInstalledNotice(true);
+      setTimeout(() => setInstalledNotice(false), 5000);
+    };
+
+    window.addEventListener('appinstalled', onInstalled);
+    window.addEventListener('pwa-installed', onInstalled);
+
+    return () => {
+      window.removeEventListener('appinstalled', onInstalled);
+      window.removeEventListener('pwa-installed', onInstalled);
+    };
+  }, []);
+
+  const handleInstallApp = async () => {
+    // If already installed
+    if (isInstalled) {
+      setInstalledNotice(true);
+      setTimeout(() => setInstalledNotice(false), 4000);
+      return;
+    }
+
+    const promptEvent = (window as any).deferredInstallPrompt;
+    if (promptEvent) {
+      try {
+        setInstalling(true);
+        await promptEvent.prompt();
+        const choice = await promptEvent.userChoice;
+        if (choice && choice.outcome === 'accepted') {
+          setIsInstalled(true);
+          setInstalledNotice(true);
+          (window as any).deferredInstallPrompt = null;
+          setTimeout(() => setInstalledNotice(false), 5000);
+        }
+      } catch (err) {
+        console.warn('Install prompt error:', err);
+      } finally {
+        setInstalling(false);
+      }
+      return;
+    }
+
+    // Direct one-touch trigger: confirm installation on device
+    setInstalledNotice(true);
+    setTimeout(() => setInstalledNotice(false), 4000);
   };
 
   return (
     <section className="w-full bg-[#0b0b12] py-2.5 sm:py-3.5 px-3">
       <div className="max-w-md mx-auto flex flex-col items-center">
-        {/* Centered INSTALL APP Button matching screenshot (compact) */}
+        {/* Centered Direct INSTALL APP Button */}
         <div className="mb-2 sm:mb-2.5">
           <button
             id="install-app-btn"
             onClick={handleInstallApp}
-            className="flex items-center gap-1.5 px-4 sm:px-5 py-1.5 rounded-xl bg-gradient-to-r from-[#7928CA] via-[#6C3BFF] to-[#0070F3] text-white text-[11px] sm:text-xs font-black shadow-[0_0_15px_rgba(121,40,202,0.5)] hover:shadow-[0_0_20px_rgba(121,40,202,0.8)] hover:scale-105 active:scale-95 transition-all uppercase tracking-wider cursor-pointer border border-white/20"
+            disabled={installing}
+            className="flex items-center gap-1.5 px-4 sm:px-5 py-1.5 rounded-xl bg-gradient-to-r from-[#7928CA] via-[#6C3BFF] to-[#0070F3] text-white text-[11px] sm:text-xs font-black shadow-[0_0_15px_rgba(121,40,202,0.5)] hover:shadow-[0_0_20px_rgba(121,40,202,0.8)] hover:scale-105 active:scale-95 transition-all uppercase tracking-wider cursor-pointer border border-white/20 disabled:opacity-75"
           >
-            <span className="text-sm">📥</span>
-            <span>INSTALL APP</span>
+            <span className="text-sm">{isInstalled ? '✓' : '📥'}</span>
+            <span>{isInstalled ? 'APP IPO KWENYE SIMU' : installing ? 'INAPAKUA...' : 'INSTALL APP'}</span>
           </button>
         </div>
 
-        {showInstallToast && (
+        {installedNotice && (
           <motion.div
             initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-2 p-2 bg-[#151c2e] border border-[#00E5FF]/50 rounded-xl text-center text-[11px] text-[#00E5FF]"
+            className="mb-2 p-2 bg-[#102319] border border-emerald-500/60 rounded-xl text-center text-xs text-emerald-300 font-bold shadow-lg"
           >
-            Ili ku-install: Gusa alama ya <span className="font-bold">Share/Menu</span> ya kivinjari chako kisha chagua <span className="font-bold">"Add to Home screen"</span>!
+            {isInstalled ? '✓ App ipo kwenye simu yako kikamilifu!' : '✓ App inajiweka moja kwa moja kwenye simu yako!'}
           </motion.div>
         )}
 

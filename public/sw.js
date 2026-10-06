@@ -110,7 +110,7 @@ self.addEventListener('push', (event) => {
     actions: [
       {
         action: 'open_account',
-        title: '👉 Fungua Account (15,000 TSh)',
+        title: '👉 Fungua Account (16,000 TSh)',
       },
       {
         action: 'dismiss',
