@@ -1206,6 +1206,35 @@ app.get('/api/push/status', (_req, res) => {
 });
 
 // -------------------------------------------------------------
+// 10.5. SEO & ROBOTS / SITEMAP ROUTES
+// -------------------------------------------------------------
+app.get('/sitemap.xml', (_req, res) => {
+  res.header('Content-Type', 'application/xml');
+  const sitemapPublic = path.resolve(__dirname, 'public', 'sitemap.xml');
+  const sitemapDist = path.resolve(__dirname, 'dist', 'sitemap.xml');
+  if (fs.existsSync(sitemapPublic)) {
+    return res.sendFile(sitemapPublic);
+  }
+  if (fs.existsSync(sitemapDist)) {
+    return res.sendFile(sitemapDist);
+  }
+  res.status(404).send('Sitemap not found');
+});
+
+app.get('/robots.txt', (_req, res) => {
+  res.header('Content-Type', 'text/plain');
+  const robotsPublic = path.resolve(__dirname, 'public', 'robots.txt');
+  const robotsDist = path.resolve(__dirname, 'dist', 'robots.txt');
+  if (fs.existsSync(robotsPublic)) {
+    return res.sendFile(robotsPublic);
+  }
+  if (fs.existsSync(robotsDist)) {
+    return res.sendFile(robotsDist);
+  }
+  res.status(404).send('Robots.txt not found');
+});
+
+// -------------------------------------------------------------
 // 11. VITE MIDDLEWARE (Dev) OR STATIC SERVE (Prod)
 // -------------------------------------------------------------
 async function startServer() {

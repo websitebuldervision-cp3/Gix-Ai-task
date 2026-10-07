@@ -609,16 +609,28 @@ function HeroSection() {
 function ForeignersSection() {
   const [query, setQuery] = useState('');
   const [rotationOffset, setRotationOffset] = useState(0);
+  const [halfHourSlot, setHalfHourSlot] = useState(() => Math.floor(Date.now() / (1000 * 60 * 30)));
   const openChat = useAppStore((s) => s.openChat);
   const paidForeignerIds = useAppStore((s) => s.paidForeignerIds);
   const setPaidAlertForeigner = useAppStore((s) => s.setPaidAlertForeigner);
 
   const swahiliDate = useMemo(() => getSwahiliDateString(), []);
 
-  // Today's 16 foreigners: rotated daily based on exact day of the year so each day is DIFFERENT
+  // Timer: automatically detects each 30-minute interval (kila baada ya nusu saa) and updates the list
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const currentSlot = Math.floor(Date.now() / (1000 * 60 * 30));
+      if (currentSlot !== halfHourSlot) {
+        setHalfHourSlot(currentSlot);
+      }
+    }, 10000);
+    return () => clearInterval(timer);
+  }, [halfHourSlot]);
+
+  // Today's 16 foreigners: rotated automatically every 30 minutes (nusu saa) and via manual 'Badilisha'
   const dailyForeigners = useMemo(() => {
     return getDailyForeigners(new Date(), rotationOffset);
-  }, [rotationOffset]);
+  }, [rotationOffset, halfHourSlot]);
 
   // If user searches, filter across ALL_FOREIGNERS catalog; otherwise show today's 16 unique foreigners
   const filtered = useMemo(() => {
@@ -635,7 +647,7 @@ function ForeignersSection() {
 
   return (
     <section className="max-w-xl mx-auto px-3 sm:px-4 py-2 sm:py-3">
-      {/* Wazungu Header Count & Daily Status */}
+      {/* Wazungu Header Count & 30-Minute Status */}
       <div className="flex items-center justify-between mb-2.5 px-1 flex-wrap gap-2">
         <div className="flex items-center gap-1.5 text-xs font-black text-white">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -643,7 +655,7 @@ function ForeignersSection() {
         </div>
         <div className="flex items-center gap-1.5">
           <span className="text-[10px] sm:text-[11px] font-bold text-[#00E5FF] bg-[#00E5FF]/10 px-2 py-0.5 rounded-full border border-[#00E5FF]/30">
-            Wapya Kila Siku
+            Wapya Kila Nusu Saa (30m)
           </span>
         </div>
       </div>

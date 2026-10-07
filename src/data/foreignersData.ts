@@ -1693,21 +1693,20 @@ export function getSwahiliDateString(date: Date = new Date()): {
   };
 }
 
-// Daily rotation engine: picks 16 distinct foreigners based on the exact day of the year so each day is DIFFERENT
+// 30-Minute Rotation Engine: rotates every 30 minutes (nusu saa) automatically throughout the day
 export function getDailyForeigners(date: Date = new Date(), offset: number = 0): ForeignerProfile[] {
-  const startOfYear = new Date(date.getFullYear(), 0, 0);
-  const diff = date.getTime() - startOfYear.getTime();
-  const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
-
   const total = ALL_FOREIGNERS.length; // 36 total wazungu in master catalog
   const count = 16; // Exactly 16 foreigners shown on the site
 
-  // Shift offset changes every single day (dayOfYear * 7 + offset * 5) so every day features different wazungu
-  const dailyShift = Math.abs(dayOfYear * 7 + offset * 5) % total;
+  // Calculate the 30-minute interval slot (1,800,000 ms = 30 minutes)
+  const halfHourSlot = Math.floor(date.getTime() / (1000 * 60 * 30));
+
+  // Shift offset automatically advances every 30 minutes (+ manual offset if user clicks 'Badilisha')
+  const shift = Math.abs(halfHourSlot * 5 + offset * 7) % total;
 
   const result: ForeignerProfile[] = [];
   for (let i = 0; i < count; i++) {
-    const index = (dailyShift + i) % total;
+    const index = (shift + i) % total;
     result.push(ALL_FOREIGNERS[index]);
   }
 
