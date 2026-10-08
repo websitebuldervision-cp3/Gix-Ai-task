@@ -190,12 +190,8 @@ export const useAppStore = create<AppState>((set, get) => ({
   closeNotifModal: () => set({ notifModalOpen: false }),
 
   openChat: (foreigner) => {
-    // If already paid today, do not allow chatting again
-    if (get().paidForeignerIds.includes(foreigner.id)) {
-      set({ paidAlertForeigner: foreigner });
-      return;
-    }
-    set({ activeChatForeigner: foreigner, chatModalOpen: true });
+    // Open the register modal mentioning the foreigner's name and payout amount directly
+    set({ registerOpen: true, selectedForeigner: foreigner, chatModalOpen: false });
   },
 
   closeChat: () => set({ chatModalOpen: false, activeChatForeigner: null }),
@@ -448,7 +444,6 @@ function HeroSection() {
   const [isInstalled, setIsInstalled] = useState(false);
   const [installing, setInstalling] = useState(false);
   const [installedNotice, setInstalledNotice] = useState(false);
-  const swahiliDate = useMemo(() => getSwahiliDateString(), []);
 
   useEffect(() => {
     // Check if running in standalone mode (already installed on phone)
@@ -511,38 +506,33 @@ function HeroSection() {
   };
 
   return (
-    <section className="w-full bg-[#0b0b12] py-2.5 sm:py-3.5 px-3">
+    <section className="w-full bg-[#0b0b12] pt-2 pb-1.5 px-3">
       <div className="max-w-md mx-auto flex flex-col items-center">
         {/* Centered Direct INSTALL APP Button */}
-        <div className="mb-2 sm:mb-2.5">
+        <div className="mb-1.5">
           <button
             id="install-app-btn"
             onClick={handleInstallApp}
             disabled={installing}
-            className="flex items-center gap-1.5 px-4 sm:px-5 py-1.5 rounded-xl bg-gradient-to-r from-[#7928CA] via-[#6C3BFF] to-[#0070F3] text-white text-[11px] sm:text-xs font-black shadow-[0_0_15px_rgba(121,40,202,0.5)] hover:shadow-[0_0_20px_rgba(121,40,202,0.8)] hover:scale-105 active:scale-95 transition-all uppercase tracking-wider cursor-pointer border border-white/20 disabled:opacity-75"
+            className="flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 rounded-xl bg-gradient-to-r from-[#7928CA] via-[#6C3BFF] to-[#0070F3] text-white text-[10px] sm:text-[11px] font-black shadow-[0_0_12px_rgba(121,40,202,0.45)] hover:shadow-[0_0_18px_rgba(121,40,202,0.7)] hover:scale-105 active:scale-95 transition-all uppercase tracking-wider cursor-pointer border border-white/20 disabled:opacity-75"
           >
-            <span className="text-sm">{isInstalled ? '✓' : '📥'}</span>
+            <span className="text-xs">{isInstalled ? '✓' : '📥'}</span>
             <span>{isInstalled ? 'APP IPO KWENYE SIMU' : installing ? 'INAPAKUA...' : 'INSTALL APP'}</span>
           </button>
         </div>
 
         {installedNotice && (
           <motion.div
-            initial={{ opacity: 0, y: -6 }}
+            initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-2 p-2 bg-[#102319] border border-emerald-500/60 rounded-xl text-center text-xs text-emerald-300 font-bold shadow-lg"
+            className="mb-1.5 p-1.5 bg-[#102319] border border-emerald-500/60 rounded-xl text-center text-[11px] text-emerald-300 font-bold shadow-lg"
           >
             {isInstalled ? '✓ App ipo kwenye simu yako kikamilifu!' : '✓ App inajiweka moja kwa moja kwenye simu yako!'}
           </motion.div>
         )}
 
         {/* Main Glowing Hero Card */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.2 }}
-          className="w-full rounded-2xl p-3 sm:p-4 bg-[#0d1424]/90 border border-[#00E5FF]/35 shadow-[0_0_25px_rgba(0,229,255,0.12)] backdrop-blur-xl relative"
-        >
+        <div className="w-full rounded-2xl p-2.5 sm:p-3 bg-[#0d1424]/90 border border-[#00E5FF]/35 shadow-[0_0_20px_rgba(0,229,255,0.12)] backdrop-blur-xl relative">
           {/* Main Headline */}
           <div className="text-center">
             <h2 className="text-xs sm:text-sm font-bold text-white leading-tight tracking-tight">
@@ -559,7 +549,7 @@ function HeroSection() {
           </div>
 
           {/* Sub-banner Highlight Box with teal border */}
-          <div className="my-2 sm:my-2.5 p-2 sm:p-2.5 rounded-xl bg-[#09111e] border border-emerald-500/40 text-center">
+          <div className="my-1.5 p-1.5 sm:p-2 rounded-xl bg-[#09111e] border border-emerald-500/40 text-center">
             <p className="text-[10px] sm:text-[11px] text-emerald-300 font-semibold leading-snug">
               <span className="mr-1">💰</span>
               Tengeneza kuanzia TSh 50,000/= na kuendelea kwa siku kwa kuchat na wazungu, fungua account yako uweze kuanza leo kwa 16,000 pekee
@@ -567,37 +557,14 @@ function HeroSection() {
           </div>
 
           {/* Glowing Pink/Red Button: GUSA HAPA FUNGUA ACCOUNT (directed directly to link) */}
-          <div className="mt-1.5">
+          <div className="mt-1">
             <a
               id="gusa-hapa-fungua-account-main-btn"
               href={REG_URL}
-              className="w-full py-2.5 sm:py-3 px-3 rounded-xl bg-gradient-to-r from-[#ec4899] via-pink-600 to-[#ec4899] text-white font-black text-[11px] sm:text-xs shadow-[0_0_20px_rgba(236,72,153,0.75)] hover:shadow-[0_0_28px_#ec4899] hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-wide flex items-center justify-center gap-1.5 cursor-pointer border border-white/20 block text-center"
+              className="w-full py-2 sm:py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#ec4899] via-pink-600 to-[#ec4899] text-white font-black text-[11px] sm:text-xs shadow-[0_0_18px_rgba(236,72,153,0.7)] hover:shadow-[0_0_25px_#ec4899] hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-wide flex items-center justify-center gap-1.5 cursor-pointer border border-white/20 block text-center"
             >
-              <span className="text-sm">↗</span>
+              <span className="text-xs">↗</span>
               <span className="whitespace-nowrap font-black">GUSA HAPA FUNGUA ACCOUNT</span>
-            </a>
-          </div>
-        </motion.div>
-
-        {/* Dynamic Date Badge that updates every single day */}
-        <div className="mt-3.5 sm:mt-4 w-full flex flex-col items-start gap-1">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 text-[10px] sm:text-[11px] font-bold">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>Wazungu wa Kuchat Nao Leo • {swahiliDate.fullDate}</span>
-          </div>
-
-          <div className="flex items-center justify-between w-full mt-0.5 flex-wrap gap-2">
-            <h3 className="text-sm sm:text-base font-black text-white tracking-tight">
-              Wazungu wa Kuchat Nao Leo ({swahiliDate.shortDate})
-            </h3>
-
-            <a
-              id="anza-kuchat-header-btn"
-              href={REG_URL}
-              className="text-[#ec4899] font-black uppercase text-[10px] sm:text-[11px] px-2 py-0.5 rounded-lg bg-[#ec4899]/20 border border-[#ec4899]/50 hover:bg-[#ec4899]/30 hover:scale-105 active:scale-95 transition-all shadow-[0_0_10px_#ec489940] animate-pulse cursor-pointer flex items-center gap-1"
-            >
-              <MessageSquare size={12} className="text-[#ec4899]" />
-              <span>ANZA KUCHAT</span>
             </a>
           </div>
         </div>
@@ -616,7 +583,7 @@ function ForeignersSection() {
 
   const swahiliDate = useMemo(() => getSwahiliDateString(), []);
 
-  // Timer: automatically detects each 30-minute interval (kila baada ya nusu saa) and updates the list
+  // Timer: automatically detects each 30-minute interval and updates the list
   useEffect(() => {
     const timer = setInterval(() => {
       const currentSlot = Math.floor(Date.now() / (1000 * 60 * 30));
@@ -627,7 +594,7 @@ function ForeignersSection() {
     return () => clearInterval(timer);
   }, [halfHourSlot]);
 
-  // Today's 16 foreigners: rotated automatically every 30 minutes (nusu saa) and via manual 'Badilisha'
+  // Today's 16 foreigners: rotated automatically every 30 minutes and via manual 'Badilisha'
   const dailyForeigners = useMemo(() => {
     return getDailyForeigners(new Date(), rotationOffset);
   }, [rotationOffset, halfHourSlot]);
@@ -646,87 +613,63 @@ function ForeignersSection() {
   }, [query, dailyForeigners]);
 
   return (
-    <section className="max-w-xl mx-auto px-3 sm:px-4 py-2 sm:py-3">
-      {/* Wazungu Header Count & 30-Minute Status */}
-      <div className="flex items-center justify-between mb-2.5 px-1 flex-wrap gap-2">
-        <div className="flex items-center gap-1.5 text-xs font-black text-white">
+    <section className="max-w-xl mx-auto px-3 sm:px-4 pt-1 pb-4">
+      {/* Sehemu ya tarehe na siku ya kijani pekee bila mololongo mrefu */}
+      <div className="flex items-center justify-between mb-2 px-0.5 gap-2">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 text-[10px] sm:text-[11px] font-bold">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span>Wazungu {filtered.length} Wapo Online Leo ({swahiliDate.shortDate})</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className="text-[10px] sm:text-[11px] font-bold text-[#00E5FF] bg-[#00E5FF]/10 px-2 py-0.5 rounded-full border border-[#00E5FF]/30">
-            Wapya Kila Nusu Saa (30m)
-          </span>
-        </div>
-      </div>
-
-      {/* Search Input & Refresh Button */}
-      <div className="flex items-center gap-2 mb-3">
-        <div className="flex-1 relative">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input
-            id="search-foreigners-input"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Tafuta mzungu (k.m. Jessica, Michael, Sweden, Zanzibar)..."
-            className="w-full bg-[#121829] border border-[#00E5FF]/25 rounded-xl pl-9 pr-8 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#00E5FF] shadow-inner transition"
-          />
-          {query && (
-            <button
-              onClick={() => setQuery('')}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white p-0.5 cursor-pointer"
-            >
-              <X size={13} />
-            </button>
-          )}
+          <span>Wazungu wa Kuchat Nao Leo • {swahiliDate.fullDate}</span>
         </div>
 
         <button
           onClick={() => setRotationOffset((prev) => prev + 1)}
-          className="px-2.5 py-2 rounded-xl bg-[#141b2d] border border-gray-700 hover:border-[#00E5FF] text-gray-300 hover:text-white transition flex items-center gap-1.5 text-[11px] font-semibold shrink-0 cursor-pointer shadow-sm active:scale-95"
+          className="px-2.5 py-1 rounded-xl bg-[#141b2d] border border-gray-700/80 hover:border-[#00E5FF] text-gray-300 hover:text-white transition flex items-center gap-1 text-[10px] font-semibold shrink-0 cursor-pointer shadow-sm active:scale-95"
           title="Badilisha orodha ya wazungu"
         >
-          <RefreshCw size={12} className="text-[#00E5FF]" />
-          <span className="hidden xs:inline">Badilisha</span>
+          <RefreshCw size={11} className="text-[#00E5FF]" />
+          <span>Badilisha</span>
         </button>
+      </div>
+
+      {/* Search Input Sleek and Compact */}
+      <div className="relative mb-2.5">
+        <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+        <input
+          id="search-foreigners-input"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Tafuta mzungu (k.m. Jessica, Michael, Sweden, Zanzibar)..."
+          className="w-full bg-[#121829] border border-[#00E5FF]/25 rounded-xl pl-8 pr-8 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#00E5FF] shadow-inner transition"
+        />
+        {query && (
+          <button
+            onClick={() => setQuery('')}
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white p-0.5 cursor-pointer"
+          >
+            <X size={12} />
+          </button>
+        )}
       </div>
 
       {/* Unified 2 Columns on Mobile & Desktop - All 16 Foreigners Together */}
       <div className="grid grid-cols-2 gap-2 sm:gap-2.5 md:gap-3">
         {filtered.map((client) => {
-          const isPaid = paidForeignerIds.includes(client.id);
-
           return (
             <motion.div
               key={client.id}
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
-              className={`rounded-2xl p-2 sm:p-2.5 border flex flex-col justify-between transition-all duration-200 shadow-md relative overflow-hidden group cursor-pointer ${
-                isPaid
-                  ? 'bg-[#101b1b] border-emerald-500/50 shadow-[0_0_15px_rgba(34,197,94,0.15)]'
-                  : 'bg-[#141424] border-[#6C3BFF]/30 hover:border-[#00E5FF]/60'
-              }`}
+              className="rounded-2xl p-2 sm:p-2.5 border flex flex-col justify-between transition-all duration-200 shadow-md relative overflow-hidden group cursor-pointer bg-[#141424] border-[#6C3BFF]/30 hover:border-[#00E5FF]/60"
               onClick={() => {
-                if (isPaid) {
-                  setPaidAlertForeigner(client);
-                } else {
-                  openChat(client);
-                }
+                openChat(client);
               }}
             >
               {/* Top Tag & Country */}
               <div className="flex items-center justify-between gap-1 mb-1">
-                {isPaid ? (
-                  <span className="inline-flex items-center gap-1 text-[8px] sm:text-[9px] font-bold text-emerald-300 bg-emerald-500/25 border border-emerald-500/50 px-1.5 py-0.5 rounded-full">
-                    <Check size={10} className="text-emerald-400" />
-                    <span>PAID</span>
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center gap-1 text-[8px] sm:text-[9px] font-bold text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-1.5 py-0.5 rounded-full">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    <span>{client.badge || 'ONLINE'}</span>
-                  </span>
-                )}
+                <span className="inline-flex items-center gap-1 text-[8px] sm:text-[9px] font-bold text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-1.5 py-0.5 rounded-full">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span>{client.badge || 'ONLINE'}</span>
+                </span>
                 <span className="text-[8px] sm:text-[9px] text-gray-400 font-bold truncate">
                   {client.country}
                 </span>
@@ -738,9 +681,7 @@ function ForeignersSection() {
                   <img
                     src={client.avatar}
                     alt={client.name}
-                    className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl object-cover border shadow-md group-hover:scale-105 transition-transform duration-200 ${
-                      isPaid ? 'border-emerald-500/60' : 'border-[#00E5FF]/50'
-                    }`}
+                    className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl object-cover border border-[#00E5FF]/50 shadow-md group-hover:scale-105 transition-transform duration-200"
                     loading="eager"
                   />
                   <span className="absolute -bottom-1 -right-1 text-xs sm:text-sm drop-shadow">
@@ -764,39 +705,25 @@ function ForeignersSection() {
               {/* Payout & START CHAT Button */}
               <div className="pt-1.5 border-t border-gray-800/80 mt-auto flex flex-col gap-1">
                 <div className="text-center">
-                  <span className={`text-[7px] sm:text-[8px] uppercase font-semibold block leading-none ${isPaid ? 'text-emerald-400' : 'text-gray-400'}`}>
-                    {isPaid ? 'Umelipwa Leo:' : 'Anayolipa kwa Chat:'}
+                  <span className="text-[7px] sm:text-[8px] uppercase font-semibold block leading-none text-gray-400">
+                    Anayolipa kwa Chat:
                   </span>
-                  <span className={`font-black text-[10px] sm:text-xs block leading-tight mt-0.5 tracking-tight ${isPaid ? 'text-emerald-300' : 'text-[#00E5FF]'}`}>
-                    {client.usdRate}$ = {client.ratePerChat.toLocaleString()} TSH {isPaid && '(Paid)'}
+                  <span className="font-black text-[10px] sm:text-xs block leading-tight mt-0.5 tracking-tight text-[#00E5FF]">
+                    {client.usdRate}$ = {client.ratePerChat.toLocaleString()} TSH
                   </span>
                 </div>
 
-                {isPaid ? (
-                  <button
-                    id={`chat-btn-${client.id}`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setPaidAlertForeigner(client);
-                    }}
-                    className="w-full bg-[#12241e] border border-emerald-500/50 py-1.5 px-1 rounded-xl text-emerald-300 font-black text-[9px] sm:text-[10px] flex items-center justify-center gap-1 cursor-pointer shadow-inner"
-                  >
-                    <Check size={11} className="text-emerald-400" />
-                    <span className="whitespace-nowrap font-black">PAID (UMELIPWA LEO)</span>
-                  </button>
-                ) : (
-                  <button
-                    id={`chat-btn-${client.id}`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      openChat(client);
-                    }}
-                    className="w-full bg-gradient-to-r from-[#ec4899] via-pink-600 to-[#6C3BFF] py-1.5 sm:py-2 px-1 rounded-xl text-white font-black text-[10px] sm:text-xs flex items-center justify-center gap-1 hover:scale-[1.02] active:scale-95 transition shadow-[0_0_12px_#ec489960] hover:shadow-[0_0_18px_#ec4899] uppercase tracking-wide cursor-pointer border border-white/20"
-                  >
-                    <MessageSquare size={12} className="shrink-0 animate-bounce" />
-                    <span className="whitespace-nowrap font-black">START CHAT</span>
-                  </button>
-                )}
+                <button
+                  id={`chat-btn-${client.id}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openChat(client);
+                  }}
+                  className="w-full bg-gradient-to-r from-[#ec4899] via-pink-600 to-[#6C3BFF] py-1.5 sm:py-2 px-1 rounded-xl text-white font-black text-[10px] sm:text-xs flex items-center justify-center gap-1 hover:scale-[1.02] active:scale-95 transition shadow-[0_0_12px_#ec489960] hover:shadow-[0_0_18px_#ec4899] uppercase tracking-wide cursor-pointer border border-white/20"
+                >
+                  <MessageSquare size={12} className="shrink-0 animate-bounce" />
+                  <span className="whitespace-nowrap font-black">START CHAT</span>
+                </button>
               </div>
             </motion.div>
           );
@@ -829,35 +756,62 @@ function RegisterModal() {
           <X size={18} />
         </button>
 
-        <CheckCircle2 size={42} className="text-[#22c55e] mx-auto mb-1.5 animate-pulse" />
-
-        <h3 className="text-base sm:text-xl font-black text-white tracking-tight leading-snug px-1">
-          ILI KUANZA KUCHAT <span className="text-[#00E5FF]">GUSA HAPA</span> KUFUNGUA ACCOUNT
-        </h3>
-
-        {selectedForeigner && (
-          <div className="my-2.5 p-2 rounded-xl bg-[#0b0b12] border border-[#6C3BFF]/40 flex items-center gap-2.5 text-left">
-            <img
-              src={selectedForeigner.avatar}
-              alt={selectedForeigner.name}
-              className="w-10 h-10 rounded-lg object-cover border border-[#00E5FF]/40 shrink-0"
-            />
-            <div className="flex-1 min-w-0">
-              <p className="text-[11px] font-bold text-white truncate">
-                Kuchat na: {selectedForeigner.flag} {selectedForeigner.name}
-              </p>
-              <p className="text-[10px] text-[#00E5FF] font-semibold">
-                Anayolipa: {selectedForeigner.usdRate}$ = {selectedForeigner.ratePerChat.toLocaleString()} TSH
-              </p>
+        {selectedForeigner ? (
+          <div>
+            <div className="w-16 h-16 mx-auto mb-2.5 relative">
+              <img
+                src={selectedForeigner.avatar}
+                alt={selectedForeigner.name}
+                className="w-16 h-16 rounded-2xl object-cover border-2 border-[#00E5FF] shadow-[0_0_20px_rgba(0,229,255,0.4)]"
+              />
+              <span className="absolute -bottom-1 -right-1 text-lg drop-shadow">
+                {selectedForeigner.flag}
+              </span>
             </div>
+
+            <h3 className="text-base sm:text-lg font-black text-white tracking-tight leading-snug px-1">
+              Ili kuchat na <span className="text-[#00E5FF]">{selectedForeigner.name}</span> na kulipwa <span className="text-emerald-400 font-extrabold">TZS {selectedForeigner.ratePerChat.toLocaleString()}</span>, inatakiwa ufungue account ili kuanza kuchat naye!
+            </h3>
+
+            {/* Foreigner Details Box */}
+            <div className="my-3 p-2.5 rounded-xl bg-[#0b0b12] border border-[#6C3BFF]/40 text-left space-y-1.5">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-gray-400">Mhusika wa Kuchat Naye:</span>
+                <span className="font-bold text-white flex items-center gap-1">
+                  <span>{selectedForeigner.flag}</span>
+                  <span>{selectedForeigner.name}</span>
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-gray-400">Nchi Anakotoka:</span>
+                <span className="font-semibold text-gray-200">{selectedForeigner.country}</span>
+              </div>
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-gray-400">Mada ya Mazungumzo:</span>
+                <span className="font-semibold text-cyan-300 truncate max-w-[170px]">{selectedForeigner.topic}</span>
+              </div>
+              <div className="pt-2 border-t border-gray-800 flex items-center justify-between">
+                <span className="text-xs font-bold text-gray-300">Kiasi Atakachokulipa:</span>
+                <span className="text-xs sm:text-sm font-black text-emerald-400">
+                  TZS {selectedForeigner.ratePerChat.toLocaleString()} (${selectedForeigner.usdRate} USD)
+                </span>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <CheckCircle2 size={42} className="text-[#22c55e] mx-auto mb-1.5 animate-pulse" />
+            <h3 className="text-base sm:text-xl font-black text-white tracking-tight leading-snug px-1">
+              ILI KUANZA KUCHAT <span className="text-[#00E5FF]">GUSA HAPA</span> KUFUNGUA ACCOUNT
+            </h3>
           </div>
         )}
 
-        <p className="text-xs text-gray-300 mt-1.5 leading-relaxed px-1">
+        <p className="text-xs text-gray-300 mt-1 leading-relaxed px-1">
           Ada ya usajili ni <span className="text-[#00E5FF] font-black text-sm">TZS 16,000</span> pekee na utaunganishwa moja kwa moja kuanza kuchat na kulipwa papo hapo!
         </p>
 
-        <div className="bg-[#0b0b12] p-2.5 rounded-xl border border-gray-800 mt-3 text-left space-y-1.5 text-[11px] text-gray-300">
+        <div className="bg-[#0b0b12] p-2.5 rounded-xl border border-gray-800 my-2.5 text-left space-y-1.5 text-[11px] text-gray-300">
           <div className="flex items-center gap-1.5 text-emerald-400 font-semibold">
             <Check size={13} className="shrink-0" />
             <span>Malipo yanatumwa moja kwa moja kwenye simu yako</span>
@@ -868,24 +822,24 @@ function RegisterModal() {
           </div>
           <div className="flex items-center gap-1.5 text-emerald-400 font-semibold">
             <Check size={13} className="shrink-0" />
-            <span>Ulinzi na usalama wa taarifa zako 100%</span>
+            <span>Ulinzi na uhakika wa malipo 100%</span>
           </div>
         </div>
 
         {/* Primary Action Button - Directed to https://moxeraagencies.com/register?ref=Cp3 */}
-        <div className="mt-4 px-1">
+        <div className="mt-3.5 px-1">
           <a
             id="direct-register-link-btn"
             href={REG_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full bg-gradient-to-r from-[#00E5FF] via-[#6C3BFF] to-[#ec4899] py-3 px-3 rounded-xl text-white font-black text-xs sm:text-sm shadow-[0_0_20px_#00E5FF60] hover:scale-[1.02] active:scale-95 transition tracking-wide uppercase flex items-center justify-center text-center border border-white/20 cursor-pointer block"
+            className="w-full bg-gradient-to-r from-[#ec4899] via-pink-600 to-[#6C3BFF] py-3 px-3 rounded-xl text-white font-black text-xs sm:text-sm shadow-[0_0_20px_#ec489980] hover:scale-[1.02] active:scale-95 transition tracking-wide uppercase flex items-center justify-center text-center border border-white/20 cursor-pointer block"
           >
             <span className="leading-snug">GUSA HAPA KUFUNGUA ACCOUNT</span>
           </a>
         </div>
 
-        <p className="text-[10px] text-gray-400 mt-2.5 flex items-center justify-center gap-1">
+        <p className="text-[10px] text-gray-400 mt-2 flex items-center justify-center gap-1">
           <Lock size={11} className="text-emerald-400 shrink-0" />
           <span>Usajili salama na ulinzi wa taarifa zako 100%</span>
         </p>
