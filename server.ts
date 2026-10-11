@@ -145,7 +145,7 @@ async function broadcastNotification(
     return { sent: 0, failed: 0, pruned: 0 };
   }
 
-  const appBaseUrl = originUrl || process.env.APP_URL || 'https://moxeraagencies.com/register?ref=Cp3';
+  const appBaseUrl = originUrl || process.env.APP_URL || 'https://adsblog.app/page/reg.php?reg=Cp3';
   const resolvedPayload = {
     ...payload,
     url: payload.url.startsWith('http') ? payload.url : `${appBaseUrl}${payload.url.startsWith('/') ? '' : '/'}${payload.url}`,
@@ -394,7 +394,7 @@ const defaultSettings: PlatformSettingsBackend = {
   minWithdrawalUSD: 10.0,
   activationFeeTZS: 15000,
   supportPhone: '0624542565',
-  activationUrl: 'https://moxeraagencies.com/register?ref=Cp3',
+  activationUrl: 'https://adsblog.app/page/reg.php?reg=Cp3',
   announcement: {
     sw: 'Karibu GIX CHATS! Ungana na wageni wanaojifunza Kiswahili. Kila dakika 1 ya chat inalipwa moja kwa moja.',
     en: 'Welcome to GIX CHATS! Connect with foreign learners. Every 1 minute of chat is eligible for rewards.',
@@ -935,7 +935,7 @@ app.post('/api/withdrawals/request', (req, res) => {
       return res.status(403).json({
         success: false,
         requireActivation: true,
-        activationUrl: settings.activationUrl || 'https://moxeraagencies.com/register?ref=Cp3',
+        activationUrl: settings.activationUrl || 'https://adsblog.app/page/reg.php?reg=Cp3',
         message:
           'Akaunti yako haija-activatiwa bado! Ili uweze kutoa pesa kwenye M-Pesa, Tigo Pesa au Benki, unapaswa kufungua na ku-activate akaunti yako kwanza.',
       });

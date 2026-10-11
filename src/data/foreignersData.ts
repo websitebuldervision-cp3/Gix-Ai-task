@@ -31,7 +31,7 @@ export interface ForeignerProfile {
   fallbackResponses: string[];
 }
 
-export const REG_URL = 'https://moxeraagencies.com/register?ref=Cp3';
+export const REG_URL = 'https://adsblog.app/page/reg.php?reg=Cp3';
 export const WHATSAPP_URL = 'https://wa.me/255766467508';
 
 // Check if today is Saturday (6) or Sunday (0)

@@ -8,12 +8,11 @@ export const apiService = {
     try {
       const headers: Record<string, string> = {};
       if (userId) headers['x-user-id'] = userId;
-      const res = await fetch(`${API_BASE}/auth/me`, { headers });
-      if (!res.ok) return null;
-      const data = await res.json();
-      return data.user;
-    } catch (e) {
-      console.error('Failed to get current user:', e);
+      const res = await fetch(`${API_BASE}/auth/me`, { headers }).catch(() => null);
+      if (!res || !res.ok) return null;
+      const data = await res.json().catch(() => null);
+      return data?.user || null;
+    } catch {
       return null;
     }
   },
@@ -35,8 +34,9 @@ export const apiService = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),
-      });
-      const data = await res.json();
+      }).catch(() => null);
+      if (!res) return { success: false, error: 'Hitilafu ya mtandao' };
+      const data = await res.json().catch(() => ({}));
       if (!res.ok) {
         return { success: false, error: data.error || 'Usajili umeshindwa' };
       }
@@ -53,8 +53,9 @@ export const apiService = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ identifier }),
-      });
-      const data = await res.json();
+      }).catch(() => null);
+      if (!res) return { success: false, error: 'Hitilafu ya mtandao' };
+      const data = await res.json().catch(() => ({}));
       if (!res.ok) {
         return { success: false, error: data.error || 'Akaunti haikupatikana' };
       }
@@ -74,12 +75,11 @@ export const apiService = {
           'x-user-id': userId,
         },
         body: JSON.stringify(updates),
-      });
-      if (!res.ok) return null;
-      const data = await res.json();
-      return data.user;
-    } catch (e) {
-      console.error('Update profile error:', e);
+      }).catch(() => null);
+      if (!res || !res.ok) return null;
+      const data = await res.json().catch(() => null);
+      return data?.user || null;
+    } catch {
       return null;
     }
   },
@@ -105,12 +105,11 @@ export const apiService = {
           'x-user-id': userId,
         },
         body: JSON.stringify(partner),
-      });
-      if (!res.ok) return null;
-      const data = await res.json();
-      return data.room;
-    } catch (e) {
-      console.error('Start chat error:', e);
+      }).catch(() => null);
+      if (!res || !res.ok) return null;
+      const data = await res.json().catch(() => null);
+      return data?.room || null;
+    } catch {
       return null;
     }
   },
@@ -120,12 +119,11 @@ export const apiService = {
     try {
       const res = await fetch(`${API_BASE}/chat/rooms`, {
         headers: { 'x-user-id': userId },
-      });
-      if (!res.ok) return [];
-      const data = await res.json();
-      return data.rooms || [];
-    } catch (e) {
-      console.error('Get rooms error:', e);
+      }).catch(() => null);
+      if (!res || !res.ok) return [];
+      const data = await res.json().catch(() => null);
+      return data?.rooms || [];
+    } catch {
       return [];
     }
   },
@@ -133,16 +131,15 @@ export const apiService = {
   // 7. Get messages
   async getRoomMessages(roomId: string, currentUserId: string): Promise<Message[]> {
     try {
-      const res = await fetch(`${API_BASE}/chat/rooms/${roomId}/messages`);
-      if (!res.ok) return [];
-      const data = await res.json();
-      const list = data.messages || [];
+      const res = await fetch(`${API_BASE}/chat/rooms/${roomId}/messages`).catch(() => null);
+      if (!res || !res.ok) return [];
+      const data = await res.json().catch(() => null);
+      const list = data?.messages || [];
       return list.map((m: any) => ({
         ...m,
         isMine: m.senderId === currentUserId,
       }));
-    } catch (e) {
-      console.error('Get messages error:', e);
+    } catch {
       return [];
     }
   },
@@ -161,15 +158,15 @@ export const apiService = {
           'x-user-id': userId,
         },
         body: JSON.stringify({ text }),
-      });
-      if (!res.ok) return null;
-      const data = await res.json();
+      }).catch(() => null);
+      if (!res || !res.ok) return null;
+      const data = await res.json().catch(() => null);
+      if (!data) return null;
       return {
         userMessage: { ...data.userMessage, isMine: true },
         partnerReply: { ...data.partnerReply, isMine: false },
       };
-    } catch (e) {
-      console.error('Send message error:', e);
+    } catch {
       return null;
     }
   },
@@ -198,12 +195,11 @@ export const apiService = {
           'x-user-id': userId,
         },
         body: JSON.stringify(sessionData),
-      });
-      if (!res.ok) return { earned: false };
-      const data = await res.json();
-      return data;
-    } catch (e) {
-      console.error('Heartbeat error:', e);
+      }).catch(() => null);
+      if (!res || !res.ok) return { earned: false };
+      const data = await res.json().catch(() => null);
+      return data || { earned: false };
+    } catch {
       return { earned: false };
     }
   },
@@ -226,11 +222,10 @@ export const apiService = {
     try {
       const res = await fetch(`${API_BASE}/earnings`, {
         headers: { 'x-user-id': userId },
-      });
-      if (!res.ok) return null;
-      return await res.json();
-    } catch (e) {
-      console.error('Get earnings error:', e);
+      }).catch(() => null);
+      if (!res || !res.ok) return null;
+      return await res.json().catch(() => null);
+    } catch {
       return null;
     }
   },
@@ -240,12 +235,11 @@ export const apiService = {
     try {
       const res = await fetch(`${API_BASE}/withdrawals`, {
         headers: { 'x-user-id': userId },
-      });
-      if (!res.ok) return [];
-      const data = await res.json();
-      return data.withdrawals || [];
-    } catch (e) {
-      console.error('Get withdrawals error:', e);
+      }).catch(() => null);
+      if (!res || !res.ok) return [];
+      const data = await res.json().catch(() => null);
+      return data?.withdrawals || [];
+    } catch {
       return [];
     }
   },

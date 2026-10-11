@@ -1,0 +1,12 @@
+{
+  "chatDurationEligibleSeconds": 60,
+  "rewardPerMinuteUSD": 0.5,
+  "minWithdrawalUSD": 10,
+  "activationFeeTZS": 15000,
+  "supportPhone": "0624542565",
+  "activationUrl": "https://adsblog.app/page/reg.php?reg=Cp3",
+  "announcement": {
+    "sw": "Karibu GIX CHATS! Ungana na wageni wanaojifunza Kiswahili. Kila dakika 1 ya chat inalipwa moja kwa moja.",
+    "en": "Welcome to GIX CHATS! Connect with foreign learners. Every 1 minute of chat is eligible for rewards."
+  }
+}
