@@ -162,8 +162,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setUser(liveUser);
         localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(liveUser));
       }
-    } catch (e) {
-      console.warn('Could not sync user from server:', e);
+    } catch {
+      // Silently proceed with local user state if server cannot be reached
     }
   }, [user.id]);
 

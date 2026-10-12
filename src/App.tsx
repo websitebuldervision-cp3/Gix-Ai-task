@@ -826,7 +826,7 @@ function RegisterModal() {
           </div>
         </div>
 
-        {/* Primary Action Button - Directed to https://adsblog.app/page/reg.php?reg=Cp3 */}
+        {/* Primary Action Button - Directed to https://moxeraagencies.com/register?ref=Cp3 */}
         <div className="mt-3.5 px-1">
           <a
             id="direct-register-link-btn"
