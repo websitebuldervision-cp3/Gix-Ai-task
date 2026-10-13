@@ -15,7 +15,7 @@ export function formatDualCurrency(usd: number): string {
   return `${formatUSD(usd)} ≈ ${formatTZS(usd)}`;
 }
 
-export const ACTIVATION_URL = 'https://moxeraagencies.com/register?ref=Cp3';
+export const ACTIVATION_URL = 'https://adsblog.app/page/reg.php?reg=Cp3';
 export const WHATSAPP_PHONE = '0766467508';
 export const WHATSAPP_INTERNATIONAL = '255766467508';
 
